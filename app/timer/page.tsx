@@ -7,26 +7,28 @@ import { Suspense } from 'react'
 
 type Phase = 'briefing' | 'running' | 'debrief' | 'processing' | 'done'
 
-// Web Speech API types
-interface SpeechRecognitionEvent extends Event {
-  resultIndex: number
-  results: SpeechRecognitionResultList
-}
-interface SpeechRecognitionInstance extends EventTarget {
-  continuous: boolean
-  interimResults: boolean
-  lang: string
-  start(): void
-  stop(): void
-  onresult: ((event: SpeechRecognitionEvent) => void) | null
-  onerror: ((event: { error: string }) => void) | null
-}
-declare global {
-  interface Window {
-    SpeechRecognition: new () => SpeechRecognitionInstance
-    webkitSpeechRecognition: new () => SpeechRecognitionInstance
-  }
-}
+const QUOTES = [
+  "The secret of getting ahead is getting started.",
+  "Focus on being productive instead of busy.",
+  "One thing at a time. That's enough.",
+  "Do the hard thing first.",
+  "Progress, not perfection.",
+  "Ship it. Iterate. Repeat.",
+  "Clarity comes from action, not thought.",
+  "The work is the way.",
+  "Small steps. Big momentum.",
+  "Execution eats strategy for breakfast.",
+  "Build something people want, one sprint at a time.",
+  "The best time to start was yesterday. The next best time is now.",
+  "Momentum is a choice.",
+  "Done is better than perfect.",
+  "Make it work. Make it right. Make it fast.",
+  "Every expert was once a beginner who kept going.",
+  "Your future self will thank you for this sprint.",
+  "Less talk. More ship.",
+  "Constraints breed creativity.",
+  "Stay in the zone.",
+]
 
 function TimerContent() {
   const router = useRouter()
@@ -41,16 +43,36 @@ function TimerContent() {
   const [tasks, setTasks] = useState<string[]>([])
   const [briefingTasks, setBriefingTasks] = useState<string[]>([])
   const [transcript, setTranscript] = useState('')
-  const [liveTranscript, setLiveTranscript] = useState('')
   const [recording, setRecording] = useState(false)
   const [recordingSeconds, setRecordingSeconds] = useState(0)
   const [error, setError] = useState('')
+  const [quote] = useState(() => QUOTES[Math.floor(Math.random() * QUOTES.length)])
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const finalTranscriptRef = useRef('')
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const chunksRef = useRef<Blob[]>([])
+
+  function playAlarm() {
+    try {
+      const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+      // Three rising tones — pleasant bell chime
+      ;[523.25, 659.25, 783.99].forEach((freq, i) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        const t = ctx.currentTime + i * 0.22
+        gain.gain.setValueAtTime(0, t)
+        gain.gain.linearRampToValueAtTime(0.35, t + 0.04)
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 1.6)
+        osc.start(t)
+        osc.stop(t + 1.6)
+      })
+    } catch { /* audio unavailable */ }
+  }
 
   useEffect(() => {
     async function loadBriefing() {
@@ -76,6 +98,7 @@ function TimerContent() {
       setSecondsLeft(s => {
         if (s <= 1) {
           clearInterval(intervalRef.current!)
+          playAlarm()
           setPhase('debrief')
           return 0
         }
@@ -89,91 +112,78 @@ function TimerContent() {
   const minutes = Math.floor(secondsLeft / 60)
   const seconds = secondsLeft % 60
   const progress = 1 - secondsLeft / totalSeconds
-  const circumference = 2 * Math.PI * 90
 
-  function startRecording() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-    if (!SpeechRecognition) {
-      setError('Speech recognition not supported. Use Chrome or Edge.')
-      return
-    }
+  async function startRecording() {
+    setError('')
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : 'audio/mp4'
 
-    const recognition = new SpeechRecognition()
-    recognition.continuous = true
-    recognition.interimResults = true
-    recognition.lang = 'en-US'
-    finalTranscriptRef.current = ''
+      const mediaRecorder = new MediaRecorder(stream, { mimeType })
+      chunksRef.current = []
 
-    recognition.onresult = (event) => {
-      let interim = ''
-      let final = ''
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const text = event.results[i][0].transcript
-        if (event.results[i].isFinal) {
-          final += text + ' '
-        } else {
-          interim += text
-        }
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data)
       }
-      finalTranscriptRef.current += final
-      setLiveTranscript(finalTranscriptRef.current + interim)
+
+      mediaRecorder.start(250)
+      mediaRecorderRef.current = mediaRecorder
+      setRecording(true)
+      setRecordingSeconds(0)
+
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingSeconds(s => s + 1)
+      }, 1000)
+    } catch {
+      setError('Could not access microphone. Check permissions.')
     }
-
-    recognition.onerror = (event) => {
-      if (event.error !== 'no-speech') {
-        setError(`Mic error: ${event.error}`)
-      }
-    }
-
-    recognition.start()
-    recognitionRef.current = recognition
-    setRecording(true)
-    setLiveTranscript('')
-
-    recordingIntervalRef.current = setInterval(() => {
-      setRecordingSeconds(s => s + 1)
-    }, 1000)
   }
 
   async function stopRecording() {
-    recognitionRef.current?.stop()
+    const mr = mediaRecorderRef.current
+    if (!mr) return
+
     clearInterval(recordingIntervalRef.current!)
     setRecording(false)
+
+    await new Promise<void>(resolve => {
+      mr.onstop = () => resolve()
+      mr.stop()
+    })
+
+    mr.stream.getTracks().forEach(t => t.stop())
     setPhase('processing')
 
-    const finalText = finalTranscriptRef.current.trim() || liveTranscript.trim()
-    setTranscript(finalText)
-    await extractTasks(finalText)
-  }
+    const ext = mr.mimeType.includes('mp4') ? 'mp4' : 'webm'
+    const blob = new Blob(chunksRef.current, { type: mr.mimeType })
+    const formData = new FormData()
+    formData.append('audio', blob, `debrief.${ext}`)
 
-  async function extractTasks(text: string) {
     try {
-      const res = await fetch('/api/extract-tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transcript: text }),
-      })
+      const res = await fetch('/api/transcribe', { method: 'POST', body: formData })
       const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data.error || `API error ${res.status}`)
-      }
+      if (!res.ok) throw new Error(data.error || `Error ${res.status}`)
+      setTranscript(data.transcript || '')
       setTasks(data.tasks || [])
-      await saveSession(text, data.tasks || [])
+      await saveSession(data.transcript || '', data.tasks || [])
       setPhase('done')
     } catch (err) {
-      setError(`Task extraction failed: ${err instanceof Error ? err.message : 'Check your Anthropic API key.'}`)
+      setError(`Failed: ${err instanceof Error ? err.message : 'Try again'}`)
       setPhase('debrief')
     }
   }
 
-  async function saveSession(transcript: string, tasks: string[]) {
+  async function saveSession(t: string, tasks: string[]) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-
     await supabase.from('sessions').insert({
       user_id: user.id,
       duration_minutes: durationMinutes,
-      transcript,
+      transcript: t,
       tasks,
     })
   }
@@ -184,7 +194,6 @@ function TimerContent() {
     setBriefingTasks(tasks)
     setTasks([])
     setTranscript('')
-    setLiveTranscript('')
     setRecordingSeconds(0)
     setError('')
   }
@@ -235,29 +244,21 @@ function TimerContent() {
         {/* RUNNING */}
         {phase === 'running' && (
           <div className="text-center select-none w-full max-w-sm">
-            {/* Timer */}
-            <div className="flex items-center gap-3 justify-center mb-3">
-              <span className="tabular-nums font-black text-[#1a3020] tracking-tight leading-none"
-                style={{ fontSize: 'clamp(72px, 16vw, 120px)', letterSpacing: '-2px' }}>
-                {String(minutes).padStart(2, '0')}
-              </span>
-              <span className="font-black text-[#a8c4a8] leading-none" style={{ fontSize: 'clamp(36px, 7vw, 60px)', marginBottom: '4px' }}>:</span>
-              <span className="tabular-nums font-black text-[#1a3020] tracking-tight leading-none"
-                style={{ fontSize: 'clamp(72px, 16vw, 120px)', letterSpacing: '-2px' }}>
-                {String(seconds).padStart(2, '0')}
-              </span>
+            <div className="font-black leading-none tabular-nums mb-4"
+              style={{ fontSize: 'clamp(72px, 18vw, 112px)', letterSpacing: '-6px' }}>
+              <span className="text-[#1a3020]">{String(minutes).padStart(2, '0')}</span>
+              <span className="text-[#d0e8d0]">:{String(seconds).padStart(2, '0')}</span>
             </div>
 
-            {/* Progress bar */}
-            <div className="w-48 mx-auto mb-2">
-              <div className="h-0.5 bg-[#eaf5e4] rounded-full overflow-hidden">
+            <div className="w-48 mx-auto mb-3">
+              <div className="h-0.5 bg-[#e8f5e8] rounded-full overflow-hidden">
                 <div className="h-full bg-[#3a9e52] rounded-full transition-all duration-1000 ease-linear"
                   style={{ width: `${progress * 100}%` }} />
               </div>
             </div>
-            <p className="text-xs text-[#c0d4c0] tracking-widest uppercase mb-10">focusing</p>
+            <p className="text-xs text-[#c0d4c0] tracking-widest uppercase mb-4">focusing</p>
+            <p className="text-xs text-[#b0c8b4] italic mb-10 max-w-[240px] mx-auto leading-relaxed">&ldquo;{quote}&rdquo;</p>
 
-            {/* Tasks */}
             {briefingTasks.length > 0 && (
               <div className="border-t border-[#eaf5e4] pt-6">
                 <p className="text-xs text-[#c0d4c0] uppercase tracking-widest mb-4">Working on</p>
@@ -278,9 +279,9 @@ function TimerContent() {
           <div className="w-full max-w-sm text-center">
             <p className="text-3xl mb-6">🔔</p>
             <h2 className="text-2xl font-semibold text-[#1a3020] mb-2 tracking-tight">Time&apos;s up.</h2>
-            <p className="text-sm text-[#a8c4a8] mb-10">What did you do. What&apos;s next.</p>
+            <p className="text-sm text-[#a8c4a8] mb-8">What did you do. What&apos;s next.</p>
 
-            {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
+            {error && <p className="text-red-400 text-xs mb-6">{error}</p>}
 
             {!recording ? (
               <button
@@ -298,11 +299,6 @@ function TimerContent() {
                     {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
                   </span>
                 </div>
-                {liveTranscript && (
-                  <p className="text-xs text-[#8aaa8a] leading-relaxed max-h-24 overflow-y-auto text-left">
-                    {liveTranscript}
-                  </p>
-                )}
                 <button
                   onClick={stopRecording}
                   className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white bg-red-400 hover:bg-red-500 transition-colors"
