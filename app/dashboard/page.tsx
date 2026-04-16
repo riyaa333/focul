@@ -1,0 +1,333 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
+
+type Session = {
+  id: string
+  duration_minutes: number
+  tasks: string[]
+  transcript: string | null
+  created_at: string
+}
+
+function timeAgo(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  const hrs = Math.floor(mins / 60)
+  const days = Math.floor(hrs / 24)
+  if (mins < 2) return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  if (hrs < 24) return `${hrs}h ago`
+  return `${days}d ago`
+}
+
+export default function DashboardPage() {
+  const router = useRouter()
+  const [sessions, setSessions] = useState<Session[]>([])
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<{ email?: string } | null>(null)
+  const [selected, setSelected] = useState(15)
+  const [customMins, setCustomMins] = useState('')
+  const [customUnit, setCustomUnit] = useState<'s' | 'min' | 'hr'>('min')
+  const [showCustom, setShowCustom] = useState(false)
+  const [activeNav, setActiveNav] = useState<'dashboard' | 'history'>('dashboard')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/login'); return }
+      setUser(user)
+      const { data } = await supabase
+        .from('sessions')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(20)
+      setSessions(data || [])
+      setLoading(false)
+    }
+    load()
+  }, [router])
+
+  async function signOut() {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf9f7' }}>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3a9e52', animation: 'ping 1s infinite' }} />
+      </div>
+    )
+  }
+
+  const lastSession = sessions[0]
+  const continuationTasks = lastSession?.tasks || []
+  const todayCount = sessions.filter(s =>
+    new Date(s.created_at).toDateString() === new Date().toDateString()
+  ).length
+  const todayMins = sessions
+    .filter(s => new Date(s.created_at).toDateString() === new Date().toDateString())
+    .reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
+
+  const customToSeconds = () => {
+    const val = parseFloat(customMins) || 0
+    if (customUnit === 's') return Math.max(1, Math.round(val))
+    if (customUnit === 'hr') return Math.round(val * 3600)
+    return Math.round(val * 60) || 1200
+  }
+  const customToMinutes = () => {
+    const val = parseFloat(customMins) || 0
+    if (customUnit === 's') return Math.max(1, Math.ceil(val / 60))
+    if (customUnit === 'hr') return Math.round(val * 60)
+    return Math.round(val) || 20
+  }
+
+  const activeDuration = showCustom && customMins ? customToMinutes() : selected
+  const timerSeconds = showCustom && customMins ? customToSeconds() : selected * 60
+  const rawName = user?.email?.split('@')[0] ?? 'there'
+  const firstName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
+
+  function startSession() {
+    if (showCustom && customMins) {
+      router.push(`/timer?seconds=${timerSeconds}`)
+    } else {
+      router.push(`/timer?duration=${activeDuration}`)
+    }
+  }
+
+  const timerDisplay = showCustom && customMins && customUnit === 's'
+    ? String(parseInt(customMins) || 0).padStart(2, '0')
+    : showCustom && customMins && customUnit === 'hr'
+    ? String(parseFloat(customMins) || 0)
+    : String(activeDuration).padStart(2, '0')
+
+  const timerSuffix = showCustom && customMins && customUnit === 's' ? 's' : ':00'
+
+  return (
+    <div style={{
+      display: 'flex',
+      height: '100vh',
+      overflow: 'hidden',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      background: '#faf9f7',
+    }}>
+
+      {/* ── Sidebar ── */}
+      <aside style={{
+        width: 220,
+        flexShrink: 0,
+        background: '#f3f1ee',
+        borderRight: '1px solid #e8e4de',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '32px 14px',
+      }}>
+
+        {/* Logo */}
+        <div style={{ padding: '0 8px', marginBottom: 32, fontSize: 18, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5 }}>
+          Foc<span style={{ color: '#3a9e52' }}>ul</span>
+        </div>
+
+        {/* Nav */}
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+          {[
+            { key: 'dashboard', label: 'Dashboard' },
+            { key: 'new', label: 'New Session', action: startSession },
+            { key: 'history', label: 'History' },
+          ].map(({ key, label, action }) => (
+            <button key={key}
+              onClick={action ?? (() => setActiveNav(key as 'dashboard' | 'history'))}
+              style={{
+                display: 'flex', alignItems: 'center',
+                padding: '9px 10px', borderRadius: 8,
+                fontSize: 13, fontWeight: 500, cursor: 'pointer',
+                border: 'none', textAlign: 'left', width: '100%',
+                background: activeNav === key ? 'rgba(255,255,255,0.9)' : 'transparent',
+                color: activeNav === key ? '#1a1410' : '#a09888',
+                boxShadow: activeNav === key ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
+                transition: 'all 0.15s',
+              }}>
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Stats */}
+        <div style={{
+          background: '#fff',
+          borderRadius: 14,
+          padding: 16,
+          marginBottom: 10,
+          border: '1px solid #ede9e2',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+        }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Today</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {[
+              { val: todayCount, lbl: 'sessions' },
+              { val: `${todayMins}m`, lbl: 'focused' },
+              { val: sessions.length, lbl: 'total' },
+            ].map(({ val, lbl }) => (
+              <div key={lbl} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5 }}>{val}</div>
+                <div style={{ fontSize: 10, color: '#b0a898', marginTop: 2 }}>{lbl}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Sign out */}
+        <button onClick={signOut} style={{
+          fontSize: 12, color: '#c0b8a8', padding: '8px 10px',
+          cursor: 'pointer', border: 'none', background: 'transparent',
+          textAlign: 'left', borderRadius: 8,
+        }}>
+          ↗ Sign out
+        </button>
+      </aside>
+
+      {/* ── Main ── */}
+      <main style={{ flex: 1, overflowY: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48 }}>
+
+        {activeNav === 'dashboard' && (
+          <div style={{ width: '100%', maxWidth: 440 }}>
+
+            {/* Greeting */}
+            <div style={{ marginBottom: 36 }}>
+              <p style={{ fontSize: 13, color: '#b0a898', fontWeight: 400, marginBottom: 4 }}>{greeting}</p>
+              <p style={{ fontSize: 32, fontWeight: 800, color: '#1a1410', letterSpacing: -1.5 }}>{firstName}.</p>
+            </div>
+
+            {/* Card */}
+            <div style={{
+              background: '#fff',
+              borderRadius: 24,
+              border: '1px solid #ede9e2',
+              boxShadow: '0 4px 32px rgba(0,0,0,0.05)',
+              overflow: 'hidden',
+            }}>
+
+              {/* Timer section */}
+              <div style={{ padding: '36px 36px 28px', borderBottom: '1px solid #f3f1ee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
+                <div style={{ fontSize: 88, fontWeight: 900, letterSpacing: -6, lineHeight: 1, color: '#1a1410' }}>
+                  {timerDisplay}<span style={{ color: '#e8e2d8' }}>{timerSuffix}</span>
+                </div>
+
+                {/* Pills */}
+                {!showCustom ? (
+                  <div style={{ display: 'flex', gap: 6 }}>
+                    {[15, 30].map(d => (
+                      <button key={d} onClick={() => setSelected(d)} style={{
+                        padding: '8px 20px', borderRadius: 100, fontSize: 12, fontWeight: 600,
+                        cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1a1410' : '#e8e2d8'}`,
+                        color: selected === d ? '#1a1410' : '#b0a898', background: 'transparent',
+                        transition: 'all 0.15s',
+                      }}>
+                        {d} min
+                      </button>
+                    ))}
+                    <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
+                      padding: '8px 20px', borderRadius: 100, fontSize: 12, fontWeight: 600,
+                      cursor: 'pointer', border: '1.5px solid #e8e2d8', color: '#b0a898', background: 'transparent',
+                    }}>
+                      custom
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f5f2', borderRadius: 100, padding: '6px 14px' }}>
+                    <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
+                      onChange={e => setCustomMins(e.target.value)}
+                      style={{ width: 36, background: 'transparent', outline: 'none', fontSize: 12, fontWeight: 700, color: '#1a1410', textAlign: 'center', border: 'none', appearance: 'textfield' }} />
+                    <div style={{ display: 'flex', gap: 2, background: '#ede9e2', borderRadius: 100, padding: 2 }}>
+                      {(['s', 'min', 'hr'] as const).map(unit => (
+                        <button key={unit} onClick={() => setCustomUnit(unit)} style={{
+                          padding: '4px 10px', borderRadius: 100, fontSize: 11, fontWeight: 700,
+                          cursor: 'pointer', border: 'none',
+                          background: customUnit === unit ? '#1a1410' : 'transparent',
+                          color: customUnit === unit ? '#fff' : '#b0a898',
+                        }}>{unit}</button>
+                      ))}
+                    </div>
+                    <button onClick={() => { setShowCustom(false); setCustomMins(''); setCustomUnit('min') }}
+                      style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 2 }}>✕</button>
+                  </div>
+                )}
+              </div>
+
+              {/* Button section */}
+              <div style={{ padding: '20px 28px', borderBottom: continuationTasks.length > 0 ? '1px solid #f3f1ee' : 'none' }}>
+                <button onClick={startSession} style={{
+                  width: '100%', padding: 16, borderRadius: 14,
+                  fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer', border: 'none',
+                  background: 'linear-gradient(135deg, #2d8a44, #4aaa60)',
+                  boxShadow: '0 4px 20px rgba(45,138,68,0.22)',
+                  transition: 'opacity 0.15s',
+                }}>
+                  Start {showCustom && customMins ? `${customMins}${customUnit}` : `${activeDuration} min`} session →
+                </button>
+              </div>
+
+              {/* Tasks section */}
+              {continuationTasks.length > 0 && (
+                <div style={{ padding: '20px 28px' }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>
+                    Continuing from {timeAgo(lastSession.created_at)}
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+                    {continuationTasks.slice(0, 3).map((task, i) => (
+                      <div key={i} style={{ display: 'flex', gap: 10, fontSize: 13, color: '#706860', lineHeight: 1.4 }}>
+                        <span style={{ color: '#3a9e52', fontWeight: 600, flexShrink: 0 }}>→</span>
+                        {task}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeNav === 'history' && (
+          <div style={{ width: '100%', maxWidth: 480, alignSelf: 'flex-start' }}>
+            <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 20 }}>Session history</h2>
+            {sessions.length === 0 ? (
+              <p style={{ fontSize: 13, color: '#b0a898' }}>No sessions yet. Start your first one!</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {sessions.map(session => (
+                  <div key={session.id} style={{
+                    background: '#fff', borderRadius: 16, padding: '14px 18px',
+                    border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
+                    display: 'flex', gap: 14, alignItems: 'flex-start',
+                  }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3a9e52', flexShrink: 0, marginTop: 6 }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: '#1a1410' }}>{session.duration_minutes} min session</span>
+                        <span style={{ fontSize: 11, color: '#c0b8a8' }}>{timeAgo(session.created_at)}</span>
+                      </div>
+                      {session.tasks?.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                          {session.tasks.map((t, i) => (
+                            <p key={i} style={{ fontSize: 12, color: '#a09888', lineHeight: 1.4 }}>→ {t}</p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
