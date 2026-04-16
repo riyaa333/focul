@@ -40,7 +40,7 @@ export default function DashboardPage() {
   const [customMins, setCustomMins] = useState('')
   const [customUnit, setCustomUnit] = useState<'s' | 'min' | 'hr'>('min')
   const [showCustom, setShowCustom] = useState(false)
-  const [activeNav, setActiveNav] = useState<'dashboard' | 'history'>('dashboard')
+  const [activeNav, setActiveNav] = useState<'dashboard' | 'streak' | 'history'>('dashboard')
   const [isLeaving, setIsLeaving] = useState(false)
   const [newTodo, setNewTodo] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -179,11 +179,11 @@ export default function DashboardPage() {
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
           {[
             { key: 'dashboard', label: 'Dashboard' },
-            { key: 'new', label: 'New Session', action: startSession },
+            { key: 'streak', label: 'Streak' },
             { key: 'history', label: 'History' },
-          ].map(({ key, label, action }) => (
+          ].map(({ key, label }) => (
             <button key={key}
-              onClick={action ?? (() => setActiveNav(key as 'dashboard' | 'history'))}
+              onClick={() => setActiveNav(key as 'dashboard' | 'streak' | 'history')}
               style={{
                 display: 'flex', alignItems: 'center',
                 padding: '9px 10px', borderRadius: 8,
@@ -431,6 +431,115 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+        {activeNav === 'streak' && (() => {
+          // Build last 84 days (12 weeks) of activity
+          const days: { date: string; count: number; mins: number }[] = []
+          for (let i = 83; i >= 0; i--) {
+            const d = new Date()
+            d.setDate(d.getDate() - i)
+            const dateStr = d.toDateString()
+            const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === dateStr)
+            days.push({
+              date: dateStr,
+              count: daySessions.length,
+              mins: daySessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0),
+            })
+          }
+
+          // Calculate streak
+          let streak = 0
+          const today = new Date().toDateString()
+          const yesterday = new Date(Date.now() - 86400000).toDateString()
+          const reversedDays = [...days].reverse()
+          // start from today or yesterday
+          const startIdx = reversedDays.findIndex(d => d.date === today || d.date === yesterday)
+          if (startIdx !== -1 && reversedDays[startIdx].count > 0) {
+            for (let i = startIdx; i < reversedDays.length; i++) {
+              if (reversedDays[i].count > 0) streak++
+              else break
+            }
+          }
+
+          const totalMins = sessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
+          const weeks = []
+          for (let w = 0; w < 12; w++) weeks.push(days.slice(w * 7, w * 7 + 7))
+          const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+
+          return (
+            <div style={{ width: '100%', maxWidth: 520, alignSelf: 'flex-start' }}>
+              {/* Streak header */}
+              <div style={{ display: 'flex', gap: 16, marginBottom: 28 }}>
+                {[
+                  { val: streak, label: 'day streak', icon: '🔥' },
+                  { val: sessions.length, label: 'sessions', icon: '✦' },
+                  { val: `${Math.round(totalMins / 60)}h`, label: 'total focus', icon: '⏱' },
+                ].map(({ val, label, icon }) => (
+                  <div key={label} style={{
+                    flex: 1, background: '#fff', borderRadius: 18, padding: '18px 20px',
+                    border: '1px solid #ede9e2', boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+                    textAlign: 'center',
+                  }}>
+                    <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
+                    <div style={{ fontSize: 26, fontWeight: 800, color: '#1a1410', letterSpacing: -1 }}>{val}</div>
+                    <div style={{ fontSize: 11, color: '#b0a898', marginTop: 2 }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Calendar heatmap */}
+              <div style={{
+                background: '#fff', borderRadius: 20, padding: '22px 24px',
+                border: '1px solid #ede9e2', boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+              }}>
+                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 16 }}>
+                  Last 12 weeks
+                </p>
+
+                {/* Day labels */}
+                <div style={{ display: 'flex', gap: 4, marginBottom: 4, paddingLeft: 0 }}>
+                  {dayLabels.map((d, i) => (
+                    <div key={i} style={{ width: 28, textAlign: 'center', fontSize: 9, color: '#d4cfc8', fontWeight: 600 }}>{d}</div>
+                  ))}
+                </div>
+
+                {/* Grid — rows = weeks, cols = days */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {weeks.map((week, wi) => (
+                    <div key={wi} style={{ display: 'flex', gap: 4 }}>
+                      {week.map((day, di) => {
+                        const isToday = day.date === today
+                        const intensity = day.count === 0 ? 0 : day.count === 1 ? 1 : day.count === 2 ? 2 : 3
+                        const bg = intensity === 0 ? '#f3f1ee'
+                          : intensity === 1 ? '#b8e4c0'
+                          : intensity === 2 ? '#6abe7e'
+                          : '#3a9e52'
+                        return (
+                          <div key={di} title={`${day.date}: ${day.count} session${day.count !== 1 ? 's' : ''}, ${day.mins}m`} style={{
+                            width: 28, height: 28, borderRadius: 6, background: bg,
+                            border: isToday ? '2px solid #1a1410' : '2px solid transparent',
+                            transition: 'transform 0.1s',
+                            cursor: day.count > 0 ? 'default' : 'default',
+                            flexShrink: 0,
+                          }} />
+                        )
+                      })}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Legend */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 14, justifyContent: 'flex-end' }}>
+                  <span style={{ fontSize: 10, color: '#c0b8a8' }}>Less</span>
+                  {['#f3f1ee', '#b8e4c0', '#6abe7e', '#3a9e52'].map(c => (
+                    <div key={c} style={{ width: 12, height: 12, borderRadius: 3, background: c }} />
+                  ))}
+                  <span style={{ fontSize: 10, color: '#c0b8a8' }}>More</span>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
 
         {activeNav === 'history' && (
           <div style={{ width: '100%', maxWidth: 480, alignSelf: 'flex-start' }}>
