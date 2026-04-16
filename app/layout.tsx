@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   description:
     "A 15-minute focus timer for scaling founders. When the bell rings, speak for 60 seconds. AI picks out your next tasks. Your next session starts with a clear plan.",
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+    ],
     apple: "/favicon.png",
   },
 }
