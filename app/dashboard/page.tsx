@@ -12,6 +12,13 @@ type Session = {
   created_at: string
 }
 
+type Todo = {
+  id: string
+  text: string
+  completed: boolean
+  created_at: string
+}
+
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
@@ -26,6 +33,7 @@ function timeAgo(dateStr: string) {
 export default function DashboardPage() {
   const router = useRouter()
   const [sessions, setSessions] = useState<Session[]>([])
+  const [todos, setTodos] = useState<Todo[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<{ email?: string } | null>(null)
   const [selected, setSelected] = useState(15)
@@ -34,6 +42,7 @@ export default function DashboardPage() {
   const [showCustom, setShowCustom] = useState(false)
   const [activeNav, setActiveNav] = useState<'dashboard' | 'history'>('dashboard')
   const [isLeaving, setIsLeaving] = useState(false)
+  const [newTodo, setNewTodo] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const hour = new Date().getHours()
@@ -44,12 +53,12 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
       setUser(user)
-      const { data } = await supabase
-        .from('sessions')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(20)
-      setSessions(data || [])
+      const [{ data: sessions }, { data: todos }] = await Promise.all([
+        supabase.from('sessions').select('*').order('created_at', { ascending: false }).limit(20),
+        supabase.from('todos').select('*').order('created_at', { ascending: false }).limit(50),
+      ])
+      setSessions(sessions || [])
+      setTodos(todos || [])
       setLoading(false)
     }
     load()
@@ -58,6 +67,29 @@ export default function DashboardPage() {
   async function signOut() {
     await supabase.auth.signOut()
     router.push('/login')
+  }
+
+  async function toggleTodo(id: string, completed: boolean) {
+    setTodos(prev => prev.map(t => t.id === id ? { ...t, completed } : t))
+    await supabase.from('todos').update({ completed }).eq('id', id)
+  }
+
+  async function deleteTodo(id: string) {
+    setTodos(prev => prev.filter(t => t.id !== id))
+    await supabase.from('todos').delete().eq('id', id)
+  }
+
+  async function addTodo(text: string) {
+    if (!text.trim()) return
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const { data } = await supabase.from('todos').insert({
+      user_id: user.id,
+      text: text.trim(),
+      completed: false,
+    }).select().single()
+    if (data) setTodos(prev => [data, ...prev])
+    setNewTodo('')
   }
 
   if (loading) {
@@ -298,6 +330,104 @@ export default function DashboardPage() {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* ── To-do list ── */}
+            <div style={{
+              background: '#fff',
+              borderRadius: 24,
+              border: '1px solid #ede9e2',
+              boxShadow: '0 4px 32px rgba(0,0,0,0.05)',
+              overflow: 'hidden',
+              marginTop: 16,
+            }}>
+              <div style={{ padding: '20px 28px 16px', borderBottom: '1px solid #f3f1ee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8' }}>
+                  To-do
+                </p>
+                {todos.filter(t => t.completed).length > 0 && (
+                  <span style={{ fontSize: 11, color: '#c0b8a8' }}>
+                    {todos.filter(t => t.completed).length}/{todos.length} done
+                  </span>
+                )}
+              </div>
+
+              {/* Add todo input */}
+              <div style={{ padding: '12px 28px', borderBottom: '1px solid #f3f1ee', display: 'flex', gap: 8 }}>
+                <input
+                  value={newTodo}
+                  onChange={e => setNewTodo(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && addTodo(newTodo)}
+                  placeholder="Add a task..."
+                  style={{
+                    flex: 1, fontSize: 13, border: 'none', outline: 'none',
+                    background: 'transparent', color: '#1a1410',
+                    fontFamily: 'inherit',
+                  }}
+                />
+                {newTodo.trim() && (
+                  <button onClick={() => addTodo(newTodo)} style={{
+                    fontSize: 18, color: '#3a9e52', border: 'none', background: 'transparent',
+                    cursor: 'pointer', lineHeight: 1, padding: '0 4px',
+                  }}>+</button>
+                )}
+              </div>
+
+              {/* Todo items */}
+              <div style={{ padding: '8px 0', maxHeight: 280, overflowY: 'auto' }}>
+                {todos.length === 0 ? (
+                  <p style={{ fontSize: 12, color: '#c0b8a8', padding: '12px 28px', textAlign: 'center' }}>
+                    Tasks from your sessions will appear here
+                  </p>
+                ) : (
+                  <>
+                    {/* Incomplete */}
+                    {todos.filter(t => !t.completed).map(todo => (
+                      <div key={todo.id} style={{
+                        display: 'flex', alignItems: 'flex-start', gap: 10,
+                        padding: '9px 28px', cursor: 'default',
+                      }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#faf9f7')}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <button onClick={() => toggleTodo(todo.id, true)} style={{
+                          width: 16, height: 16, borderRadius: 4, flexShrink: 0, marginTop: 1,
+                          border: '1.5px solid #d4cfc8', background: 'transparent',
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }} />
+                        <span style={{ fontSize: 13, color: '#4a3f35', lineHeight: 1.45, flex: 1 }}>{todo.text}</span>
+                        <button onClick={() => deleteTodo(todo.id)} style={{
+                          fontSize: 14, color: '#d4cfc8', border: 'none', background: 'transparent',
+                          cursor: 'pointer', opacity: 0, transition: 'opacity 0.15s', lineHeight: 1,
+                        }}
+                          onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                          onMouseLeave={e => (e.currentTarget.style.opacity = '0')}
+                        >×</button>
+                      </div>
+                    ))}
+
+                    {/* Completed (collapsed, muted) */}
+                    {todos.filter(t => t.completed).map(todo => (
+                      <div key={todo.id} style={{
+                        display: 'flex', alignItems: 'flex-start', gap: 10,
+                        padding: '7px 28px', opacity: 0.45,
+                      }}>
+                        <button onClick={() => toggleTodo(todo.id, false)} style={{
+                          width: 16, height: 16, borderRadius: 4, flexShrink: 0, marginTop: 1,
+                          border: '1.5px solid #3a9e52', background: '#3a9e52',
+                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          color: '#fff', fontSize: 10, fontWeight: 700,
+                        }}>✓</button>
+                        <span style={{ fontSize: 13, color: '#a09888', lineHeight: 1.45, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
+                        <button onClick={() => deleteTodo(todo.id)} style={{
+                          fontSize: 14, color: '#d4cfc8', border: 'none', background: 'transparent',
+                          cursor: 'pointer', lineHeight: 1,
+                        }}>×</button>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -187,12 +187,24 @@ function TimerContent() {
   async function saveSession(t: string, tasks: string[]) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    await supabase.from('sessions').insert({
+    const { data: session } = await supabase.from('sessions').insert({
       user_id: user.id,
       duration_minutes: durationMinutes,
       transcript: t,
       tasks,
-    })
+    }).select().single()
+
+    // Auto-add extracted tasks to the todo list
+    if (tasks.length > 0) {
+      await supabase.from('todos').insert(
+        tasks.map(text => ({
+          user_id: user.id,
+          text,
+          completed: false,
+          source_session_id: session?.id ?? null,
+        }))
+      )
+    }
   }
 
   function resetTimer() {
