@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Focul — Minimal Variations</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e8e8e4;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  .label { font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:12px; }
+  .mock { border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.13);background:#fafaf7; }
+  nav { display:flex;align-items:center;justify-content:space-between;padding:13px 24px;border-bottom:1px solid #eeeeea;background:#fafaf7;position:relative; }
+  .traffic { display:flex;gap:5px; }
+  .dot { width:10px;height:10px;border-radius:50%; }
+  .dr{background:#ff5f57}.dy{background:#ffbd2e}.dg{background:#28c840}
+  .logo { font-size:13px;font-weight:900;letter-spacing:-0.5px;color:#1a3020;position:absolute;left:50%;transform:translateX(-50%); }
+  .logo span { color:#3a9e52; }
+  .avatar { width:26px;height:26px;border-radius:50%;background:#1a3020;color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700; }
+
+  /* ── VARIATION A: Just numbers, no ring ── */
+  .va-body { padding:60px 40px;display:flex;flex-direction:column;align-items:center;gap:32px; }
+  .va-greeting { text-align:center; }
+  .va-greeting h1 { font-size:20px;font-weight:700;color:#1a3020;letter-spacing:-0.5px; }
+  .va-greeting p { font-size:11px;color:#c0d4c0;margin-top:4px; }
+  .va-time { font-size:96px;font-weight:900;color:#1a3020;letter-spacing:-6px;line-height:1;tabular-nums; }
+  .va-time span { color:#c8e0c8; }
+  .va-tabs { display:flex;gap:8px; }
+  .va-tab { padding:5px 16px;border-radius:99px;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;background:#eef5ee;color:#8aaa8a;transition:all 0.15s; }
+  .va-tab.active { background:#1a3020;color:white; }
+  .va-btn { padding:14px 48px;border:none;border-radius:99px;background:linear-gradient(135deg,#2d8a44,#4db864);color:white;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 20px rgba(58,158,82,0.3);letter-spacing:-0.3px; }
+  .va-tasks { width:100%;max-width:340px;border-top:1px solid #eef5ee;padding-top:24px; }
+  .va-tasks-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c8e0c8;text-align:center;margin-bottom:12px; }
+  .va-task { display:flex;align-items:center;gap:8px;padding:6px 0; }
+  .va-task .arrow { color:#3a9e52;font-size:11px;flex-shrink:0; }
+  .va-task .txt { font-size:12px;font-weight:600;color:#4a7055; }
+
+  /* ── VARIATION B: Ring, ultra stripped ── */
+  .vb-body { padding:56px 40px;display:flex;flex-direction:column;align-items:center;gap:28px; }
+  .vb-greeting { text-align:center; }
+  .vb-greeting h1 { font-size:16px;font-weight:600;color:#8aaa8a;letter-spacing:-0.3px; }
+  .vb-ring-wrap { position:relative;width:200px;height:200px; }
+  .vb-ring-wrap svg { transform:rotate(-90deg); }
+  .vb-ring-inner { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center; }
+  .vb-ring-inner .time { font-size:42px;font-weight:900;color:#1a3020;letter-spacing:-2px; }
+  .vb-ring-inner .sub { font-size:9px;color:#c0d4c0;letter-spacing:2px;text-transform:uppercase;margin-top:3px; }
+  .vb-btn { padding:13px 44px;border:none;border-radius:99px;background:#1a3020;color:white;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.15s; }
+  .vb-btn:hover { background:#2d8a44; }
+  .vb-tabs { display:flex;gap:6px; }
+  .vb-tab { padding:4px 14px;border-radius:99px;border:1px solid #eef5ee;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;background:transparent;color:#b0c8b4;transition:all 0.15s; }
+  .vb-tab.active { background:#1a3020;color:white;border-color:#1a3020; }
+  .vb-tasks-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c8e0c8;text-align:center; }
+  .vb-tasks { width:100%;max-width:320px;display:flex;flex-direction:column;gap:6px; }
+  .vb-task { font-size:12px;font-weight:500;color:#6a9a72;text-align:center;padding:4px 0; }
+
+  /* ── VARIATION C: Ultra bare, text only ── */
+  .vc-body { padding:80px 40px;display:flex;flex-direction:column;align-items:center;gap:40px; }
+  .vc-greeting { font-size:14px;color:#b0c8b4;letter-spacing:-0.2px; }
+  .vc-time { font-size:120px;font-weight:900;color:#1a3020;letter-spacing:-8px;line-height:0.9; }
+  .vc-center { display:flex;flex-direction:column;align-items:center;gap:16px; }
+  .vc-tabs { display:flex;gap:0;border:1px solid #e0ece0;border-radius:99px;overflow:hidden; }
+  .vc-tab { padding:6px 18px;border:none;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;background:transparent;color:#b0c8b4;transition:all 0.15s;border-right:1px solid #e0ece0; }
+  .vc-tab:last-child { border-right:none; }
+  .vc-tab.active { background:#1a3020;color:white; }
+  .vc-btn { padding:12px 40px;border:none;border-radius:99px;background:#3a9e52;color:white;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(58,158,82,0.25); }
+  .vc-tasks { display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:8px;border-top:1px solid #eef5ee;width:100%;max-width:300px; }
+  .vc-task-label { font-size:9px;color:#c8e0c8;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px; }
+  .vc-task { font-size:12px;color:#6a9a72;font-weight:500; }
+</style>
+</head>
+<body>
+
+<!-- VARIATION A -->
+<div>
+  <div class="label">A — Big number, no ring</div>
+  <div class="mock">
+    <nav>
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo">Foc<span>ul</span></span>
+      <div class="avatar">R</div>
+    </nav>
+    <div class="va-body">
+      <div class="va-greeting">
+        <h1>Good afternoon, Riya.</h1>
+        <p>Monday · No sessions yet today</p>
+      </div>
+      <div class="va-time">15<span>:00</span></div>
+      <div class="va-tabs">
+        <button class="va-tab active">15 min</button>
+        <button class="va-tab">30 min</button>
+        <button class="va-tab">custom</button>
+      </div>
+      <button class="va-btn">Start session →</button>
+      <div class="va-tasks">
+        <div class="va-tasks-label">Continuing from yesterday</div>
+        <div class="va-task"><span class="arrow">→</span><span class="txt">Follow up with Sarah re: contract</span></div>
+        <div class="va-task"><span class="arrow">→</span><span class="txt">Prep investor deck slides</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VARIATION B -->
+<div>
+  <div class="label">B — Soft ring, dark button</div>
+  <div class="mock">
+    <nav>
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo">Foc<span>ul</span></span>
+      <div class="avatar">R</div>
+    </nav>
+    <div class="vb-body">
+      <div class="vb-greeting"><h1>Good afternoon, Riya.</h1></div>
+      <div class="vb-ring-wrap">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#eef5ee" stroke-width="6"/>
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#3a9e52" stroke-width="6"
+            stroke-linecap="round" stroke-dasharray="553" stroke-dashoffset="553"
+            style="filter:drop-shadow(0 0 6px rgba(58,158,82,0.4))"/>
+        </svg>
+        <div class="vb-ring-inner">
+          <span class="time">15:00</span>
+          <span class="sub">focus</span>
+        </div>
+      </div>
+      <div class="vb-tabs">
+        <button class="vb-tab active">15 min</button>
+        <button class="vb-tab">30 min</button>
+        <button class="vb-tab">custom</button>
+      </div>
+      <button class="vb-btn">Start session →</button>
+      <div class="vb-tasks-label">Continuing from yesterday</div>
+      <div class="vb-tasks">
+        <div class="vb-task">→ Follow up with Sarah re: contract</div>
+        <div class="vb-task">→ Prep investor deck slides</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VARIATION C -->
+<div>
+  <div class="label">C — Bare, typography only</div>
+  <div class="mock">
+    <nav>
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo">Foc<span>ul</span></span>
+      <div class="avatar">R</div>
+    </nav>
+    <div class="vc-body">
+      <div class="vc-greeting">Good afternoon, Riya.</div>
+      <div class="vc-time">15:00</div>
+      <div class="vc-center">
+        <div class="vc-tabs">
+          <button class="vc-tab active">15 min</button>
+          <button class="vc-tab">30 min</button>
+          <button class="vc-tab">custom</button>
+        </div>
+        <button class="vc-btn">Start session →</button>
+      </div>
+      <div class="vc-tasks">
+        <div class="vc-task-label">Continuing from yesterday</div>
+        <div class="vc-task">Follow up with Sarah re: contract</div>
+        <div class="vc-task">Prep investor deck slides</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

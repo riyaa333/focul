@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Focul — Layout Options</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #111; }
+
+  .tabs { display: flex; gap: 6px; padding: 12px 20px; background: #0a0a0a; position: fixed; top: 0; left: 0; right: 0; z-index: 100; align-items: center; border-bottom: 1px solid #1a1a1a; }
+  .tabs h1 { font-size: 10px; font-weight: 700; color: #2a2a2a; text-transform: uppercase; letter-spacing: 2px; margin-right: 8px; }
+  .tab { padding: 6px 16px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.2px; }
+  .tab.active { background: #3a9e52; color: white; }
+  .tab:not(.active) { background: #1a1a1a; color: #444; }
+  .tab:not(.active):hover { color: #888; background: #222; }
+  .layout { display: none; margin-top: 46px; height: calc(100vh - 46px); overflow: hidden; }
+  .layout.active { display: flex; }
+
+
+  /* ═══════════════════════════════════════════
+     1 — THINGS 3 INSPIRED
+     White, airy, perfect typography. The gold standard.
+  ═══════════════════════════════════════════ */
+  .l1 { width: 100%; background: #f5f5f7; }
+
+  .l1-side { width: 230px; flex-shrink: 0; background: #ebebed; display: flex; flex-direction: column; padding: 32px 0; }
+  .l1-logo { font-size: 17px; font-weight: 800; color: #1c1c1e; padding: 0 20px; margin-bottom: 28px; letter-spacing: -0.5px; }
+  .l1-logo span { color: #3a9e52; }
+  .l1-nav { flex: 1; display: flex; flex-direction: column; padding: 0 8px; gap: 1px; }
+  .l1-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 13px; font-weight: 500; cursor: pointer; color: #8e8e93; }
+  .l1-item.active { background: #fff; color: #1c1c1e; box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04); }
+  .l1-icon { width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .l1-icon.green { background: linear-gradient(145deg, #34c759, #248a3d); }
+  .l1-icon.blue { background: linear-gradient(145deg, #007aff, #0055b3); }
+  .l1-icon.orange { background: linear-gradient(145deg, #ff9500, #c47a00); }
+  .l1-footer { padding: 16px 20px 0; border-top: 1px solid rgba(0,0,0,0.08); }
+  .l1-stat-row { display: flex; justify-content: space-between; padding: 5px 0; }
+  .l1-stat-row span:first-child { font-size: 12px; color: #8e8e93; }
+  .l1-stat-row span:last-child { font-size: 12px; font-weight: 600; color: #1c1c1e; }
+
+  .l1-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px; }
+  .l1-card { width: 100%; max-width: 420px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04); }
+  .l1-card-header { padding: 32px 36px 24px; border-bottom: 1px solid #f2f2f7; }
+  .l1-greet { font-size: 12px; font-weight: 500; color: #8e8e93; letter-spacing: 0.2px; margin-bottom: 2px; }
+  .l1-name { font-size: 22px; font-weight: 700; color: #1c1c1e; letter-spacing: -0.5px; }
+  .l1-card-timer { padding: 32px 36px 24px; border-bottom: 1px solid #f2f2f7; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .l1-time { font-size: 96px; font-weight: 800; letter-spacing: -6px; color: #1c1c1e; line-height: 1; }
+  .l1-time span { color: #e5e5ea; }
+  .l1-progress { width: 100%; height: 3px; background: #f2f2f7; border-radius: 3px; overflow: hidden; }
+  .l1-progress-fill { height: 100%; width: 0; background: #34c759; border-radius: 3px; }
+  .l1-pills { display: flex; gap: 6px; }
+  .l1-pill { padding: 7px 18px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #8e8e93; background: #f2f2f7; }
+  .l1-pill.active { background: #1c1c1e; color: #fff; }
+  .l1-card-action { padding: 20px 36px; border-bottom: 1px solid #f2f2f7; }
+  .l1-btn { width: 100%; padding: 14px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer; background: #34c759; box-shadow: 0 2px 8px rgba(52,199,89,0.3); }
+  .l1-card-tasks { padding: 20px 36px; }
+  .l1-tasks-hd { font-size: 11px; font-weight: 600; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+  .l1-task { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; }
+  .l1-task-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid #d1d1d6; flex-shrink: 0; margin-top: 1px; }
+  .l1-task-text { font-size: 13px; color: #3c3c43; line-height: 1.4; }
+
+
+  /* ═══════════════════════════════════════════
+     2 — LINEAR INSPIRED
+     Dark, precise, ultra premium. Technical beauty.
+  ═══════════════════════════════════════════ */
+  .l2 { width: 100%; background: #0a0a0b; }
+
+  .l2-side { width: 220px; flex-shrink: 0; background: #0d0d0f; border-right: 1px solid #1a1a1f; display: flex; flex-direction: column; padding: 24px 12px; }
+  .l2-logo { font-size: 16px; font-weight: 700; color: #fff; padding: 4px 8px; margin-bottom: 28px; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
+  .l2-logo-dot { width: 20px; height: 20px; border-radius: 6px; background: linear-gradient(135deg, #3a9e52, #22c55e); flex-shrink: 0; }
+  .l2-section { margin-bottom: 20px; }
+  .l2-section-lbl { font-size: 10px; font-weight: 600; color: #404047; text-transform: uppercase; letter-spacing: 1px; padding: 0 8px; margin-bottom: 4px; }
+  .l2-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 13px; font-weight: 400; cursor: pointer; color: #6e6e7a; }
+  .l2-item.active { background: #1a1a22; color: #e8e8f0; }
+  .l2-item-dot { width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid currentColor; flex-shrink: 0; }
+  .l2-stats { margin-top: auto; background: #111116; border-radius: 10px; padding: 14px; border: 1px solid #1e1e28; }
+  .l2-stat-lbl { font-size: 10px; font-weight: 600; color: #35353f; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .l2-stat { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .l2-stat span:first-child { font-size: 12px; color: #45454f; }
+  .l2-stat span:last-child { font-size: 12px; font-weight: 600; color: #9090a0; }
+
+  .l2-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px; }
+  .l2-center { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .l2-greet { font-size: 12px; color: #404047; font-weight: 500; letter-spacing: 0.3px; }
+  .l2-name { font-size: 20px; font-weight: 700; color: #e8e8f0; letter-spacing: -0.5px; margin-top: -14px; }
+  .l2-timer { font-size: 108px; font-weight: 800; letter-spacing: -8px; color: #fff; line-height: 1; }
+  .l2-timer span { color: #1e1e28; }
+  .l2-bar { width: 200px; height: 1px; background: #1e1e28; }
+  .l2-pills { display: flex; gap: 4px; background: #111116; border-radius: 8px; padding: 3px; border: 1px solid #1e1e28; }
+  .l2-pill { padding: 7px 18px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; color: #45454f; }
+  .l2-pill.active { background: #1e1e28; color: #c8c8d8; }
+  .l2-btn { width: 100%; padding: 14px; border-radius: 10px; text-align: center; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer; background: linear-gradient(135deg, #2d8a44, #3aa854); box-shadow: 0 0 0 1px rgba(58,168,84,0.3), 0 4px 20px rgba(45,138,68,0.2); }
+  .l2-tasks { width: 100%; border-top: 1px solid #1a1a22; padding-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .l2-tasks-hd { font-size: 10px; font-weight: 600; color: #35353f; text-transform: uppercase; letter-spacing: 1px; }
+  .l2-task { font-size: 13px; color: #55555f; display: flex; gap: 8px; }
+  .l2-task span { color: #3a9e52; }
+
+
+  /* ═══════════════════════════════════════════
+     3 — CRAFT / EDITORIAL
+     Warm white, beautiful type, feels like a journal
+  ═══════════════════════════════════════════ */
+  .l3 { width: 100%; background: #faf9f7; }
+
+  .l3-side { width: 220px; flex-shrink: 0; background: #f3f1ee; border-right: 1px solid #e8e4de; display: flex; flex-direction: column; padding: 32px 14px; }
+  .l3-logo { font-size: 18px; font-weight: 800; color: #1a1410; padding: 0 8px; margin-bottom: 32px; letter-spacing: -0.5px; }
+  .l3-logo span { color: #3a9e52; }
+  .l3-nav { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .l3-item { padding: 9px 10px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; color: #a09888; display: flex; align-items: center; gap: 10px; }
+  .l3-item.active { background: rgba(255,255,255,0.9); color: #1a1410; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .l3-streak { background: #fff; border-radius: 14px; padding: 16px; border: 1px solid #ede9e2; box-shadow: 0 1px 4px rgba(0,0,0,0.04); margin-bottom: 10px; }
+  .l3-streak-lbl { font-size: 10px; font-weight: 600; color: #c0b8a8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .l3-streak-nums { display: flex; justify-content: space-between; }
+  .l3-streak-stat { text-align: center; }
+  .l3-streak-val { font-size: 22px; font-weight: 800; color: #1a1410; letter-spacing: -0.5px; }
+  .l3-streak-sub { font-size: 10px; color: #b0a898; margin-top: 1px; }
+  .l3-signout { font-size: 12px; color: #c0b8a8; padding: 8px 10px; cursor: pointer; }
+
+  .l3-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px; }
+  .l3-center { width: 100%; max-width: 440px; }
+  .l3-top { margin-bottom: 40px; }
+  .l3-hi { font-size: 13px; color: #b0a898; font-weight: 400; margin-bottom: 4px; }
+  .l3-name { font-size: 32px; font-weight: 800; color: #1a1410; letter-spacing: -1.5px; }
+  .l3-card { background: #fff; border-radius: 24px; padding: 36px; border: 1px solid #ede9e2; box-shadow: 0 4px 32px rgba(0,0,0,0.05); }
+  .l3-timer { font-size: 88px; font-weight: 900; letter-spacing: -6px; color: #1a1410; line-height: 1; margin-bottom: 20px; text-align: center; }
+  .l3-timer span { color: #e8e2d8; }
+  .l3-pills { display: flex; gap: 6px; justify-content: center; margin-bottom: 20px; }
+  .l3-pill { padding: 8px 20px; border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer; color: #b0a898; border: 1.5px solid #e8e2d8; }
+  .l3-pill.active { border-color: #1a1410; color: #1a1410; }
+  .l3-btn { width: 100%; padding: 16px; border-radius: 14px; text-align: center; font-size: 14px; font-weight: 700; color: #fff; cursor: pointer; background: linear-gradient(135deg, #2d8a44, #4aaa60); box-shadow: 0 4px 20px rgba(45,138,68,0.22); margin-bottom: 24px; }
+  .l3-divider { height: 1px; background: #f3f1ee; margin-bottom: 20px; }
+  .l3-tasks-hd { font-size: 10px; font-weight: 600; color: #c0b8a8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .l3-task { font-size: 13px; color: #706860; display: flex; gap: 10px; margin-bottom: 9px; line-height: 1.4; }
+  .l3-task span { color: #3a9e52; flex-shrink: 0; font-weight: 600; }
+
+
+  /* ═══════════════════════════════════════════
+     4 — VERCEL / MODERN SAAS
+     Clean white, sharp edges, confident typography
+  ═══════════════════════════════════════════ */
+  .l4 { width: 100%; flex-direction: column; background: #fff; }
+
+  .l4-topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 56px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
+  .l4-logo { font-size: 16px; font-weight: 800; color: #0a0a0a; letter-spacing: -0.5px; }
+  .l4-logo span { color: #3a9e52; }
+  .l4-nav-links { display: flex; gap: 4px; }
+  .l4-nav-link { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; color: #737373; }
+  .l4-nav-link.active { background: #f5f5f5; color: #0a0a0a; }
+  .l4-topright { display: flex; align-items: center; gap: 16px; }
+  .l4-stat-chip { background: #f5f5f5; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #737373; }
+  .l4-stat-chip strong { color: #0a0a0a; }
+  .l4-signout { font-size: 12px; color: #a3a3a3; cursor: pointer; }
+
+  .l4-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px; }
+  .l4-center { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 0; }
+  .l4-greet { font-size: 14px; color: #a3a3a3; font-weight: 400; margin-bottom: 4px; }
+  .l4-name { font-size: 36px; font-weight: 800; color: #0a0a0a; letter-spacing: -1.5px; margin-bottom: 40px; }
+  .l4-timer-block { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
+  .l4-timer { font-size: 96px; font-weight: 900; letter-spacing: -7px; color: #0a0a0a; line-height: 1; }
+  .l4-timer span { color: #e5e5e5; }
+  .l4-pills-v { display: flex; flex-direction: column; gap: 6px; padding-bottom: 8px; }
+  .l4-pill-v { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; color: #a3a3a3; border: 1px solid #e5e5e5; text-align: center; }
+  .l4-pill-v.active { border-color: #0a0a0a; color: #0a0a0a; background: #fafafa; }
+  .l4-btn { width: 100%; padding: 15px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer; background: #0a0a0a; margin-bottom: 32px; }
+  .l4-tasks-section { border-top: 1px solid #f0f0f0; padding-top: 24px; }
+  .l4-tasks-hd { font-size: 11px; font-weight: 600; color: #a3a3a3; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px; }
+  .l4-task { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+  .l4-task-dot { width: 6px; height: 6px; border-radius: 50%; background: #3a9e52; flex-shrink: 0; margin-top: 5px; }
+  .l4-task-text { font-size: 13px; color: #525252; line-height: 1.4; font-weight: 400; }
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <h1>Pick one</h1>
+  <button class="tab active" onclick="show('1',this)">1 — Apple-style</button>
+  <button class="tab" onclick="show('2',this)">2 — Linear Dark</button>
+  <button class="tab" onclick="show('3',this)">3 — Craft Warm</button>
+  <button class="tab" onclick="show('4',this)">4 — SaaS Clean</button>
+</div>
+
+<!-- 1 Apple Things3 -->
+<div class="layout active" id="layout-1">
+  <div class="l1" style="display:flex;">
+    <aside class="l1-side">
+      <div class="l1-logo">Foc<span>ul</span></div>
+      <nav class="l1-nav">
+        <div class="l1-item active">
+          <div class="l1-icon green">⏱</div> Dashboard
+        </div>
+        <div class="l1-item">
+          <div class="l1-icon blue">▷</div> New Session
+        </div>
+        <div class="l1-item">
+          <div class="l1-icon orange">◷</div> History
+        </div>
+      </nav>
+      <div class="l1-footer">
+        <div class="l1-stat-row"><span>Sessions today</span><span>3</span></div>
+        <div class="l1-stat-row"><span>Focused</span><span>45 min</span></div>
+        <div class="l1-stat-row"><span>All time</span><span>12</span></div>
+      </div>
+    </aside>
+    <main class="l1-main">
+      <div class="l1-card">
+        <div class="l1-card-header">
+          <div class="l1-greet">Good afternoon</div>
+          <div class="l1-name">Riya</div>
+        </div>
+        <div class="l1-card-timer">
+          <div class="l1-time">15<span>:00</span></div>
+          <div class="l1-progress"><div class="l1-progress-fill"></div></div>
+          <div class="l1-pills">
+            <div class="l1-pill active">15 min</div>
+            <div class="l1-pill">30 min</div>
+            <div class="l1-pill">custom</div>
+          </div>
+        </div>
+        <div class="l1-card-action">
+          <div class="l1-btn">Start 15 min session →</div>
+        </div>
+        <div class="l1-card-tasks">
+          <div class="l1-tasks-hd">Continuing from 2h ago</div>
+          <div class="l1-task"><div class="l1-task-check"></div><div class="l1-task-text">Complete sprint 7 by Wednesday</div></div>
+          <div class="l1-task"><div class="l1-task-check"></div><div class="l1-task-text">Review and close out sprints 2 and 3</div></div>
+          <div class="l1-task"><div class="l1-task-check"></div><div class="l1-task-text">Plan tasks needed for sprint 7 delivery</div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- 2 Linear Dark -->
+<div class="layout" id="layout-2">
+  <div class="l2" style="display:flex;">
+    <aside class="l2-side">
+      <div class="l2-logo"><div class="l2-logo-dot"></div>Focul</div>
+      <div class="l2-section">
+        <div class="l2-section-lbl">Workspace</div>
+        <div class="l2-item active"><div class="l2-item-dot"></div>Dashboard</div>
+        <div class="l2-item"><div class="l2-item-dot"></div>New Session</div>
+        <div class="l2-item"><div class="l2-item-dot"></div>History</div>
+      </div>
+      <div class="l2-stats">
+        <div class="l2-stat-lbl">Today</div>
+        <div class="l2-stat"><span>Sessions</span><span>3</span></div>
+        <div class="l2-stat"><span>Focused</span><span>45 min</span></div>
+        <div class="l2-stat"><span>Total</span><span>12</span></div>
+      </div>
+    </aside>
+    <main class="l2-main">
+      <div class="l2-center">
+        <div class="l2-greet">Good afternoon</div>
+        <div class="l2-name">Riya</div>
+        <div class="l2-timer">15<span>:00</span></div>
+        <div class="l2-bar"></div>
+        <div class="l2-pills">
+          <div class="l2-pill active">15 min</div>
+          <div class="l2-pill">30 min</div>
+          <div class="l2-pill">custom</div>
+        </div>
+        <div class="l2-btn">Start 15 min session →</div>
+        <div class="l2-tasks">
+          <div class="l2-tasks-hd">Continuing from last session</div>
+          <div class="l2-task"><span>→</span>Complete sprint 7 by Wednesday</div>
+          <div class="l2-task"><span>→</span>Review and close out sprints 2 and 3</div>
+          <div class="l2-task"><span>→</span>Plan tasks needed for sprint 7 delivery</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- 3 Craft Warm -->
+<div class="layout" id="layout-3">
+  <div class="l3" style="display:flex;">
+    <aside class="l3-side">
+      <div class="l3-logo">Foc<span>ul</span></div>
+      <nav class="l3-nav">
+        <div class="l3-item active">📋 Dashboard</div>
+        <div class="l3-item">▷ New Session</div>
+        <div class="l3-item">◷ History</div>
+      </nav>
+      <div class="l3-streak">
+        <div class="l3-streak-lbl">Today</div>
+        <div class="l3-streak-nums">
+          <div class="l3-streak-stat"><div class="l3-streak-val">3</div><div class="l3-streak-sub">sessions</div></div>
+          <div class="l3-streak-stat"><div class="l3-streak-val">45m</div><div class="l3-streak-sub">focused</div></div>
+          <div class="l3-streak-stat"><div class="l3-streak-val">12</div><div class="l3-streak-sub">total</div></div>
+        </div>
+      </div>
+      <div class="l3-signout">↗ Sign out</div>
+    </aside>
+    <main class="l3-main">
+      <div class="l3-center">
+        <div class="l3-top">
+          <div class="l3-hi">Good afternoon</div>
+          <div class="l3-name">Riya.</div>
+        </div>
+        <div class="l3-card">
+          <div class="l3-timer">15<span>:00</span></div>
+          <div class="l3-pills">
+            <div class="l3-pill active">15 min</div>
+            <div class="l3-pill">30 min</div>
+            <div class="l3-pill">custom</div>
+          </div>
+          <div class="l3-btn" style="margin-top:16px;">Start 15 min session →</div>
+          <div class="l3-divider" style="margin-top:24px;"></div>
+          <div class="l3-tasks-hd">Continuing from 2h ago</div>
+          <div class="l3-task"><span>→</span>Complete sprint 7 by Wednesday</div>
+          <div class="l3-task"><span>→</span>Review and close out sprints 2 and 3</div>
+          <div class="l3-task"><span>→</span>Plan tasks needed for sprint 7 delivery</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- 4 SaaS Clean -->
+<div class="layout" id="layout-4">
+  <div class="l4" style="display:flex;">
+    <div class="l4-topbar">
+      <div class="l4-logo">Foc<span>ul</span></div>
+      <div class="l4-nav-links">
+        <div class="l4-nav-link active">Dashboard</div>
+        <div class="l4-nav-link">History</div>
+      </div>
+      <div class="l4-topright">
+        <div class="l4-stat-chip"><strong>3</strong> sessions · <strong>45m</strong> today</div>
+        <div class="l4-signout">Sign out ↗</div>
+      </div>
+    </div>
+    <main class="l4-main">
+      <div class="l4-center">
+        <div class="l4-greet">Good afternoon</div>
+        <div class="l4-name">Riya.</div>
+        <div class="l4-timer-block">
+          <div class="l4-timer">15<span>:00</span></div>
+          <div class="l4-pills-v">
+            <div class="l4-pill-v active">15 min</div>
+            <div class="l4-pill-v">30 min</div>
+            <div class="l4-pill-v">custom</div>
+          </div>
+        </div>
+        <div class="l4-btn">Start session →</div>
+        <div class="l4-tasks-section">
+          <div class="l4-tasks-hd">Continuing from 2h ago</div>
+          <div class="l4-task"><div class="l4-task-dot"></div><div class="l4-task-text">Complete sprint 7 by Wednesday</div></div>
+          <div class="l4-task"><div class="l4-task-dot"></div><div class="l4-task-text">Review and close out sprints 2 and 3</div></div>
+          <div class="l4-task"><div class="l4-task-dot"></div><div class="l4-task-text">Plan tasks needed for sprint 7 delivery</div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.layout').forEach(el => el.classList.remove('active'))
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'))
+    document.getElementById('layout-' + id).classList.add('active')
+    btn.classList.add('active')
+  }
+</script>
+</body>
+</html>

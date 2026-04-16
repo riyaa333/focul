@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Focul — Command Center</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #fafaf7;
+    --dark: #1a3020;
+    --accent: #3a9e52;
+    --muted: #8aaa8a;
+    --border: #eeeeea;
+    --surface: #ffffff;
+  }
+  body {
+    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    display: flex; align-items: flex-start; justify-content: center;
+    min-height: 100vh; padding: 0;
+    overflow: hidden;
+  }
+  .app {
+    width: 100vw; height: 100vh;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: relative; flex-shrink: 0;
+  }
+  .traffic { display: flex; gap: 6px; align-items: center; }
+  .dot { width:11px;height:11px;border-radius:50%; cursor:pointer; transition: opacity 0.15s; }
+  .dot:hover { opacity: 0.7; }
+  .dot-r { background:#ff5f57; }
+  .dot-y { background:#ffbd2e; }
+  .dot-g { background:#28c840; }
+  .logo { font-size:14px;font-weight:900;letter-spacing:-0.5px;color:var(--dark);position:absolute;left:50%;transform:translateX(-50%); }
+  .logo span { color: var(--accent); }
+  .nav-right { display:flex;align-items:center;gap:10px; }
+  .avatar { width:28px;height:28px;border-radius:50%;background:var(--dark);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer; }
+  .sign-out { font-size:11px;color:#ccc;cursor:pointer;transition:color 0.15s; }
+  .sign-out:hover { color:var(--dark); }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    overflow: hidden;
+  }
+
+  .left-col {
+    padding: 24px 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  .right-col {
+    padding: 24px 28px;
+    display: flex; flex-direction: column; gap: 20px;
+    overflow-y: auto;
+    background: #f5f5f0;
+  }
+
+  /* GREETING */
+  .greeting h1 { font-size:18px;font-weight:900;letter-spacing:-0.5px;color:var(--dark); }
+  .greeting-meta { display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap; }
+  .greeting-meta .ts { font-size:11px;color:var(--muted); }
+  .badge {
+    display:inline-flex;align-items:center;gap:4px;
+    background:rgba(58,158,82,0.1);border:1px solid rgba(58,158,82,0.2);
+    border-radius:99px;padding:2px 9px;
+    font-size:10px;font-weight:700;color:var(--accent);
+  }
+
+  /* TIMER BLOCK */
+  .timer-block {
+    background: var(--dark);
+    border-radius:18px;
+    padding: 22px 18px 18px;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .timer-glow {
+    position:absolute;top:-50px;left:50%;transform:translateX(-50%);
+    width:240px;height:180px;border-radius:50%;
+    background:radial-gradient(circle,rgba(58,158,82,0.22) 0%,transparent 70%);
+    pointer-events:none; transition: opacity 0.5s;
+  }
+  .ring-wrap { position:relative;width:180px;height:180px;z-index:1; }
+  .ring-wrap svg { transform:rotate(-90deg); }
+  .ring-inner {
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .ring-time { font-size:42px;font-weight:900;letter-spacing:-2px;color:white;font-variant-numeric:tabular-nums; }
+  .ring-label { font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:2.5px;text-transform:uppercase;margin-top:4px;transition:color 0.3s; }
+
+  .dark-tabs { display:flex;gap:2px;z-index:1;background:rgba(255,255,255,0.07);border-radius:12px;padding:3px; }
+  .dark-tab {
+    padding:5px 14px;border-radius:9px;border:none;
+    font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;
+    color:rgba(255,255,255,0.35);background:transparent;
+    transition:all 0.2s;
+  }
+  .dark-tab.active { background:rgba(58,158,82,0.45);color:white; }
+  .dark-tab:not(.active):hover { color:rgba(255,255,255,0.6); }
+
+  .start-btn {
+    width:100%;padding:12px;border:none;border-radius:13px;
+    background:var(--accent);color:white;
+    font-size:13px;font-weight:700;font-family:inherit;
+    cursor:pointer;z-index:1;
+    box-shadow:0 4px 20px rgba(58,158,82,0.4);
+    transition:all 0.15s;
+  }
+  .start-btn:hover { opacity:0.9;transform:translateY(-1px); }
+  .start-btn:active { transform:scale(0.98); }
+
+  /* STATS */
+  .stats { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+  .stat {
+    background:white;border:1px solid var(--border);border-radius:12px;
+    padding:12px;text-align:center;transition:all 0.15s;cursor:default;
+  }
+  .stat:hover { box-shadow:0 4px 14px rgba(58,158,82,0.1);transform:translateY(-1px); }
+  .stat-n { font-size:20px;font-weight:900;color:var(--dark);letter-spacing:-0.5px;transition:all 0.3s; }
+  .stat-n.acc { color:var(--accent); }
+  .stat-l { font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ccc;margin-top:2px; }
+
+  /* SECTION LABEL */
+  .section-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#bbb;margin-bottom:8px; }
+
+  /* TASKS */
+  .tasks-card { background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden; }
+  .task-row {
+    display:flex;align-items:center;gap:10px;
+    padding:11px 14px;border-bottom:1px solid #f5f5f0;
+    cursor:pointer;transition:background 0.15s;
+    user-select:none;
+  }
+  .task-row:last-child { border-bottom:none; }
+  .task-row:hover { background:#f8fff8; }
+  .task-row.done { opacity:0.4; }
+  .task-row.done .title { text-decoration:line-through; }
+  .task-row .bar { width:3px;height:30px;border-radius:2px;flex-shrink:0;transition:background 0.2s; }
+  .task-content { min-width: 0; }
+  .task-content .title { font-size:12px;font-weight:600;color:var(--dark);transition:all 0.2s; }
+  .task-content .sub { font-size:10px;color:#bbb;margin-top:1px; }
+  .check-icon { margin-left:auto;font-size:14px;opacity:0;transition:opacity 0.2s; }
+  .task-row:hover .check-icon { opacity:0.3; }
+  .task-row.done .check-icon { opacity:1; }
+
+  /* HISTORY */
+  .hist-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:10px; }
+  .see-all { font-size:11px;color:var(--accent);cursor:pointer;font-weight:600;transition:opacity 0.15s; }
+  .see-all:hover { opacity:0.7; }
+  .history { display:flex;flex-direction:column;gap:6px; }
+  .hist-row {
+    display:flex;align-items:center;justify-content:space-between;
+    background:white;border:1px solid var(--border);border-radius:12px;
+    padding:12px 14px;cursor:pointer;transition:all 0.15s;
+    position:relative;overflow:hidden;
+  }
+  .hist-row::before { content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 2px 2px 0; }
+  .hist-row.acc::before { background:var(--accent); }
+  .hist-row.drk::before { background:var(--dark); }
+  .hist-row:hover { border-color:rgba(58,158,82,0.25);box-shadow:0 3px 10px rgba(58,158,82,0.07);transform:translateX(2px); }
+  .hist-info { padding-left:8px; }
+  .hist-title { font-size:12px;font-weight:700;color:var(--dark); }
+  .hist-meta { font-size:10px;color:#bbb;margin-top:1px; }
+  .hist-badge {
+    font-size:9px;font-weight:700;color:var(--accent);
+    background:rgba(58,158,82,0.08);border:1px solid rgba(58,158,82,0.12);
+    border-radius:99px;padding:3px 10px;white-space:nowrap;
+  }
+  .more { text-align:center;font-size:10px;color:#ccc;padding:8px;cursor:pointer;transition:color 0.15s; }
+  .more:hover { color:var(--muted); }
+
+  /* DEBRIEF OVERLAY */
+  .overlay {
+    position:fixed;inset:0;background:rgba(26,48,32,0.6);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;
+    z-index:100;opacity:0;pointer-events:none;transition:opacity 0.3s;
+  }
+  .overlay.show { opacity:1;pointer-events:all; }
+  .modal {
+    background:white;border-radius:24px;padding:32px;width:360px;
+    box-shadow:0 32px 80px rgba(0,0,0,0.2);
+    transform:translateY(20px);transition:transform 0.3s;
+  }
+  .overlay.show .modal { transform:translateY(0); }
+  .modal-icon { font-size:32px;text-align:center;margin-bottom:12px; }
+  .modal h2 { font-size:20px;font-weight:900;color:var(--dark);text-align:center;letter-spacing:-0.5px; }
+  .modal p { font-size:12px;color:var(--muted);text-align:center;margin-top:6px; }
+  .mic-btn {
+    width:100%;padding:14px;border:none;border-radius:14px;margin-top:20px;
+    background:var(--accent);color:white;font-size:13px;font-weight:700;
+    font-family:inherit;cursor:pointer;transition:all 0.15s;
+    box-shadow:0 4px 20px rgba(58,158,82,0.35);
+  }
+  .mic-btn:hover { opacity:0.9;transform:translateY(-1px); }
+  .mic-btn.recording { background:#ef4444;box-shadow:0 4px 20px rgba(239,68,68,0.35);animation:pulse-btn 1.5s infinite; }
+  .skip-btn {
+    width:100%;padding:10px;border:none;border-radius:14px;margin-top:8px;
+    background:transparent;color:#bbb;font-size:12px;font-weight:600;
+    font-family:inherit;cursor:pointer;transition:color 0.15s;
+  }
+  .skip-btn:hover { color:var(--dark); }
+  .extracted-tasks { margin-top:16px;display:flex;flex-direction:column;gap:8px; }
+  .ext-task {
+    display:flex;align-items:center;gap:10px;background:#f8fff8;
+    border:1px solid rgba(58,158,82,0.15);border-radius:10px;padding:10px 12px;
+    animation:slideIn 0.3s ease forwards;opacity:0;
+  }
+  .ext-task .num { font-size:10px;font-weight:800;color:var(--accent);width:16px;flex-shrink:0; }
+  .ext-task .txt { font-size:12px;font-weight:600;color:var(--dark); }
+
+  @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse-btn { 0%,100%{box-shadow:0 4px 20px rgba(239,68,68,0.35)} 50%{box-shadow:0 4px 28px rgba(239,68,68,0.6)} }
+  @keyframes ping { 0%{transform:scale(1);opacity:1} 100%{transform:scale(2);opacity:0} }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav>
+    <div class="traffic">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+    </div>
+    <span class="logo">Foc<span>ul</span></span>
+    <div class="nav-right">
+      <span class="sign-out">Sign out</span>
+      <div class="avatar">R</div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- LEFT COL -->
+    <div class="left-col">
+      <div class="greeting">
+        <h1 id="greet">Good morning, Riya.</h1>
+        <div class="greeting-meta">
+          <span class="ts" id="date-str">Monday</span>
+          <div class="badge">🔥 3 day streak</div>
+          <div class="badge">⚡ 82 focus score</div>
+        </div>
+      </div>
+
+      <div class="timer-block">
+        <div class="timer-glow" id="glow"></div>
+        <div class="ring-wrap">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="78" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9"/>
+            <circle id="ring-arc" cx="90" cy="90" r="78" fill="none" stroke="#3a9e52" stroke-width="9"
+              stroke-linecap="round" stroke-dasharray="490.1" stroke-dashoffset="0"
+              style="filter:drop-shadow(0 0 10px rgba(58,158,82,0.7));transition:stroke-dashoffset 0.8s ease;"/>
+          </svg>
+          <div class="ring-inner">
+            <span class="ring-time" id="timer-display">15:00</span>
+            <span class="ring-label" id="timer-label">FOCUS</span>
+          </div>
+        </div>
+        <div class="dark-tabs">
+          <button class="dark-tab active" onclick="setDur(15,this)">15 min</button>
+          <button class="dark-tab" onclick="setDur(30,this)">30 min</button>
+          <button class="dark-tab" onclick="setDur(0,this)">custom</button>
+        </div>
+        <button class="start-btn" id="cta-btn" onclick="toggleTimer()">Start 15 min session →</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-n acc" id="s-today">0</div><div class="stat-l">Today</div></div>
+        <div class="stat"><div class="stat-n" id="s-tasks">12</div><div class="stat-l">Tasks</div></div>
+        <div class="stat"><div class="stat-n" id="s-time">1.5h</div><div class="stat-l">Focused</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT COL -->
+    <div class="right-col">
+      <div>
+        <div class="section-label">Pick up where you left off</div>
+        <div class="tasks-card" id="task-list">
+          <div class="task-row" onclick="toggleTask(this)">
+            <div class="bar" style="background:var(--accent)"></div>
+            <div class="task-content">
+              <div class="title">Follow up with Sarah re: contract</div>
+              <div class="sub">From yesterday · 9:14am session</div>
+            </div>
+            <span class="check-icon">✓</span>
+          </div>
+          <div class="task-row" onclick="toggleTask(this)">
+            <div class="bar" style="background:var(--accent);opacity:0.55"></div>
+            <div class="task-content">
+              <div class="title">Prep investor deck slides</div>
+              <div class="sub">From yesterday · 9:14am session</div>
+            </div>
+            <span class="check-icon">✓</span>
+          </div>
+          <div class="task-row" onclick="toggleTask(this)">
+            <div class="bar" style="background:#ddd"></div>
+            <div class="task-content">
+              <div class="title" style="color:#bbb">Review pricing proposal</div>
+              <div class="sub">From yesterday · 8:30am session</div>
+            </div>
+            <span class="check-icon">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="hist-header">
+          <div class="section-label" style="margin:0">Session history</div>
+          <span class="see-all">See all →</span>
+        </div>
+        <div class="history" id="history-list">
+          <div class="hist-row acc">
+            <div class="hist-info"><div class="hist-title">15 min session</div><div class="hist-meta">Yesterday 9:14am · Voice debrief recorded</div></div>
+            <span class="hist-badge">3 tasks</span>
+          </div>
+          <div class="hist-row drk">
+            <div class="hist-info"><div class="hist-title">30 min session</div><div class="hist-meta">Yesterday 8:30am · Voice debrief recorded</div></div>
+            <span class="hist-badge">2 tasks</span>
+          </div>
+          <div class="hist-row acc" style="opacity:0.6">
+            <div class="hist-info"><div class="hist-title">15 min session</div><div class="hist-meta">Saturday 4:02pm</div></div>
+            <span class="hist-badge">4 tasks</span>
+          </div>
+          <div class="hist-row drk" style="opacity:0.4">
+            <div class="hist-info"><div class="hist-title">15 min session</div><div class="hist-meta">Saturday 3:10pm</div></div>
+            <span class="hist-badge">1 task</span>
+          </div>
+          <div class="more">+ 4 more this week ↓</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- DEBRIEF OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-icon" id="modal-icon">🔔</div>
+    <h2 id="modal-title">Time's up.</h2>
+    <p id="modal-sub">What did you do? What's next?</p>
+    <div id="extracted-tasks" class="extracted-tasks" style="display:none"></div>
+    <button class="mic-btn" id="mic-btn" onclick="handleMic()">🎤  Start speaking</button>
+    <button class="skip-btn" id="skip-btn" onclick="closeOverlay()">Skip for now</button>
+  </div>
+</div>
+
+<script>
+  let dur = 15, rem = 900, running = false, iv = null, debriefState = 'idle'
+  const circ = 2 * Math.PI * 78
+
+  // Greeting + date
+  const h = new Date().getHours()
+  document.getElementById('greet').textContent = `${h<12?'Good morning':h<17?'Good afternoon':'Good evening'}, Riya.`
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+  document.getElementById('date-str').textContent = days[new Date().getDay()]
+
+  function setDur(m, btn) {
+    if (running) return
+    document.querySelectorAll('.dark-tab').forEach(t => t.classList.remove('active'))
+    btn.classList.add('active')
+    if (m === 0) {
+      const v = prompt('Duration in minutes:', '45')
+      if (!v) { setDur(dur, document.querySelector('.dark-tab')); return }
+      m = Math.max(1, parseInt(v) || 45)
+      btn.textContent = m + ' min'
+    }
+    dur = m; rem = m * 60; update()
+    document.getElementById('cta-btn').textContent = `Start ${m} min session →`
+    document.getElementById('cta-btn').style.background = ''
+  }
+
+  function update() {
+    const m = Math.floor(rem/60), s = rem%60
+    document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`
+    const arc = document.getElementById('ring-arc')
+    arc.style.strokeDashoffset = circ * (rem/(dur*60))
+  }
+
+  function toggleTimer() {
+    if (debriefState === 'done') { closeOverlay(); return }
+    if (!running) {
+      running = true
+      const btn = document.getElementById('cta-btn')
+      btn.textContent = '⏸  Pause'
+      btn.style.background = '#1a3020'
+      document.getElementById('timer-label').textContent = 'RUNNING'
+      document.getElementById('timer-label').style.color = 'rgba(58,158,82,0.8)'
+      document.getElementById('glow').style.opacity = '1.5'
+      iv = setInterval(() => {
+        if (rem <= 0) {
+          clearInterval(iv); running = false
+          document.getElementById('timer-label').textContent = 'DONE ✓'
+          document.getElementById('timer-label').style.color = 'rgba(58,158,82,1)'
+          btn.textContent = '🎤  Start debrief'
+          btn.style.background = 'var(--accent)'
+          // Update stats
+          const t = parseInt(document.getElementById('s-today').textContent) + 1
+          document.getElementById('s-today').textContent = t
+          debriefState = 'prompt'
+          setTimeout(() => document.getElementById('overlay').classList.add('show'), 600)
+          return
+        }
+        rem--; update()
+      }, 50) // fast for demo — use 1000 for real
+    } else {
+      clearInterval(iv); running = false
+      const btn = document.getElementById('cta-btn')
+      btn.textContent = '▶  Resume'
+      btn.style.background = 'var(--accent)'
+      document.getElementById('timer-label').textContent = 'PAUSED'
+      document.getElementById('timer-label').style.color = 'rgba(255,255,255,0.3)'
+    }
+  }
+
+  function toggleTask(row) {
+    row.classList.toggle('done')
+    const bar = row.querySelector('.bar')
+    if (row.classList.contains('done')) bar.style.background = '#ddd'
+    else bar.style.background = 'var(--accent)'
+  }
+
+  // Debrief simulation
+  let micState = 'idle', recordTimer = null, recordSecs = 0
+  const fakeTasks = [
+    'Fix hero section copy',
+    'Send contract to Sarah',
+    'Review investor deck draft'
+  ]
+
+  function handleMic() {
+    const btn = document.getElementById('mic-btn')
+    if (micState === 'idle') {
+      micState = 'recording'
+      btn.textContent = '⏹  Done speaking'
+      btn.classList.add('recording')
+      document.getElementById('modal-sub').textContent = '🔴 Recording...'
+      document.getElementById('skip-btn').style.display = 'none'
+      recordSecs = 0
+      recordTimer = setInterval(() => {
+        recordSecs++
+        const m = Math.floor(recordSecs/60), s = recordSecs%60
+        document.getElementById('modal-sub').textContent = `🔴 ${m}:${s.toString().padStart(2,'0')} — speak naturally`
+      }, 1000)
+    } else if (micState === 'recording') {
+      clearInterval(recordTimer)
+      micState = 'extracting'
+      btn.textContent = '✦  Extracting tasks...'
+      btn.classList.remove('recording')
+      btn.style.background = '#8aaa8a'
+      btn.disabled = true
+      document.getElementById('modal-sub').textContent = 'Claude is reading your debrief...'
+      document.getElementById('modal-icon').textContent = '✦'
+
+      // Simulate extraction delay
+      setTimeout(() => {
+        micState = 'done'
+        document.getElementById('modal-icon').textContent = '✅'
+        document.getElementById('modal-title').textContent = 'Tasks saved.'
+        document.getElementById('modal-sub').textContent = "Here's what you're starting next session with:"
+        btn.textContent = 'Back to dashboard →'
+        btn.style.background = 'var(--accent)'
+        btn.disabled = false
+        document.getElementById('skip-btn').style.display = 'none'
+
+        const container = document.getElementById('extracted-tasks')
+        container.style.display = 'flex'
+        fakeTasks.forEach((t, i) => {
+          setTimeout(() => {
+            const el = document.createElement('div')
+            el.className = 'ext-task'
+            el.style.animationDelay = `${i*0.1}s`
+            el.innerHTML = `<span class="num">${i+1}.</span><span class="txt">${t}</span>`
+            container.appendChild(el)
+          }, i * 300)
+        })
+
+        // Add new session to history
+        setTimeout(() => {
+          addSessionToHistory()
+          document.getElementById('s-tasks').textContent = parseInt(document.getElementById('s-tasks').textContent) + fakeTasks.length
+        }, fakeTasks.length * 300 + 200)
+      }, 2000)
+    } else if (micState === 'done') {
+      closeOverlay()
+    }
+  }
+
+  function addSessionToHistory() {
+    const list = document.getElementById('history-list')
+    const row = document.createElement('div')
+    row.className = 'hist-row acc'
+    row.style.opacity = '0'
+    row.style.transform = 'translateY(-8px)'
+    row.style.transition = 'all 0.4s ease'
+    row.innerHTML = `
+      <div class="hist-info">
+        <div class="hist-title">${dur} min session</div>
+        <div class="hist-meta">Just now · Voice debrief recorded</div>
+      </div>
+      <span class="hist-badge">${fakeTasks.length} tasks</span>
+    `
+    list.insertBefore(row, list.firstChild)
+    setTimeout(() => { row.style.opacity = '1'; row.style.transform = 'translateY(0)' }, 50)
+
+    // Update task continuity panel
+    const taskList = document.getElementById('task-list')
+    fakeTasks.slice(0,2).forEach((t, i) => {
+      const existingRows = taskList.querySelectorAll('.task-row')
+      if (existingRows[i]) {
+        existingRows[i].classList.remove('done')
+        existingRows[i].querySelector('.title').textContent = t
+        existingRows[i].querySelector('.title').style.color = ''
+        existingRows[i].querySelector('.sub').textContent = 'Just now · today\'s session'
+        existingRows[i].querySelector('.bar').style.background = 'var(--accent)'
+        existingRows[i].querySelector('.bar').style.opacity = i === 0 ? '1' : '0.55'
+      }
+    })
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').classList.remove('show')
+    debriefState = 'idle'
+    micState = 'idle'
+    // Reset modal for next time
+    setTimeout(() => {
+      document.getElementById('modal-icon').textContent = '🔔'
+      document.getElementById('modal-title').textContent = "Time's up."
+      document.getElementById('modal-sub').textContent = 'What did you do? What\'s next?'
+      document.getElementById('mic-btn').textContent = '🎤  Start speaking'
+      document.getElementById('mic-btn').style.background = ''
+      document.getElementById('mic-btn').disabled = false
+      document.getElementById('skip-btn').style.display = ''
+      document.getElementById('extracted-tasks').innerHTML = ''
+      document.getElementById('extracted-tasks').style.display = 'none'
+    }, 300)
+  }
+
+  update()
+</script>
+</body>
+</html>

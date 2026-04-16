@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Focul Layout Options</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e8e8e4;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 12px;
+  }
+
+  /* ===================== SHARED ===================== */
+  .mock {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    background: #fafaf7;
+  }
+  .mock nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 24px;
+    border-bottom: 1px solid #eeeeea;
+    background: #fafaf7;
+    position: relative;
+  }
+  .traffic { display: flex; gap: 5px; }
+  .dot { width:10px;height:10px;border-radius:50%; }
+  .dr{background:#ff5f57}.dy{background:#ffbd2e}.dg{background:#28c840}
+  .logo { font-size:13px;font-weight:900;letter-spacing:-0.5px;color:#1a3020;position:absolute;left:50%;transform:translateX(-50%); }
+  .logo span { color:#3a9e52; }
+  .avatar { width:26px;height:26px;border-radius:50%;background:#1a3020;color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700; }
+  .badge { display:inline-flex;align-items:center;gap:4px;background:rgba(58,158,82,0.1);border:1px solid rgba(58,158,82,0.2);border-radius:99px;padding:2px 8px;font-size:9px;font-weight:700;color:#3a9e52; }
+
+  /* ===================== OPTION 1 — Centered Minimal ===================== */
+  .o1-body { padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+  .o1-greeting { text-align: center; }
+  .o1-greeting h1 { font-size: 22px; font-weight: 900; color: #1a3020; letter-spacing: -0.5px; }
+  .o1-greeting p { font-size: 11px; color: #aaa; margin-top: 4px; }
+  .o1-timer-wrap { position:relative; width:180px; height:180px; }
+  .o1-timer-wrap svg { transform: rotate(-90deg); }
+  .o1-timer-inner { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center; }
+  .o1-timer-inner .time { font-size:36px;font-weight:900;color:#1a3020;letter-spacing:-2px; }
+  .o1-timer-inner .sublabel { font-size:8px;color:#ccc;letter-spacing:2px;text-transform:uppercase;margin-top:2px; }
+  .o1-tabs { display:flex;gap:2px;background:#f0f0ec;border-radius:10px;padding:3px; }
+  .o1-tab { padding:5px 16px;border-radius:8px;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;color:#aaa;background:transparent;transition:all 0.15s; }
+  .o1-tab.active { background:white;color:#1a3020;box-shadow:0 1px 4px rgba(0,0,0,0.08); }
+  .o1-btn { padding:12px 40px;border:none;border-radius:99px;background:linear-gradient(135deg,#2d8a44,#4db864);color:white;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(58,158,82,0.3); }
+  .o1-tasks { width:100%;max-width:380px; }
+  .o1-tasks-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ccc;margin-bottom:8px;text-align:center; }
+  .o1-task { display:flex;align-items:center;gap:10px;padding:10px 14px;background:white;border:1px solid #eeeeea;border-radius:10px;margin-bottom:6px; }
+  .o1-task .bar { width:3px;height:26px;border-radius:2px;background:#3a9e52;flex-shrink:0; }
+  .o1-task .txt { font-size:12px;font-weight:600;color:#1a3020; }
+  .o1-task .sub { font-size:10px;color:#bbb; }
+  .o1-stats { display:flex;gap:10px; }
+  .o1-stat { text-align:center;padding:10px 20px;background:white;border:1px solid #eeeeea;border-radius:10px; }
+  .o1-stat .n { font-size:18px;font-weight:900;color:#1a3020;letter-spacing:-0.5px; }
+  .o1-stat .n.g { color:#3a9e52; }
+  .o1-stat .l { font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ccc;margin-top:1px; }
+
+  /* ===================== OPTION 2 — Left Heavy ===================== */
+  .o2-body { display:grid;grid-template-columns:55% 45%;height:460px; }
+  .o2-left { padding:32px 28px;display:flex;flex-direction:column;justify-content:center;gap:20px;border-right:1px solid #eeeeea; }
+  .o2-greeting h1 { font-size:20px;font-weight:900;color:#1a3020;letter-spacing:-0.5px; }
+  .o2-greeting p { font-size:11px;color:#aaa;margin-top:3px; }
+  .o2-timer-block { background:#1a3020;border-radius:16px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:14px;position:relative;overflow:hidden; }
+  .o2-glow { position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(58,158,82,0.2) 0%,transparent 70%);pointer-events:none; }
+  .o2-time { font-size:48px;font-weight:900;color:white;letter-spacing:-3px;z-index:1; }
+  .o2-focus-label { font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:3px;text-transform:uppercase;z-index:1;margin-top:-10px; }
+  .o2-tabs { display:flex;gap:2px;z-index:1;background:rgba(255,255,255,0.07);border-radius:10px;padding:3px; }
+  .o2-tab { padding:5px 14px;border-radius:8px;border:none;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;color:rgba(255,255,255,0.3);background:transparent; }
+  .o2-tab.active { background:rgba(58,158,82,0.4);color:white; }
+  .o2-btn { width:100%;padding:12px;border:none;border-radius:12px;background:#3a9e52;color:white;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;z-index:1;box-shadow:0 4px 16px rgba(58,158,82,0.35); }
+  .o2-right { padding:28px 24px;display:flex;flex-direction:column;gap:10px;background:#f7f7f4; }
+  .o2-right-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ccc;margin-bottom:2px; }
+  .o2-task { display:flex;align-items:flex-start;gap:10px;padding:12px;background:white;border:1px solid #eeeeea;border-radius:10px; }
+  .o2-task .bar { width:3px;height:30px;border-radius:2px;flex-shrink:0;margin-top:2px; }
+  .o2-task .txt { font-size:12px;font-weight:600;color:#1a3020;line-height:1.3; }
+  .o2-task .sub { font-size:9px;color:#bbb;margin-top:2px; }
+  .o2-divider { border:none;border-top:1px solid #eeeeea;margin:4px 0; }
+  .o2-stats { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+  .o2-stat { padding:10px 12px;background:white;border:1px solid #eeeeea;border-radius:10px;text-align:center; }
+  .o2-stat .n { font-size:16px;font-weight:900;color:#1a3020; }
+  .o2-stat .n.g { color:#3a9e52; }
+  .o2-stat .l { font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ccc;margin-top:1px; }
+
+  /* ===================== OPTION 3 — Top Timer ===================== */
+  .o3-body { padding:0; }
+  .o3-top { background:#1a3020;padding:24px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px; }
+  .o3-top-left { display:flex;align-items:center;gap:20px; }
+  .o3-greeting h1 { font-size:17px;font-weight:900;color:white;letter-spacing:-0.5px; }
+  .o3-greeting p { font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px; }
+  .o3-divider-v { width:1px;height:40px;background:rgba(255,255,255,0.1); }
+  .o3-time-big { font-size:40px;font-weight:900;color:white;letter-spacing:-2px; }
+  .o3-top-right { display:flex;align-items:center;gap:10px; }
+  .o3-tabs { display:flex;gap:2px;background:rgba(255,255,255,0.07);border-radius:10px;padding:3px; }
+  .o3-tab { padding:6px 14px;border-radius:8px;border:none;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;color:rgba(255,255,255,0.3);background:transparent; }
+  .o3-tab.active { background:rgba(58,158,82,0.45);color:white; }
+  .o3-btn { padding:10px 24px;border:none;border-radius:10px;background:#3a9e52;color:white;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;white-space:nowrap;box-shadow:0 4px 14px rgba(58,158,82,0.4); }
+  .o3-cards { display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:24px 28px;background:#f5f5f0; }
+  .o3-card { background:white;border:1px solid #eeeeea;border-radius:14px;padding:18px; }
+  .o3-card-label { font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ccc;margin-bottom:12px; }
+  .o3-task { display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f0; }
+  .o3-task:last-child { border-bottom:none; }
+  .o3-task .bar { width:3px;height:28px;border-radius:2px;flex-shrink:0; }
+  .o3-task .txt { font-size:11px;font-weight:600;color:#1a3020; }
+  .o3-task .sub { font-size:9px;color:#bbb;margin-top:1px; }
+  .o3-hist { display:flex;flex-direction:column;gap:6px; }
+  .o3-hist-row { display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f8f8f5;border-radius:9px;border-left:3px solid #3a9e52; }
+  .o3-hist-row.drk { border-left-color:#1a3020; }
+  .o3-hist-title { font-size:11px;font-weight:700;color:#1a3020; }
+  .o3-hist-meta { font-size:9px;color:#bbb;margin-top:1px; }
+  .o3-hist-badge { font-size:9px;font-weight:700;color:#3a9e52;background:rgba(58,158,82,0.08);border:1px solid rgba(58,158,82,0.12);border-radius:99px;padding:2px 8px; }
+</style>
+</head>
+<body>
+
+<!-- OPTION 1 -->
+<div>
+  <div class="label">Option 1 — Centered Minimal</div>
+  <div class="mock">
+    <nav>
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo">Foc<span>ul</span></span>
+      <div class="avatar">R</div>
+    </nav>
+    <div class="o1-body">
+      <div class="o1-greeting">
+        <h1>Good afternoon, Riya.</h1>
+        <p>Monday · No sessions yet today</p>
+      </div>
+      <div class="o1-timer-wrap">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="78" fill="none" stroke="#eaf5e4" stroke-width="9"/>
+          <circle cx="90" cy="90" r="78" fill="none" stroke="#3a9e52" stroke-width="9" stroke-linecap="round" stroke-dasharray="490" stroke-dashoffset="490" style="filter:drop-shadow(0 0 8px rgba(58,158,82,0.5))"/>
+        </svg>
+        <div class="o1-timer-inner">
+          <span class="time">15:00</span>
+          <span class="sublabel">focus</span>
+        </div>
+      </div>
+      <div class="o1-tabs">
+        <button class="o1-tab active">15 min</button>
+        <button class="o1-tab">30 min</button>
+        <button class="o1-tab">custom</button>
+      </div>
+      <button class="o1-btn">Start session →</button>
+      <div class="o1-tasks">
+        <div class="o1-tasks-label">Pick up where you left off</div>
+        <div class="o1-task"><div class="bar"></div><div><div class="txt">Follow up with Sarah re: contract</div><div class="sub">From yesterday</div></div></div>
+        <div class="o1-task"><div class="bar" style="opacity:0.5"></div><div><div class="txt">Prep investor deck slides</div><div class="sub">From yesterday</div></div></div>
+      </div>
+      <div class="o1-stats">
+        <div class="o1-stat"><div class="n g">0</div><div class="l">Today</div></div>
+        <div class="o1-stat"><div class="n">12</div><div class="l">Tasks</div></div>
+        <div class="o1-stat"><div class="n">1.5h</div><div class="l">Focused</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 2 -->
+<div>
+  <div class="label">Option 2 — Left Heavy Split</div>
+  <div class="mock">
+    <nav>
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo">Foc<span>ul</span></span>
+      <div class="avatar">R</div>
+    </nav>
+    <div class="o2-body">
+      <div class="o2-left">
+        <div class="o2-greeting">
+          <h1>Good afternoon, Riya.</h1>
+          <p>Monday · <span style="color:#3a9e52;font-weight:700">🔥 3 day streak</span></p>
+        </div>
+        <div class="o2-timer-block">
+          <div class="o2-glow"></div>
+          <div class="o2-time">15:00</div>
+          <div class="o2-focus-label">focus</div>
+          <div class="o2-tabs">
+            <button class="o2-tab active">15 min</button>
+            <button class="o2-tab">30 min</button>
+            <button class="o2-tab">custom</button>
+          </div>
+          <button class="o2-btn">Start 15 min session →</button>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <div class="o1-stat" style="flex:1"><div class="n g" style="font-size:16px">0</div><div class="l">Today</div></div>
+          <div class="o1-stat" style="flex:1"><div class="n" style="font-size:16px">12</div><div class="l">Tasks</div></div>
+          <div class="o1-stat" style="flex:1"><div class="n" style="font-size:16px">1.5h</div><div class="l">Focused</div></div>
+        </div>
+      </div>
+      <div class="o2-right">
+        <div class="o2-right-label">Pick up where you left off</div>
+        <div class="o2-task"><div class="bar" style="background:#3a9e52"></div><div><div class="txt">Follow up with Sarah re: contract</div><div class="sub">Yesterday · 9:14am</div></div></div>
+        <div class="o2-task"><div class="bar" style="background:#3a9e52;opacity:0.5"></div><div><div class="txt">Prep investor deck slides</div><div class="sub">Yesterday · 9:14am</div></div></div>
+        <div class="o2-task"><div class="bar" style="background:#ddd"></div><div><div class="txt" style="color:#bbb">Review pricing proposal</div><div class="sub">Yesterday · 8:30am</div></div></div>
+        <hr class="o2-divider"/>
+        <div class="o2-right-label">Recent sessions</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="padding:10px 12px;background:white;border:1px solid #eeeeea;border-radius:10px;border-left:3px solid #3a9e52;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:11px;font-weight:700;color:#1a3020">15 min session</div><div style="font-size:9px;color:#bbb">Yesterday 9:14am</div></div><span style="font-size:9px;font-weight:700;color:#3a9e52;background:rgba(58,158,82,0.08);border:1px solid rgba(58,158,82,0.12);border-radius:99px;padding:2px 8px">3 tasks</span></div>
+          <div style="padding:10px 12px;background:white;border:1px solid #eeeeea;border-radius:10px;border-left:3px solid #1a3020;display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:11px;font-weight:700;color:#1a3020">30 min session</div><div style="font-size:9px;color:#bbb">Yesterday 8:30am</div></div><span style="font-size:9px;font-weight:700;color:#3a9e52;background:rgba(58,158,82,0.08);border:1px solid rgba(58,158,82,0.12);border-radius:99px;padding:2px 8px">2 tasks</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION 3 -->
+<div>
+  <div class="label">Option 3 — Top Timer Bar</div>
+  <div class="mock">
+    <nav>
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo" style="color:white">Foc<span>ul</span></span>
+      <div class="avatar">R</div>
+    </nav>
+    <div class="o3-body">
+      <div class="o3-top">
+        <div class="o3-top-left">
+          <div class="o3-greeting">
+            <h1>Good afternoon, Riya.</h1>
+            <p>Monday · 🔥 3 day streak</p>
+          </div>
+          <div class="o3-divider-v"></div>
+          <div class="o3-time-big">15:00</div>
+        </div>
+        <div class="o3-top-right">
+          <div class="o3-tabs">
+            <button class="o3-tab active">15 min</button>
+            <button class="o3-tab">30 min</button>
+            <button class="o3-tab">custom</button>
+          </div>
+          <button class="o3-btn">Start session →</button>
+        </div>
+      </div>
+      <div class="o3-cards">
+        <div class="o3-card">
+          <div class="o3-card-label">Pick up where you left off</div>
+          <div class="o3-task"><div class="bar" style="background:#3a9e52"></div><div><div class="txt">Follow up with Sarah re: contract</div><div class="sub">Yesterday · 9:14am</div></div></div>
+          <div class="o3-task"><div class="bar" style="background:#3a9e52;opacity:0.5"></div><div><div class="txt">Prep investor deck slides</div><div class="sub">Yesterday · 9:14am</div></div></div>
+          <div class="o3-task"><div class="bar" style="background:#ddd"></div><div><div class="txt" style="color:#bbb">Review pricing proposal</div><div class="sub">Yesterday · 8:30am</div></div></div>
+        </div>
+        <div class="o3-card">
+          <div class="o3-card-label">Session history</div>
+          <div class="o3-hist">
+            <div class="o3-hist-row"><div><div class="o3-hist-title">15 min session</div><div class="o3-hist-meta">Yesterday 9:14am · Voice debrief</div></div><span class="o3-hist-badge">3 tasks</span></div>
+            <div class="o3-hist-row drk"><div><div class="o3-hist-title">30 min session</div><div class="o3-hist-meta">Yesterday 8:30am · Voice debrief</div></div><span class="o3-hist-badge">2 tasks</span></div>
+            <div class="o3-hist-row" style="opacity:0.6"><div><div class="o3-hist-title">15 min session</div><div class="o3-hist-meta">Saturday 4:02pm</div></div><span class="o3-hist-badge">4 tasks</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:0;border-top:1px solid #eeeeea;background:#fafaf7">
+        <div style="flex:1;padding:14px;text-align:center;border-right:1px solid #eeeeea"><div style="font-size:18px;font-weight:900;color:#3a9e52">0</div><div style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ccc;margin-top:2px">Today</div></div>
+        <div style="flex:1;padding:14px;text-align:center;border-right:1px solid #eeeeea"><div style="font-size:18px;font-weight:900;color:#1a3020">12</div><div style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ccc;margin-top:2px">Tasks</div></div>
+        <div style="flex:1;padding:14px;text-align:center"><div style="font-size:18px;font-weight:900;color:#1a3020">1.5h</div><div style="font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ccc;margin-top:2px">Focused</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

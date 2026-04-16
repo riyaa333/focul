@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Focul — A/B Variations</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #e8e8e4;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    padding: 40px 32px;
+    display: flex; flex-direction: column; gap: 48px;
+  }
+  .label { font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:12px; }
+  .mock { border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.13); }
+  nav { display:flex;align-items:center;justify-content:space-between;padding:13px 24px;border-bottom:1px solid #eeeeea;position:relative; }
+  .traffic { display:flex;gap:5px; }
+  .dot { width:10px;height:10px;border-radius:50%; }
+  .dr{background:#ff5f57}.dy{background:#ffbd2e}.dg{background:#28c840}
+  .logo { font-size:13px;font-weight:900;letter-spacing:-0.5px;position:absolute;left:50%;transform:translateX(-50%); }
+  .logo span { color:#3a9e52; }
+  .avatar { width:26px;height:26px;border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700; }
+  .pill-tabs { display:flex;gap:2px;border-radius:99px;padding:3px; }
+  .pill-tab { padding:5px 16px;border-radius:99px;border:none;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s; }
+</style>
+</head>
+<body>
+
+<!-- A1: Big number + green ring progress -->
+<div>
+  <div class="label">A1 — Big number + subtle green progress bar</div>
+  <div class="mock" style="background:#fafaf7">
+    <nav style="background:#fafaf7">
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo" style="color:#1a3020">Foc<span>ul</span></span>
+      <div class="avatar" style="background:#1a3020">R</div>
+    </nav>
+    <div style="padding:56px 40px;display:flex;flex-direction:column;align-items:center;gap:24px">
+      <div style="text-align:center">
+        <div style="font-size:13px;font-weight:600;color:#b0c8b4">Good afternoon, Riya.</div>
+      </div>
+      <div style="font-size:104px;font-weight:900;color:#1a3020;letter-spacing:-6px;line-height:1">15<span style="color:#d0e8d0">:00</span></div>
+      <!-- thin progress bar -->
+      <div style="width:200px;height:3px;background:#e8f5e8;border-radius:99px;overflow:hidden">
+        <div style="width:0%;height:100%;background:#3a9e52;border-radius:99px"></div>
+      </div>
+      <div class="pill-tabs" style="background:#f0f5f0">
+        <button class="pill-tab" style="background:#1a3020;color:white">15 min</button>
+        <button class="pill-tab" style="background:transparent;color:#a0c0a0">30 min</button>
+        <button class="pill-tab" style="background:transparent;color:#a0c0a0">custom</button>
+      </div>
+      <button style="padding:13px 48px;border:none;border-radius:99px;background:linear-gradient(135deg,#2d8a44,#4db864);color:white;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 20px rgba(58,158,82,0.28)">Start session →</button>
+      <div style="border-top:1px solid #eef5ee;padding-top:20px;width:100%;max-width:320px;text-align:center">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c0d8c0;margin-bottom:10px">Continuing from yesterday</div>
+        <div style="font-size:12px;font-weight:500;color:#5a8060;margin-bottom:6px">→ Follow up with Sarah re: contract</div>
+        <div style="font-size:12px;font-weight:500;color:#5a8060">→ Prep investor deck slides</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- A2: Big number, dark background -->
+<div>
+  <div class="label">A2 — Big number, dark theme</div>
+  <div class="mock" style="background:#1a3020">
+    <nav style="background:#1a3020;border-bottom-color:rgba(255,255,255,0.07)">
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo" style="color:white">Foc<span style="color:#3a9e52">ul</span></span>
+      <div class="avatar" style="background:rgba(255,255,255,0.1)">R</div>
+    </nav>
+    <div style="padding:56px 40px;display:flex;flex-direction:column;align-items:center;gap:24px">
+      <div style="font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:0.3px">Good afternoon, Riya.</div>
+      <div style="font-size:104px;font-weight:900;color:white;letter-spacing:-6px;line-height:1">15<span style="color:rgba(255,255,255,0.15)">:00</span></div>
+      <div style="width:200px;height:2px;background:rgba(255,255,255,0.08);border-radius:99px">
+        <div style="width:0%;height:100%;background:#3a9e52;border-radius:99px;box-shadow:0 0 8px rgba(58,158,82,0.6)"></div>
+      </div>
+      <div class="pill-tabs" style="background:rgba(255,255,255,0.06)">
+        <button class="pill-tab" style="background:rgba(58,158,82,0.4);color:white">15 min</button>
+        <button class="pill-tab" style="background:transparent;color:rgba(255,255,255,0.3)">30 min</button>
+        <button class="pill-tab" style="background:transparent;color:rgba(255,255,255,0.3)">custom</button>
+      </div>
+      <button style="padding:13px 48px;border:none;border-radius:99px;background:#3a9e52;color:white;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 20px rgba(58,158,82,0.35)">Start session →</button>
+      <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;width:100%;max-width:320px;text-align:center">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin-bottom:10px">Continuing from yesterday</div>
+        <div style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.4);margin-bottom:6px">→ Follow up with Sarah re: contract</div>
+        <div style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.4)">→ Prep investor deck slides</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B1: Ring, light bg, dark button, tasks as chips -->
+<div>
+  <div class="label">B1 — Soft ring + task chips</div>
+  <div class="mock" style="background:#fafaf7">
+    <nav style="background:#fafaf7">
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo" style="color:#1a3020">Foc<span>ul</span></span>
+      <div class="avatar" style="background:#1a3020">R</div>
+    </nav>
+    <div style="padding:48px 40px;display:flex;flex-direction:column;align-items:center;gap:22px">
+      <div style="text-align:center">
+        <div style="font-size:20px;font-weight:800;color:#1a3020;letter-spacing:-0.5px">Good afternoon, Riya.</div>
+        <div style="font-size:11px;color:#b0c8b4;margin-top:4px">Monday · 🔥 3 day streak</div>
+      </div>
+      <!-- Ring -->
+      <div style="position:relative;width:190px;height:190px">
+        <svg width="190" height="190" viewBox="0 0 190 190" style="transform:rotate(-90deg)">
+          <circle cx="95" cy="95" r="82" fill="none" stroke="#eef5ee" stroke-width="7"/>
+          <circle cx="95" cy="95" r="82" fill="none" stroke="#3a9e52" stroke-width="7" stroke-linecap="round" stroke-dasharray="515" stroke-dashoffset="515" style="filter:drop-shadow(0 0 6px rgba(58,158,82,0.4))"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <span style="font-size:40px;font-weight:900;color:#1a3020;letter-spacing:-2px">15:00</span>
+          <span style="font-size:8px;color:#c0d4c0;letter-spacing:2.5px;text-transform:uppercase;margin-top:3px">focus</span>
+        </div>
+      </div>
+      <div class="pill-tabs" style="background:#f0f5f0">
+        <button class="pill-tab" style="background:#1a3020;color:white">15 min</button>
+        <button class="pill-tab" style="background:transparent;color:#a0c0a0">30 min</button>
+        <button class="pill-tab" style="background:transparent;color:#a0c0a0">custom</button>
+      </div>
+      <button style="padding:13px 44px;border:none;border-radius:99px;background:#1a3020;color:white;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">Start session →</button>
+      <!-- Task chips -->
+      <div style="border-top:1px solid #eef5ee;padding-top:18px;width:100%;max-width:340px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c0d8c0;text-align:center;margin-bottom:12px">Continuing from yesterday</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
+          <span style="padding:6px 14px;background:#f0faf0;border:1px solid #d8eedd;border-radius:99px;font-size:11px;font-weight:600;color:#4a7055">Follow up with Sarah</span>
+          <span style="padding:6px 14px;background:#f0faf0;border:1px solid #d8eedd;border-radius:99px;font-size:11px;font-weight:600;color:#4a7055">Prep investor deck</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B2: Ring, warm off-white, green button -->
+<div>
+  <div class="label">B2 — Warm off-white, ring + green button</div>
+  <div class="mock" style="background:#fdf8f0">
+    <nav style="background:#fdf8f0;border-bottom-color:#f0e8d8">
+      <div class="traffic"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <span class="logo" style="color:#1a3020">Foc<span>ul</span></span>
+      <div class="avatar" style="background:#1a3020">R</div>
+    </nav>
+    <div style="padding:48px 40px;display:flex;flex-direction:column;align-items:center;gap:22px">
+      <div style="text-align:center">
+        <div style="font-size:20px;font-weight:800;color:#1a3020;letter-spacing:-0.5px">Good afternoon, Riya.</div>
+        <div style="font-size:11px;color:#b8a898;margin-top:4px">Monday · No sessions yet today</div>
+      </div>
+      <div style="position:relative;width:190px;height:190px">
+        <svg width="190" height="190" viewBox="0 0 190 190" style="transform:rotate(-90deg)">
+          <circle cx="95" cy="95" r="82" fill="none" stroke="#ede0cc" stroke-width="7"/>
+          <circle cx="95" cy="95" r="82" fill="none" stroke="#3a9e52" stroke-width="7" stroke-linecap="round" stroke-dasharray="515" stroke-dashoffset="515" style="filter:drop-shadow(0 0 6px rgba(58,158,82,0.35))"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <span style="font-size:40px;font-weight:900;color:#1a3020;letter-spacing:-2px">15:00</span>
+          <span style="font-size:8px;color:#c8b8a8;letter-spacing:2.5px;text-transform:uppercase;margin-top:3px">focus</span>
+        </div>
+      </div>
+      <div class="pill-tabs" style="background:#f0e8d8">
+        <button class="pill-tab" style="background:#1a3020;color:white">15 min</button>
+        <button class="pill-tab" style="background:transparent;color:#b8a888">30 min</button>
+        <button class="pill-tab" style="background:transparent;color:#b8a888">custom</button>
+      </div>
+      <button style="padding:13px 48px;border:none;border-radius:99px;background:linear-gradient(135deg,#2d8a44,#4db864);color:white;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 20px rgba(58,158,82,0.28)">Start session →</button>
+      <div style="border-top:1px solid #ede0cc;padding-top:18px;width:100%;max-width:320px;text-align:center">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c8b8a8;margin-bottom:10px">Continuing from yesterday</div>
+        <div style="font-size:12px;font-weight:500;color:#7a6a5a;margin-bottom:6px">→ Follow up with Sarah re: contract</div>
+        <div style="font-size:12px;font-weight:500;color:#7a6a5a">→ Prep investor deck slides</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,330 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <defs>
+    <radialGradient id="g1" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#b8f0b8;stop-opacity:0.35"/>
+      <stop offset="100%" style="stop-color:#f0faf0;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#1a3020;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0a1208;stop-opacity:1"/>
+    </radialGradient>
+    <radialGradient id="g3" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" style="stop-color:#3a9e52;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#0f1a12;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="g4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#f5fef5;stop-opacity:1"/>
+    </radialGradient>
+    <filter id="s1">
+      <feDropShadow dx="0" dy="8" stdDeviation="20" flood-color="#000" flood-opacity="0.08"/>
+    </filter>
+    <filter id="s2">
+      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#000" flood-opacity="0.06"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="#d8d8d2"/>
+
+  <!-- labels -->
+  <text x="200" y="22" font-family="-apple-system,Arial" font-size="10" fill="#888" text-anchor="middle" font-weight="700" letter-spacing="2">E — COMMAND CENTER</text>
+  <text x="600" y="22" font-family="-apple-system,Arial" font-size="10" fill="#888" text-anchor="middle" font-weight="700" letter-spacing="2">F — FULL DARK + GLASSY</text>
+  <text x="1050" y="22" font-family="-apple-system,Arial" font-size="10" fill="#888" text-anchor="middle" font-weight="700" letter-spacing="2">G — BENTO GRID</text>
+  <text x="1430" y="22" font-family="-apple-system,Arial" font-size="10" fill="#888" text-anchor="middle" font-weight="700" letter-spacing="2">H — AMBIENT / SPA</text>
+
+  <!-- ════════════════════════════════ -->
+  <!-- E — COMMAND CENTER              -->
+  <!-- ════════════════════════════════ -->
+  <rect x="20" y="34" width="360" height="858" rx="18" fill="#fafaf7" filter="url(#s1)"/>
+
+  <!-- top bar -->
+  <rect x="20" y="34" width="360" height="48" rx="18" fill="#fafaf7"/>
+  <rect x="20" y="64" width="360" height="18" fill="#fafaf7"/>
+  <circle cx="50" cy="58" r="7" fill="#ff5f57"/>
+  <circle cx="70" cy="58" r="7" fill="#ffbd2e"/>
+  <circle cx="90" cy="58" r="7" fill="#28c840"/>
+  <text x="200" y="63" font-family="-apple-system,Arial" font-size="11" fill="#1a3020" text-anchor="middle" font-weight="800" letter-spacing="-0.3">focul</text>
+  <line x1="20" y1="82" x2="380" y2="82" stroke="#eee" stroke-width="1"/>
+
+  <!-- greeting + date -->
+  <text x="44" y="118" font-family="-apple-system,Arial" font-size="20" fill="#1a3020" font-weight="900" letter-spacing="-0.8">Good morning, Riya.</text>
+  <text x="44" y="138" font-family="-apple-system,Arial" font-size="10" fill="#8aaa8a">Monday, 13 Apr · Sydney 11:27am</text>
+
+  <!-- streak + focus score row -->
+  <rect x="44" y="152" width="80" height="24" rx="12" fill="rgba(58,158,82,0.1)" stroke="rgba(58,158,82,0.2)" stroke-width="1"/>
+  <text x="84" y="168" font-family="-apple-system,Arial" font-size="9" fill="#3a9e52" text-anchor="middle" font-weight="700">🔥 3 day streak</text>
+  <rect x="132" y="152" width="80" height="24" rx="12" fill="rgba(26,48,32,0.06)"/>
+  <text x="172" y="168" font-family="-apple-system,Arial" font-size="9" fill="#6a8a72" text-anchor="middle" font-weight="600">⚡ 82 focus score</text>
+
+  <!-- BIG timer block -->
+  <rect x="44" y="192" width="312" height="190" rx="18" fill="#1a3020"/>
+  <ellipse cx="200" cy="240" rx="120" ry="80" fill="url(#g3)"/>
+  <!-- ring -->
+  <circle cx="200" cy="282" r="60" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+  <circle cx="200" cy="282" r="60" fill="none" stroke="#3a9e52" stroke-width="8" stroke-linecap="round"
+    stroke-dasharray="377" stroke-dashoffset="94" transform="rotate(-90 200 282)" filter="url(#glow)"/>
+  <text x="200" y="276" font-family="-apple-system,Arial" font-size="28" fill="white" text-anchor="middle" font-weight="900" letter-spacing="-1">15:00</text>
+  <text x="200" y="293" font-family="-apple-system,Arial" font-size="8" fill="rgba(255,255,255,0.35)" text-anchor="middle" letter-spacing="2.5">FOCUS MODE</text>
+  <!-- pill tabs inside dark card -->
+  <rect x="104" y="350" width="60" height="22" rx="11" fill="rgba(255,255,255,0.12)"/>
+  <text x="134" y="364" font-family="-apple-system,Arial" font-size="9" fill="white" text-anchor="middle" font-weight="700">15 min</text>
+  <rect x="170" y="350" width="60" height="22" rx="11" fill="transparent"/>
+  <text x="200" y="364" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.4)" text-anchor="middle">30 min</text>
+  <rect x="236" y="350" width="60" height="22" rx="11" fill="transparent"/>
+  <text x="266" y="364" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">custom</text>
+
+  <!-- CTA button -->
+  <rect x="44" y="396" width="312" height="44" rx="22" fill="#3a9e52" filter="url(#s2)"/>
+  <text x="200" y="423" font-family="-apple-system,Arial" font-size="12" fill="white" text-anchor="middle" font-weight="700">Start 15 min session  →</text>
+
+  <!-- from last session -->
+  <text x="44" y="464" font-family="-apple-system,Arial" font-size="9" fill="#aaa" font-weight="700" letter-spacing="1.5">PICK UP WHERE YOU LEFT OFF</text>
+  <rect x="44" y="474" width="312" height="62" rx="14" fill="white" stroke="#eee" stroke-width="1"/>
+  <rect x="54" y="486" width="3" height="38" rx="2" fill="#3a9e52"/>
+  <text x="68" y="500" font-family="-apple-system,Arial" font-size="10" fill="#1a3020" font-weight="700">Follow up with Sarah re: contract</text>
+  <text x="68" y="516" font-family="-apple-system,Arial" font-size="9" fill="#bbb">Prep investor deck slides</text>
+  <text x="68" y="530" font-family="-apple-system,Arial" font-size="9" fill="#bbb">Review pricing proposal</text>
+  <rect x="298" y="484" width="48" height="16" rx="8" fill="rgba(58,158,82,0.1)"/>
+  <text x="322" y="495" font-family="-apple-system,Arial" font-size="7" fill="#3a9e52" text-anchor="middle" font-weight="700">3 tasks</text>
+
+  <!-- stat row -->
+  <rect x="44" y="552" width="96" height="56" rx="12" fill="white" stroke="#eee" stroke-width="1"/>
+  <text x="92" y="578" font-family="-apple-system,Arial" font-size="20" fill="#3a9e52" text-anchor="middle" font-weight="900">4</text>
+  <text x="92" y="596" font-family="-apple-system,Arial" font-size="7" fill="#bbb" text-anchor="middle" letter-spacing="0.5">SESSIONS</text>
+  <rect x="148" y="552" width="96" height="56" rx="12" fill="white" stroke="#eee" stroke-width="1"/>
+  <text x="196" y="578" font-family="-apple-system,Arial" font-size="20" fill="#1a3020" text-anchor="middle" font-weight="900">12</text>
+  <text x="196" y="596" font-family="-apple-system,Arial" font-size="7" fill="#bbb" text-anchor="middle" letter-spacing="0.5">TASKS</text>
+  <rect x="252" y="552" width="104" height="56" rx="12" fill="white" stroke="#eee" stroke-width="1"/>
+  <text x="304" y="578" font-family="-apple-system,Arial" font-size="20" fill="#1a3020" text-anchor="middle" font-weight="900">1.5h</text>
+  <text x="304" y="596" font-family="-apple-system,Arial" font-size="7" fill="#bbb" text-anchor="middle" letter-spacing="0.5">FOCUSED</text>
+
+  <!-- history -->
+  <text x="44" y="632" font-family="-apple-system,Arial" font-size="9" fill="#bbb" font-weight="700" letter-spacing="1.5">HISTORY</text>
+  <rect x="44" y="642" width="312" height="44" rx="12" fill="white" stroke="#eee" stroke-width="1"/>
+  <rect x="54" y="656" width="3" height="20" rx="2" fill="#3a9e52"/>
+  <text x="68" y="668" font-family="-apple-system,Arial" font-size="9" fill="#1a3020" font-weight="700">15 min · 3 tasks</text>
+  <text x="68" y="681" font-family="-apple-system,Arial" font-size="8" fill="#bbb">Yesterday 9:14am</text>
+  <rect x="44" y="694" width="312" height="44" rx="12" fill="white" stroke="#eee" stroke-width="1"/>
+  <rect x="54" y="708" width="3" height="20" rx="2" fill="#1a3020"/>
+  <text x="68" y="720" font-family="-apple-system,Arial" font-size="9" fill="#1a3020" font-weight="700">30 min · 2 tasks</text>
+  <text x="68" y="733" font-family="-apple-system,Arial" font-size="8" fill="#bbb">Yesterday 8:30am</text>
+  <text x="200" y="790" font-family="-apple-system,Arial" font-size="8" fill="#ccc" text-anchor="middle">+ 4 more  ↓</text>
+
+
+  <!-- ════════════════════════════════ -->
+  <!-- F — FULL DARK GLASSY            -->
+  <!-- ════════════════════════════════ -->
+  <rect x="400" y="34" width="380" height="858" rx="18" fill="url(#g2)" filter="url(#s1)"/>
+  <!-- noise texture -->
+  <ellipse cx="590" cy="200" rx="200" ry="150" fill="rgba(58,158,82,0.08)"/>
+  <ellipse cx="500" cy="700" rx="150" ry="100" fill="rgba(58,158,82,0.04)"/>
+
+  <!-- traffic lights -->
+  <circle cx="428" cy="58" r="7" fill="#ff5f57"/>
+  <circle cx="448" cy="58" r="7" fill="#ffbd2e"/>
+  <circle cx="468" cy="58" r="7" fill="#28c840"/>
+  <text x="590" y="63" font-family="-apple-system,Arial" font-size="11" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-weight="800" letter-spacing="-0.3">focul</text>
+  <!-- avatar -->
+  <circle cx="762" cy="58" r="13" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <text x="762" y="63" font-family="-apple-system,Arial" font-size="10" fill="rgba(255,255,255,0.7)" text-anchor="middle">R</text>
+  <line x1="400" y1="82" x2="780" y2="82" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- greeting -->
+  <text x="428" y="118" font-family="-apple-system,Arial" font-size="20" fill="white" font-weight="900" letter-spacing="-0.8">Good morning, Riya.</text>
+  <text x="428" y="138" font-family="-apple-system,Arial" font-size="10" fill="rgba(255,255,255,0.3)">Monday · 3 day streak 🔥</text>
+
+  <!-- glassy timer card -->
+  <rect x="428" y="158" width="324" height="220" rx="20" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <!-- ring glow bg -->
+  <ellipse cx="590" cy="258" rx="70" ry="70" fill="rgba(58,158,82,0.12)"/>
+  <circle cx="590" cy="258" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+  <circle cx="590" cy="258" r="70" fill="none" stroke="#3a9e52" stroke-width="10" stroke-linecap="round"
+    stroke-dasharray="440" stroke-dashoffset="110" transform="rotate(-90 590 258)" filter="url(#glow)"/>
+  <circle cx="590" cy="258" r="56" fill="rgba(255,255,255,0.03)"/>
+  <text x="590" y="251" font-family="-apple-system,Arial" font-size="32" fill="white" text-anchor="middle" font-weight="900" letter-spacing="-2">15:00</text>
+  <text x="590" y="270" font-family="-apple-system,Arial" font-size="8" fill="rgba(255,255,255,0.3)" text-anchor="middle" letter-spacing="3">FOCUS</text>
+  <!-- pulse rings -->
+  <circle cx="590" cy="258" r="80" fill="none" stroke="rgba(58,158,82,0.12)" stroke-width="1"/>
+  <circle cx="590" cy="258" r="92" fill="none" stroke="rgba(58,158,82,0.06)" stroke-width="1"/>
+
+  <!-- tabs glassy -->
+  <rect x="466" y="352" width="248" height="30" rx="15" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <rect x="470" y="356" width="76" height="22" rx="11" fill="rgba(58,158,82,0.5)"/>
+  <text x="508" y="370" font-family="-apple-system,Arial" font-size="9" fill="white" text-anchor="middle" font-weight="700">15 min</text>
+  <text x="570" y="370" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.3)" text-anchor="middle">30 min</text>
+  <text x="640" y="370" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.2)" text-anchor="middle">custom</text>
+
+  <!-- CTA glassy -->
+  <rect x="428" y="398" width="324" height="44" rx="22" fill="#3a9e52" filter="url(#glow)"/>
+  <text x="590" y="424" font-family="-apple-system,Arial" font-size="12" fill="white" text-anchor="middle" font-weight="700">Start 15 min session  →</text>
+
+  <!-- tasks from last session glassy -->
+  <text x="428" y="464" font-family="-apple-system,Arial" font-size="8" fill="rgba(255,255,255,0.25)" font-weight="700" letter-spacing="1.5">FROM LAST SESSION</text>
+  <rect x="428" y="474" width="324" height="28" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <rect x="438" y="482" width="20" height="12" rx="4" fill="rgba(58,158,82,0.6)"/>
+  <text x="448" y="491" font-family="-apple-system,Arial" font-size="7" fill="white" text-anchor="middle">01</text>
+  <text x="470" y="491" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.7)">Follow up with Sarah re: contract</text>
+  <rect x="428" y="508" width="324" height="28" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+  <rect x="438" y="516" width="20" height="12" rx="4" fill="rgba(255,255,255,0.1)"/>
+  <text x="448" y="525" font-family="-apple-system,Arial" font-size="7" fill="rgba(255,255,255,0.4)" text-anchor="middle">02</text>
+  <text x="470" y="525" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.4)">Prep investor deck slides</text>
+
+  <!-- stats glassy -->
+  <rect x="428" y="554" width="100" height="60" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="478" y="582" font-family="-apple-system,Arial" font-size="22" fill="#3a9e52" text-anchor="middle" font-weight="900">4</text>
+  <text x="478" y="600" font-family="-apple-system,Arial" font-size="7" fill="rgba(255,255,255,0.2)" text-anchor="middle" letter-spacing="0.5">SESSIONS</text>
+  <rect x="538" y="554" width="100" height="60" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="588" y="582" font-family="-apple-system,Arial" font-size="22" fill="white" text-anchor="middle" font-weight="900">12</text>
+  <text x="588" y="600" font-family="-apple-system,Arial" font-size="7" fill="rgba(255,255,255,0.2)" text-anchor="middle" letter-spacing="0.5">TASKS</text>
+  <rect x="648" y="554" width="104" height="60" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="700" y="582" font-family="-apple-system,Arial" font-size="22" fill="white" text-anchor="middle" font-weight="900">1.5h</text>
+  <text x="700" y="600" font-family="-apple-system,Arial" font-size="7" fill="rgba(255,255,255,0.2)" text-anchor="middle" letter-spacing="0.5">FOCUSED</text>
+
+  <!-- history glassy -->
+  <text x="428" y="638" font-family="-apple-system,Arial" font-size="8" fill="rgba(255,255,255,0.2)" font-weight="700" letter-spacing="1.5">HISTORY</text>
+  <rect x="428" y="648" width="324" height="44" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <rect x="438" y="660" width="3" height="20" rx="2" fill="#3a9e52"/>
+  <text x="452" y="673" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.7)" font-weight="700">15 min · 3 tasks</text>
+  <text x="452" y="686" font-family="-apple-system,Arial" font-size="8" fill="rgba(255,255,255,0.2)">Yesterday 9:14am</text>
+  <rect x="428" y="700" width="324" height="44" rx="12" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  <rect x="438" y="712" width="3" height="20" rx="2" fill="rgba(255,255,255,0.2)"/>
+  <text x="452" y="725" font-family="-apple-system,Arial" font-size="9" fill="rgba(255,255,255,0.4)" font-weight="700">30 min · 2 tasks</text>
+  <text x="452" y="738" font-family="-apple-system,Arial" font-size="8" fill="rgba(255,255,255,0.15)">Yesterday 8:30am</text>
+
+
+  <!-- ════════════════════════════════ -->
+  <!-- G — BENTO GRID                  -->
+  <!-- ════════════════════════════════ -->
+  <rect x="800" y="34" width="500" height="858" rx="18" fill="#f0f0eb" filter="url(#s1)"/>
+  <!-- traffic lights -->
+  <circle cx="828" cy="58" r="7" fill="#ff5f57"/>
+  <circle cx="848" cy="58" r="7" fill="#ffbd2e"/>
+  <circle cx="868" cy="58" r="7" fill="#28c840"/>
+  <text x="1050" y="63" font-family="-apple-system,Arial" font-size="11" fill="#1a3020" text-anchor="middle" font-weight="800">focul</text>
+  <line x1="800" y1="82" x2="1300" y2="82" stroke="#e0e0d8" stroke-width="1"/>
+
+  <text x="826" y="108" font-family="-apple-system,Arial" font-size="18" fill="#1a3020" font-weight="900" letter-spacing="-0.5">Good morning, Riya.</text>
+  <text x="826" y="126" font-family="-apple-system,Arial" font-size="10" fill="#8aaa8a">Monday · Ready when you are.</text>
+
+  <!-- BENTO: big timer cell -->
+  <rect x="820" y="140" width="228" height="228" rx="18" fill="#1a3020" filter="url(#s2)"/>
+  <ellipse cx="934" cy="200" rx="100" ry="80" fill="rgba(58,158,82,0.15)"/>
+  <circle cx="934" cy="244" r="56" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+  <circle cx="934" cy="244" r="56" fill="none" stroke="#3a9e52" stroke-width="8" stroke-linecap="round"
+    stroke-dasharray="352" stroke-dashoffset="88" transform="rotate(-90 934 244)" filter="url(#glow)"/>
+  <text x="934" y="238" font-family="-apple-system,Arial" font-size="26" fill="white" text-anchor="middle" font-weight="900" letter-spacing="-1">15:00</text>
+  <text x="934" y="254" font-family="-apple-system,Arial" font-size="7" fill="rgba(255,255,255,0.3)" text-anchor="middle" letter-spacing="2">FOCUS</text>
+  <rect x="876" y="316" width="116" height="32" rx="16" fill="#3a9e52"/>
+  <text x="934" y="336" font-family="-apple-system,Arial" font-size="10" fill="white" text-anchor="middle" font-weight="700">Start →</text>
+
+  <!-- BENTO: session length cell -->
+  <rect x="1058" y="140" width="228" height="106" rx="18" fill="white" filter="url(#s2)"/>
+  <text x="1078" y="166" font-family="-apple-system,Arial" font-size="10" fill="#aaa" font-weight="700" letter-spacing="1">SESSION LENGTH</text>
+  <rect x="1078" y="178" width="188" height="36" rx="18" fill="#f0f0eb" stroke="#e0e0d8" stroke-width="1"/>
+  <rect x="1082" y="182" width="58" height="28" rx="14" fill="#1a3020"/>
+  <text x="1111" y="199" font-family="-apple-system,Arial" font-size="10" fill="white" text-anchor="middle" font-weight="700">15 min</text>
+  <text x="1174" y="199" font-family="-apple-system,Arial" font-size="10" fill="#aaa" text-anchor="middle">30 min</text>
+  <text x="1238" y="199" font-family="-apple-system,Arial" font-size="10" fill="#ccc" text-anchor="middle">free</text>
+  <text x="1078" y="234" font-family="-apple-system,Arial" font-size="9" fill="#ccc">Timer will appear in your menu bar</text>
+
+  <!-- BENTO: streak cell -->
+  <rect x="1058" y="256" width="106" height="112" rx="18" fill="#3a9e52" filter="url(#s2)"/>
+  <text x="1111" y="300" font-family="-apple-system,Arial" font-size="32" fill="white" text-anchor="middle">🔥</text>
+  <text x="1111" y="326" font-family="-apple-system,Arial" font-size="22" fill="white" text-anchor="middle" font-weight="900">3</text>
+  <text x="1111" y="344" font-family="-apple-system,Arial" font-size="8" fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="1">DAY STREAK</text>
+
+  <!-- BENTO: tasks cell -->
+  <rect x="1174" y="256" width="112" height="112" rx="18" fill="white" filter="url(#s2)"/>
+  <text x="1230" y="290" font-family="-apple-system,Arial" font-size="9" fill="#aaa" text-anchor="middle" font-weight="700" letter-spacing="1">TASKS</text>
+  <text x="1230" y="326" font-family="-apple-system,Arial" font-size="36" fill="#1a3020" text-anchor="middle" font-weight="900">12</text>
+  <text x="1230" y="348" font-family="-apple-system,Arial" font-size="8" fill="#3a9e52" text-anchor="middle">↑ captured</text>
+
+  <!-- BENTO: from last session -->
+  <rect x="820" y="378" width="466" height="110" rx="18" fill="white" filter="url(#s2)"/>
+  <text x="840" y="404" font-family="-apple-system,Arial" font-size="9" fill="#aaa" font-weight="700" letter-spacing="1.5">PICK UP WHERE YOU LEFT OFF</text>
+  <rect x="840" y="414" width="426" height="28" rx="10" fill="#f5fef5" stroke="#d8f0d8" stroke-width="1"/>
+  <rect x="848" y="420" width="22" height="16" rx="5" fill="#3a9e52"/>
+  <text x="859" y="431" font-family="-apple-system,Arial" font-size="7" fill="white" text-anchor="middle" font-weight="700">01</text>
+  <text x="882" y="431" font-family="-apple-system,Arial" font-size="10" fill="#1a3020" font-weight="600">Follow up with Sarah re: contract</text>
+  <rect x="840" y="448" width="426" height="28" rx="10" fill="#fafafa" stroke="#eee" stroke-width="1"/>
+  <rect x="848" y="454" width="22" height="16" rx="5" fill="#e8e8e8"/>
+  <text x="859" y="465" font-family="-apple-system,Arial" font-size="7" fill="#aaa" text-anchor="middle" font-weight="700">02</text>
+  <text x="882" y="465" font-family="-apple-system,Arial" font-size="10" fill="#888">Prep investor deck slides</text>
+
+  <!-- BENTO: history -->
+  <rect x="820" y="498" width="466" height="54" rx="18" fill="white" filter="url(#s2)"/>
+  <rect x="840" y="514" width="3" height="22" rx="2" fill="#3a9e52"/>
+  <text x="856" y="526" font-family="-apple-system,Arial" font-size="10" fill="#1a3020" font-weight="700">15 min session · 3 tasks</text>
+  <text x="856" y="540" font-family="-apple-system,Arial" font-size="8" fill="#bbb">Yesterday at 9:14am</text>
+  <rect x="1196" y="516" width="78" height="20" rx="10" fill="rgba(58,158,82,0.1)"/>
+  <text x="1235" y="529" font-family="-apple-system,Arial" font-size="8" fill="#3a9e52" text-anchor="middle">3 tasks saved</text>
+
+  <rect x="820" y="560" width="466" height="54" rx="18" fill="white" filter="url(#s2)" opacity="0.7"/>
+  <rect x="840" y="576" width="3" height="22" rx="2" fill="#ddd"/>
+  <text x="856" y="588" font-family="-apple-system,Arial" font-size="10" fill="#888" font-weight="700">30 min session · 2 tasks</text>
+  <text x="856" y="602" font-family="-apple-system,Arial" font-size="8" fill="#ccc">Yesterday at 8:30am</text>
+
+  <!-- ════════════════════════════════ -->
+  <!-- H — AMBIENT / SPA               -->
+  <!-- ════════════════════════════════ -->
+  <rect x="1320" y="34" width="260" height="858" rx="18" fill="#f8fff4" filter="url(#s1)"/>
+  <ellipse cx="1450" cy="320" rx="160" ry="200" fill="url(#g1)"/>
+  <!-- traffic lights -->
+  <circle cx="1348" cy="58" r="7" fill="#ff5f57"/>
+  <circle cx="1368" cy="58" r="7" fill="#ffbd2e"/>
+  <circle cx="1388" cy="58" r="7" fill="#28c840"/>
+  <line x1="1320" y1="82" x2="1580" y2="82" stroke="rgba(58,158,82,0.12)" stroke-width="1"/>
+
+  <!-- minimal greeting -->
+  <text x="1450" y="130" font-family="Georgia,serif" font-size="14" fill="#1a3020" text-anchor="middle" font-style="italic">Good morning.</text>
+
+  <!-- huge centered time -->
+  <text x="1450" y="230" font-family="-apple-system,Arial" font-size="56" fill="#1a3020" text-anchor="middle" font-weight="900" letter-spacing="-4">15:00</text>
+  <!-- progress arc — subtle -->
+  <path d="M 1370 290 A 90 90 0 0 1 1530 290" fill="none" stroke="#ddf0dd" stroke-width="4" stroke-linecap="round"/>
+  <path d="M 1370 290 A 90 90 0 0 1 1470 210" fill="none" stroke="#3a9e52" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="1470" cy="210" r="5" fill="#3a9e52"/>
+
+  <!-- minimal tab row -->
+  <text x="1380" y="325" font-family="-apple-system,Arial" font-size="10" fill="#aaa" font-weight="700">15</text>
+  <text x="1450" y="325" font-family="-apple-system,Arial" font-size="10" fill="#ccc" text-anchor="middle">30</text>
+  <text x="1510" y="325" font-family="-apple-system,Arial" font-size="10" fill="#ddd" text-anchor="end">free</text>
+  <line x1="1340" y1="330" x2="1560" y2="330" stroke="rgba(58,158,82,0.1)" stroke-width="1"/>
+
+  <!-- big CTA -->
+  <rect x="1358" y="346" width="184" height="46" rx="23" fill="#1a3020"/>
+  <text x="1450" y="373" font-family="-apple-system,Arial" font-size="11" fill="white" text-anchor="middle" font-weight="700">Begin session →</text>
+
+  <!-- tasks minimal -->
+  <text x="1450" y="420" font-family="-apple-system,Arial" font-size="8" fill="rgba(58,158,82,0.6)" text-anchor="middle" letter-spacing="2" font-weight="700">TODAY</text>
+  <line x1="1340" y1="428" x2="1560" y2="428" stroke="rgba(58,158,82,0.08)" stroke-width="1"/>
+  <text x="1348" y="450" font-family="-apple-system,Arial" font-size="10" fill="#3a9e52">·</text>
+  <text x="1360" y="450" font-family="-apple-system,Arial" font-size="10" fill="#4a6a52">Follow up with Sarah</text>
+  <text x="1348" y="468" font-family="-apple-system,Arial" font-size="10" fill="rgba(58,158,82,0.4)">·</text>
+  <text x="1360" y="468" font-family="-apple-system,Arial" font-size="10" fill="#8aaa8a">Prep investor deck</text>
+  <text x="1348" y="486" font-family="-apple-system,Arial" font-size="10" fill="rgba(58,158,82,0.2)">·</text>
+  <text x="1360" y="486" font-family="-apple-system,Arial" font-size="10" fill="#aacaaa">Review pricing proposal</text>
+
+  <line x1="1340" y1="498" x2="1560" y2="498" stroke="rgba(58,158,82,0.06)" stroke-width="1"/>
+
+  <!-- streak minimal -->
+  <text x="1450" y="530" font-family="-apple-system,Arial" font-size="28" text-anchor="middle">🔥</text>
+  <text x="1450" y="556" font-family="-apple-system,Arial" font-size="12" fill="#1a3020" text-anchor="middle" font-weight="800">3 day streak</text>
+  <text x="1450" y="572" font-family="-apple-system,Arial" font-size="9" fill="#aaa" text-anchor="middle">Keep going. You're building a habit.</text>
+
+  <line x1="1340" y1="586" x2="1560" y2="586" stroke="rgba(58,158,82,0.06)" stroke-width="1"/>
+
+  <!-- history minimal -->
+  <text x="1450" y="612" font-family="-apple-system,Arial" font-size="8" fill="rgba(58,158,82,0.4)" text-anchor="middle" letter-spacing="2" font-weight="700">RECENT</text>
+  <text x="1348" y="636" font-family="-apple-system,Arial" font-size="10" fill="#6a8a72" font-weight="600">15 min · 3 tasks</text>
+  <text x="1562" y="636" font-family="-apple-system,Arial" font-size="9" fill="#ccc" text-anchor="end">Yesterday</text>
+  <text x="1348" y="656" font-family="-apple-system,Arial" font-size="10" fill="#aacaaa">30 min · 2 tasks</text>
+  <text x="1562" y="656" font-family="-apple-system,Arial" font-size="9" fill="#ddd" text-anchor="end">Yesterday</text>
+  <text x="1348" y="676" font-family="-apple-system,Arial" font-size="10" fill="#ccdacc">15 min · 4 tasks</text>
+  <text x="1562" y="676" font-family="-apple-system,Arial" font-size="9" fill="#e0e0e0" text-anchor="end">Sat</text>
+
+</svg>
