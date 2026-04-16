@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const [customUnit, setCustomUnit] = useState<'s' | 'min' | 'hr'>('min')
   const [showCustom, setShowCustom] = useState(false)
   const [activeNav, setActiveNav] = useState<'dashboard' | 'history'>('dashboard')
+  const [isLeaving, setIsLeaving] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const hour = new Date().getHours()
@@ -95,11 +96,14 @@ export default function DashboardPage() {
   const firstName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
 
   function startSession() {
-    if (showCustom && customMins) {
-      router.push(`/timer?seconds=${timerSeconds}`)
-    } else {
-      router.push(`/timer?duration=${activeDuration}`)
-    }
+    setIsLeaving(true)
+    setTimeout(() => {
+      if (showCustom && customMins) {
+        router.push(`/timer?seconds=${timerSeconds}`)
+      } else {
+        router.push(`/timer?duration=${activeDuration}`)
+      }
+    }, 380)
   }
 
   const timerDisplay = showCustom && customMins && customUnit === 's'
@@ -117,6 +121,10 @@ export default function DashboardPage() {
       overflow: 'hidden',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       background: '#faf9f7',
+      opacity: isLeaving ? 0 : 1,
+      transform: isLeaving ? 'scale(1.05)' : 'scale(1)',
+      transition: 'opacity 0.38s cubic-bezier(0.4,0,0.2,1), transform 0.38s cubic-bezier(0.4,0,0.2,1)',
+      willChange: 'opacity, transform',
     }}>
 
       {/* ── Sidebar ── */}

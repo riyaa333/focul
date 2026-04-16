@@ -47,6 +47,7 @@ function TimerContent() {
   const [recordingSeconds, setRecordingSeconds] = useState(0)
   const [error, setError] = useState('')
   const [quote] = useState(() => QUOTES[Math.floor(Math.random() * QUOTES.length)])
+  const [entered, setEntered] = useState(false)
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -73,6 +74,12 @@ function TimerContent() {
       })
     } catch { /* audio unavailable */ }
   }
+
+  useEffect(() => {
+    // Trigger entrance animation on mount
+    const raf = requestAnimationFrame(() => setEntered(true))
+    return () => cancelAnimationFrame(raf)
+  }, [])
 
   useEffect(() => {
     async function loadBriefing() {
@@ -199,11 +206,20 @@ function TimerContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9fdf6] flex flex-col" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}>
+    <div className="min-h-screen bg-[#f9fdf6] flex flex-col" style={{
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      opacity: entered ? 1 : 0,
+      transform: entered ? 'scale(1)' : 'scale(0.96)',
+      transition: 'opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1)',
+      willChange: 'opacity, transform',
+    }}>
 
       {/* Nav */}
       <nav className="flex items-center px-10 py-5">
-        <button onClick={() => router.push('/dashboard')} className="text-xs text-[#b0c8b4] hover:text-[#1a3020] transition-colors">
+        <button onClick={() => {
+          setEntered(false)
+          setTimeout(() => router.push('/dashboard'), 380)
+        }} className="text-xs text-[#b0c8b4] hover:text-[#1a3020] transition-colors">
           ← back
         </button>
       </nav>
@@ -347,7 +363,10 @@ function TimerContent() {
                 Next session →
               </button>
               <button
-                onClick={() => router.push('/dashboard')}
+                onClick={() => {
+                  setEntered(false)
+                  setTimeout(() => router.push('/dashboard'), 380)
+                }}
                 className="px-6 py-3 rounded-full text-sm text-[#b0c8b4] hover:text-[#1a3020] transition-colors"
               >
                 Dashboard
