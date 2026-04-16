@@ -466,75 +466,79 @@ export default function DashboardPage() {
           for (let w = 0; w < 12; w++) weeks.push(days.slice(w * 7, w * 7 + 7))
           const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
+          // Best streak calc (longest ever run)
+          let bestStreak = 0, run = 0
+          for (const d of days) { if (d.count > 0) { run++; if (run > bestStreak) bestStreak = run } else run = 0 }
+          const circumference = 2 * Math.PI * 62
+          const streakGoal = 30
+          const pct = Math.min(streak / streakGoal, 1)
+          const offset = circumference * (1 - pct)
+
           return (
-            <div style={{ width: '100%', maxWidth: 520, alignSelf: 'flex-start' }}>
-              {/* Streak header */}
-              <div style={{ display: 'flex', gap: 16, marginBottom: 28 }}>
+            <div style={{ width: '100%', maxWidth: 420, alignSelf: 'flex-start', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+
+              {/* Ring hero */}
+              <div style={{ position: 'relative', width: 180, height: 180 }}>
+                <svg width="180" height="180" viewBox="0 0 180 180" style={{ transform: 'rotate(-90deg)' }}>
+                  <circle cx="90" cy="90" r="62" fill="none" stroke="#f0ede8" strokeWidth="12" />
+                  <circle cx="90" cy="90" r="62" fill="none" stroke="#3a9e52" strokeWidth="12"
+                    strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round"
+                    style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1)' }} />
+                </svg>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                  <span style={{ fontSize: 10, color: '#c0b8a8', letterSpacing: 2, textTransform: 'uppercase' }}>streak</span>
+                  <span style={{ fontSize: 56, fontWeight: 900, color: '#1a1410', letterSpacing: -4, lineHeight: 1 }}>{streak}</span>
+                  <span style={{ fontSize: 12, color: '#b0a898' }}>days 🔥</span>
+                </div>
+              </div>
+
+              {/* Stats row */}
+              <div style={{ width: '100%', background: '#fff', borderRadius: 20, border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.04)', display: 'flex', overflow: 'hidden' }}>
                 {[
-                  { val: streak, label: 'day streak', icon: '🔥' },
-                  { val: sessions.length, label: 'sessions', icon: '✦' },
-                  { val: `${Math.round(totalMins / 60)}h`, label: 'total focus', icon: '⏱' },
-                ].map(({ val, label, icon }) => (
+                  { val: sessions.length, label: 'sessions' },
+                  { val: `${Math.round(totalMins / 60)}h`, label: 'focused' },
+                  { val: bestStreak, label: 'best streak' },
+                ].map(({ val, label }, i) => (
                   <div key={label} style={{
-                    flex: 1, background: '#fff', borderRadius: 18, padding: '18px 20px',
-                    border: '1px solid #ede9e2', boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-                    textAlign: 'center',
+                    flex: 1, padding: '18px 14px', textAlign: 'center',
+                    borderRight: i < 2 ? '1px solid #f3f1ee' : 'none',
                   }}>
-                    <div style={{ fontSize: 22, marginBottom: 4 }}>{icon}</div>
-                    <div style={{ fontSize: 26, fontWeight: 800, color: '#1a1410', letterSpacing: -1 }}>{val}</div>
-                    <div style={{ fontSize: 11, color: '#b0a898', marginTop: 2 }}>{label}</div>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: '#1a1410', letterSpacing: -1 }}>{val}</div>
+                    <div style={{ fontSize: 10, color: '#b0a898', marginTop: 3 }}>{label}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Calendar heatmap */}
-              <div style={{
-                background: '#fff', borderRadius: 20, padding: '22px 24px',
-                border: '1px solid #ede9e2', boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-              }}>
-                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 16 }}>
-                  Last 12 weeks
-                </p>
-
-                {/* Day labels */}
-                <div style={{ display: 'flex', gap: 4, marginBottom: 4, paddingLeft: 0 }}>
+              {/* Heatmap */}
+              <div style={{ width: '100%', background: '#fff', borderRadius: 20, padding: '20px 22px', border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.04)' }}>
+                <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Last 12 weeks</p>
+                <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
                   {dayLabels.map((d, i) => (
-                    <div key={i} style={{ width: 28, textAlign: 'center', fontSize: 9, color: '#d4cfc8', fontWeight: 600 }}>{d}</div>
+                    <div key={i} style={{ width: 26, textAlign: 'center', fontSize: 9, color: '#d4cfc8', fontWeight: 600 }}>{d}</div>
                   ))}
                 </div>
-
-                {/* Grid — rows = weeks, cols = days */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                   {weeks.map((week, wi) => (
                     <div key={wi} style={{ display: 'flex', gap: 4 }}>
                       {week.map((day, di) => {
                         const isToday = day.date === today
-                        const intensity = day.count === 0 ? 0 : day.count === 1 ? 1 : day.count === 2 ? 2 : 3
-                        const bg = intensity === 0 ? '#f3f1ee'
-                          : intensity === 1 ? '#b8e4c0'
-                          : intensity === 2 ? '#6abe7e'
-                          : '#3a9e52'
+                        const bg = day.count === 0 ? '#f0ede8' : day.count === 1 ? '#b8e4c0' : day.count === 2 ? '#6abe7e' : '#3a9e52'
                         return (
                           <div key={di} title={`${day.date}: ${day.count} session${day.count !== 1 ? 's' : ''}, ${day.mins}m`} style={{
-                            width: 28, height: 28, borderRadius: 6, background: bg,
+                            width: 26, height: 26, borderRadius: 6, background: bg, flexShrink: 0,
                             border: isToday ? '2px solid #1a1410' : '2px solid transparent',
-                            transition: 'transform 0.1s',
-                            cursor: day.count > 0 ? 'default' : 'default',
-                            flexShrink: 0,
                           }} />
                         )
                       })}
                     </div>
                   ))}
                 </div>
-
-                {/* Legend */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 14, justifyContent: 'flex-end' }}>
-                  <span style={{ fontSize: 10, color: '#c0b8a8' }}>Less</span>
-                  {['#f3f1ee', '#b8e4c0', '#6abe7e', '#3a9e52'].map(c => (
-                    <div key={c} style={{ width: 12, height: 12, borderRadius: 3, background: c }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 12, justifyContent: 'flex-end' }}>
+                  <span style={{ fontSize: 9, color: '#c0b8a8' }}>Less</span>
+                  {['#f0ede8', '#b8e4c0', '#6abe7e', '#3a9e52'].map(c => (
+                    <div key={c} style={{ width: 11, height: 11, borderRadius: 3, background: c }} />
                   ))}
-                  <span style={{ fontSize: 10, color: '#c0b8a8' }}>More</span>
+                  <span style={{ fontSize: 9, color: '#c0b8a8' }}>More</span>
                 </div>
               </div>
             </div>
