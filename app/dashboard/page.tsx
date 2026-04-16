@@ -171,8 +171,15 @@ export default function DashboardPage() {
       }}>
 
         {/* Logo */}
-        <div style={{ padding: '0 8px', marginBottom: 32, fontSize: 18, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5 }}>
-          Foc<span style={{ color: '#3a9e52' }}>ul</span>
+        <div style={{ padding: '0 8px', marginBottom: 32, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <svg width="24" height="24" viewBox="0 0 160 160">
+            <rect x="18" y="58" width="18" height="52" rx="9" fill="#d4ead8"/>
+            <rect x="42" y="36" width="18" height="96" rx="9" fill="#8dcc9e"/>
+            <rect x="66" y="18" width="18" height="132" rx="9" fill="#1e5c30"/>
+            <rect x="90" y="36" width="18" height="96" rx="9" fill="#3a9e52"/>
+            <rect x="114" y="58" width="18" height="52" rx="9" fill="#8dcc9e"/>
+          </svg>
+          <span style={{ fontSize: 18, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5 }}>Foc<span style={{ color: '#3a9e52' }}>ul</span></span>
         </div>
 
         {/* Nav */}
