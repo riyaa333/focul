@@ -123,14 +123,27 @@ function TimerContent() {
   async function startRecording() {
     setError('')
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      // Request highest quality audio for better transcription
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 48000,
+          channelCount: 1,
+        }
+      })
+
       const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
         ? 'audio/webm;codecs=opus'
         : MediaRecorder.isTypeSupported('audio/webm')
         ? 'audio/webm'
         : 'audio/mp4'
 
-      const mediaRecorder = new MediaRecorder(stream, { mimeType })
+      // Higher bitrate = better transcription accuracy
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType,
+        audioBitsPerSecond: 128000,
+      })
       chunksRef.current = []
 
       mediaRecorder.ondataavailable = (e) => {
