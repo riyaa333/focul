@@ -514,20 +514,18 @@ function TimerContent() {
         {/* RUNNING */}
         {phase === 'running' && (
           <div className="text-center select-none w-full max-w-sm">
-            <div className="font-black leading-none tabular-nums mb-4"
+            <div className="font-black leading-none tabular-nums mb-6"
               style={{ fontSize: 'clamp(72px, 18vw, 112px)', letterSpacing: '-6px' }}>
               <span className="text-[#1a3020]">{String(minutes).padStart(2, '0')}</span>
               <span className="text-[#d0e8d0]">:{String(seconds).padStart(2, '0')}</span>
             </div>
 
-            <div className="w-48 mx-auto mb-3">
-              <div className="h-0.5 bg-[#e8f5e8] rounded-full overflow-hidden">
+            <div className="w-56 mx-auto mb-8">
+              <div className="h-1 bg-[#e8f5e8] rounded-full overflow-hidden">
                 <div className="h-full bg-[#3a9e52] rounded-full transition-all duration-1000 ease-linear"
                   style={{ width: `${progress * 100}%` }} />
               </div>
             </div>
-            <p className="text-xs text-[#c0d4c0] tracking-widest uppercase mb-4">focusing</p>
-            <p className="text-xs text-[#b0c8b4] italic mb-10 max-w-[240px] mx-auto leading-relaxed">&ldquo;{quote}&rdquo;</p>
 
             {(mode === 'accountability' ? accountabilityItems.length > 0 : briefingTasks.length > 0) && (
               <div className="border-t border-[#eaf5e4] pt-6">

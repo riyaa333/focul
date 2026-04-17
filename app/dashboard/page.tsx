@@ -165,7 +165,7 @@ export default function DashboardPage() {
 
       {/* ── Sidebar ── */}
       <aside style={{
-        width: 220,
+        width: 248,
         flexShrink: 0,
         background: '#f3f1ee',
         borderRight: '1px solid #e8e4de',
@@ -292,30 +292,6 @@ export default function DashboardPage() {
             </div>
           )
         })()}
-
-        {/* Stats */}
-        <div style={{
-          background: '#fff',
-          borderRadius: 14,
-          padding: 16,
-          marginBottom: 10,
-          border: '1px solid #ede9e2',
-          boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-        }}>
-          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Today</p>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {[
-              { val: todayCount, lbl: 'sessions' },
-              { val: `${todayMins}m`, lbl: 'focused' },
-              { val: sessions.length, lbl: 'total' },
-            ].map(({ val, lbl }) => (
-              <div key={lbl} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5 }}>{val}</div>
-                <div style={{ fontSize: 10, color: '#b0a898', marginTop: 2 }}>{lbl}</div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Sign out */}
         <button onClick={signOut} style={{

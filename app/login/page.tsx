@@ -41,58 +41,121 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f8fff3]">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <span className="text-2xl font-bold text-[#1a3020]">focul</span>
-          <p className="text-[#6a8f72] mt-1 text-sm">
-            {mode === 'login' ? 'Welcome back.' : 'Start your first session.'}
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#f8fdf8',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    }}>
+      <div style={{ width: '100%', maxWidth: 360, padding: '0 20px' }}>
+
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <svg width="32" height="32" viewBox="0 0 160 160">
+              <rect x="18" y="58" width="18" height="52" rx="9" fill="#d4ead8"/>
+              <rect x="42" y="36" width="18" height="96" rx="9" fill="#8dcc9e"/>
+              <rect x="66" y="18" width="18" height="132" rx="9" fill="#1e5c30"/>
+              <rect x="90" y="36" width="18" height="96" rx="9" fill="#3a9e52"/>
+              <rect x="114" y="58" width="18" height="52" rx="9" fill="#8dcc9e"/>
+            </svg>
+            <span style={{ fontSize: 26, fontWeight: 800, color: '#1a1410', letterSpacing: -1 }}>
+              Foc<span style={{ color: '#3a9e52' }}>ul</span>
+            </span>
+          </div>
+          <p style={{ fontSize: 13, color: '#a0b8a0', fontWeight: 400 }}>
+            {mode === 'login' ? 'Welcome back.' : 'Start closing the loop.'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white border border-[#d4f0be] rounded-xl p-8 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-[#1a3020] mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className="w-full border border-[#d4f0be] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#3a9e52] bg-white text-[#1a3020]"
-              placeholder="you@company.com"
-            />
-          </div>
+        {/* Card */}
+        <div style={{
+          background: '#fff',
+          borderRadius: 20,
+          border: '1px solid #e8f0e8',
+          padding: '28px 28px 24px',
+          boxShadow: '0 4px 32px rgba(0,0,0,0.06)',
+        }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#5a7a5a', marginBottom: 6 }}>
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                placeholder="you@company.com"
+                style={{
+                  width: '100%', border: '1.5px solid #e4ede4', borderRadius: 10,
+                  padding: '10px 14px', fontSize: 14, outline: 'none',
+                  background: '#fafdf8', color: '#1a1410', fontFamily: 'inherit',
+                  boxSizing: 'border-box', transition: 'border-color 0.15s',
+                }}
+                onFocus={e => e.target.style.borderColor = '#3a9e52'}
+                onBlur={e => e.target.style.borderColor = '#e4ede4'}
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-[#1a3020] mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full border border-[#d4f0be] rounded-lg px-3 py-2 text-sm outline-none focus:border-[#3a9e52] bg-white text-[#1a3020]"
-              placeholder="••••••••"
-            />
-          </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#5a7a5a', marginBottom: 6 }}>
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                minLength={6}
+                placeholder="••••••••"
+                style={{
+                  width: '100%', border: '1.5px solid #e4ede4', borderRadius: 10,
+                  padding: '10px 14px', fontSize: 14, outline: 'none',
+                  background: '#fafdf8', color: '#1a1410', fontFamily: 'inherit',
+                  boxSizing: 'border-box', transition: 'border-color 0.15s',
+                }}
+                onFocus={e => e.target.style.borderColor = '#3a9e52'}
+                onBlur={e => e.target.style.borderColor = '#e4ede4'}
+              />
+            </div>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          {message && <p className="text-[#3a9e52] text-sm">{message}</p>}
+            {error && (
+              <p style={{ fontSize: 12, color: '#e07070', background: '#fff5f5', padding: '8px 12px', borderRadius: 8, margin: 0 }}>
+                {error}
+              </p>
+            )}
+            {message && (
+              <p style={{ fontSize: 12, color: '#3a9e52', background: '#f0f9f2', padding: '8px 12px', borderRadius: 8, margin: 0 }}>
+                {message}
+              </p>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#3a9e52] text-white rounded-lg py-2.5 text-sm font-medium hover:bg-[#2d8a44] transition-colors disabled:opacity-50"
-          >
-            {loading ? 'Loading...' : mode === 'login' ? 'Sign in' : 'Create account'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: '100%', padding: '12px', borderRadius: 12, border: 'none',
+                fontSize: 14, fontWeight: 700, color: '#fff', cursor: loading ? 'default' : 'pointer',
+                background: 'linear-gradient(135deg, #2d8a44, #4aaa60)',
+                boxShadow: '0 4px 16px rgba(45,138,68,0.25)',
+                opacity: loading ? 0.7 : 1,
+                transition: 'opacity 0.15s',
+                marginTop: 4,
+              }}
+            >
+              {loading ? 'Loading...' : mode === 'login' ? 'Sign in →' : 'Create account →'}
+            </button>
+          </form>
+        </div>
 
-        <p className="text-center text-sm text-[#6a8f72] mt-4">
+        <p style={{ textAlign: 'center', fontSize: 12, color: '#a0b8a0', marginTop: 16 }}>
           {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
           <button
             onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setMessage('') }}
-            className="text-[#3a9e52] font-medium hover:underline"
+            style={{ color: '#3a9e52', fontWeight: 600, background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 12 }}
           >
             {mode === 'login' ? 'Sign up' : 'Sign in'}
           </button>
