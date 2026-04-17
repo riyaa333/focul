@@ -52,9 +52,16 @@ function TimerContent() {
   const [entered, setEntered] = useState(false)
   const [accountabilityItems, setAccountabilityItems] = useState<AccountabilityItem[]>([])
   const [inputTask, setInputTask] = useState('')
+  const [inputMode, setInputMode] = useState<'type' | 'voice'>('voice')
+  const [inputRecording, setInputRecording] = useState(false)
+  const [inputRecordingSeconds, setInputRecordingSeconds] = useState(0)
+  const [inputProcessing, setInputProcessing] = useState(false)
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const inputRecordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const inputMediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const inputChunksRef = useRef<Blob[]>([])
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
 
@@ -230,6 +237,49 @@ function TimerContent() {
     setInputTask('')
   }
 
+  async function startInputRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 48000, channelCount: 1 }
+      })
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4'
+      const mr = new MediaRecorder(stream, { mimeType, audioBitsPerSecond: 128000 })
+      inputChunksRef.current = []
+      mr.ondataavailable = e => { if (e.data.size > 0) inputChunksRef.current.push(e.data) }
+      mr.start(250)
+      inputMediaRecorderRef.current = mr
+      setInputRecording(true)
+      setInputRecordingSeconds(0)
+      inputRecordingIntervalRef.current = setInterval(() => setInputRecordingSeconds(s => s + 1), 1000)
+    } catch { setError('Could not access microphone.') }
+  }
+
+  async function stopInputRecording() {
+    const mr = inputMediaRecorderRef.current
+    if (!mr) return
+    clearInterval(inputRecordingIntervalRef.current!)
+    setInputRecording(false)
+    await new Promise<void>(resolve => { mr.onstop = () => resolve(); mr.stop() })
+    mr.stream.getTracks().forEach(t => t.stop())
+    setInputProcessing(true)
+    const ext = mr.mimeType.includes('mp4') ? 'mp4' : 'webm'
+    const blob = new Blob(inputChunksRef.current, { type: mr.mimeType })
+    const formData = new FormData()
+    formData.append('audio', blob, `tasks.${ext}`)
+    try {
+      const res = await fetch('/api/transcribe', { method: 'POST', body: formData })
+      const data = await res.json()
+      if (data.tasks && data.tasks.length > 0) {
+        setAccountabilityItems(prev => [...prev, ...data.tasks.map((t: string) => ({ text: t, completed: false }))])
+      } else if (data.transcript) {
+        // Fallback: add the whole transcript as one item
+        setAccountabilityItems(prev => [...prev, { text: data.transcript, completed: false }])
+      }
+    } catch { setError('Could not process voice. Try typing instead.') }
+    setInputProcessing(false)
+  }
+
   function toggleAccountabilityItem(index: number) {
     setAccountabilityItems(prev => prev.map((item, i) =>
       i === index ? { ...item, completed: !item.completed } : item
@@ -317,38 +367,106 @@ function TimerContent() {
           <div className="w-full max-w-sm">
             <p className="text-xs text-[#b0c8b4] uppercase tracking-widest mb-2 text-center">Accountability mode</p>
             <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-1 tracking-tight">What will you do?</h2>
-            <p className="text-sm text-[#a8c4a8] text-center mb-7">List your tasks for this session</p>
+            <p className="text-sm text-[#a8c4a8] text-center mb-6">Speak or type your tasks for this session</p>
 
-            {/* Task list */}
-            <div className="space-y-2 mb-4">
-              {accountabilityItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[#e8f5e8] bg-white">
-                  <span className="text-[#3a9e52] font-bold text-sm w-4 flex-shrink-0">{i + 1}.</span>
-                  <span className="text-sm text-[#1a3020]">{item.text}</span>
-                </div>
+            {/* Mode toggle */}
+            <div className="flex bg-[#f0f5f0] rounded-full p-1 mb-5">
+              {(['voice', 'type'] as const).map(m => (
+                <button key={m} onClick={() => setInputMode(m)}
+                  className="flex-1 py-2 rounded-full text-xs font-semibold transition-all"
+                  style={{
+                    background: inputMode === m ? '#fff' : 'transparent',
+                    color: inputMode === m ? '#1a3020' : '#9ab09a',
+                    boxShadow: inputMode === m ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                  }}>
+                  {m === 'voice' ? '🎙 Speak' : '⌨️ Type'}
+                </button>
               ))}
             </div>
 
-            {/* Input */}
-            <div className="flex gap-2 mb-7">
-              <input
-                value={inputTask}
-                onChange={e => setInputTask(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') addAccountabilityItem() }}
-                placeholder={accountabilityItems.length === 0 ? 'e.g. Finish the landing page copy' : 'Add another task...'}
-                className="flex-1 text-sm border border-[#e0ede0] rounded-xl px-4 py-3 outline-none bg-white text-[#1a3020] placeholder-[#c0d4c0]"
-                style={{ fontFamily: 'inherit' }}
-                autoFocus
-              />
-              {inputTask.trim() && (
-                <button onClick={addAccountabilityItem}
-                  className="px-4 py-3 rounded-xl text-[#3a9e52] font-bold text-xl bg-[#f0f9f2] hover:bg-[#e4f5e8] transition-colors">
-                  +
-                </button>
-              )}
-            </div>
-
+            {/* Extracted task list */}
             {accountabilityItems.length > 0 && (
+              <div className="space-y-2 mb-4">
+                {accountabilityItems.map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[#dceadc] bg-white">
+                    <span className="text-[#3a9e52] font-bold text-sm w-4 flex-shrink-0">{i + 1}.</span>
+                    <span className="text-sm text-[#1a3020] flex-1">{item.text}</span>
+                    <button onClick={() => setAccountabilityItems(prev => prev.filter((_, j) => j !== i))}
+                      className="text-[#c0d4c0] hover:text-red-400 text-xs transition-colors">✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Voice input */}
+            {inputMode === 'voice' && (
+              <div className="flex flex-col items-center gap-4 mb-6">
+                {inputProcessing ? (
+                  <div className="text-center py-4">
+                    <div className="text-2xl mb-2 animate-pulse">✦</div>
+                    <p className="text-sm text-[#b0c8b4]">Extracting your tasks...</p>
+                  </div>
+                ) : !inputRecording ? (
+                  <>
+                    <button onClick={startInputRecording}
+                      className="relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+                      style={{ width: 72, height: 72 }}>
+                      <span className="absolute inset-0 rounded-full bg-[#4a8fd4] opacity-15" style={{ transform: 'scale(1.35)' }} />
+                      <span className="relative flex items-center justify-center w-[72px] h-[72px] rounded-full"
+                        style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 6px 24px rgba(45,106,170,0.35)' }}>
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+                          <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                          <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                          <line x1="8" y1="23" x2="16" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </span>
+                    </button>
+                    <p className="text-xs text-[#b0c8b4]">
+                      {accountabilityItems.length === 0 ? 'Tap and say your tasks' : 'Tap to add more tasks'}
+                    </p>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center gap-4 w-full">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                      <span className="text-xs font-semibold tracking-widest uppercase text-blue-400">
+                        Recording — {String(Math.floor(inputRecordingSeconds / 60)).padStart(2, '0')}:{String(inputRecordingSeconds % 60).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#b0c8b4] italic text-center">Say your tasks naturally, e.g. &quot;Finish the API, write tests, update docs&quot;</p>
+                    <button onClick={stopInputRecording}
+                      className="px-8 py-3 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+                      style={{ background: '#e07070', boxShadow: '0 4px 16px rgba(224,112,112,0.3)' }}>
+                      Done speaking
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Type input */}
+            {inputMode === 'type' && (
+              <div className="flex gap-2 mb-5">
+                <input
+                  value={inputTask}
+                  onChange={e => setInputTask(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') addAccountabilityItem() }}
+                  placeholder={accountabilityItems.length === 0 ? 'e.g. Finish the landing page copy' : 'Add another task...'}
+                  className="flex-1 text-sm border border-[#e0ede0] rounded-xl px-4 py-3 outline-none bg-white text-[#1a3020] placeholder-[#c0d4c0]"
+                  style={{ fontFamily: 'inherit' }}
+                  autoFocus
+                />
+                {inputTask.trim() && (
+                  <button onClick={addAccountabilityItem}
+                    className="px-4 py-3 rounded-xl text-[#4a8fd4] font-bold text-xl bg-[#eef4fb] hover:bg-[#e0ecf8] transition-colors">
+                    +
+                  </button>
+                )}
+              </div>
+            )}
+
+            {accountabilityItems.length > 0 && !inputRecording && !inputProcessing && (
               <button
                 onClick={() => { setSecondsLeft(totalSeconds); setPhase('running') }}
                 className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
