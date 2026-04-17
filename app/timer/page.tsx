@@ -5,7 +5,8 @@ import { supabase } from '@/lib/supabase'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
-type Phase = 'briefing' | 'running' | 'debrief' | 'processing' | 'done'
+type Phase = 'briefing' | 'input' | 'running' | 'debrief' | 'processing' | 'accountability' | 'done'
+type AccountabilityItem = { text: string; completed: boolean }
 
 const QUOTES = [
   "The secret of getting ahead is getting started.",
@@ -37,8 +38,9 @@ function TimerContent() {
   const totalSeconds = searchParams.get('seconds')
     ? parseInt(searchParams.get('seconds')!)
     : durationMinutes * 60
+  const mode = (searchParams.get('mode') || 'focus') as 'focus' | 'accountability'
 
-  const [phase, setPhase] = useState<Phase>('running')
+  const [phase, setPhase] = useState<Phase>(mode === 'accountability' ? 'input' : 'running')
   const [secondsLeft, setSecondsLeft] = useState(totalSeconds)
   const [tasks, setTasks] = useState<string[]>([])
   const [briefingTasks, setBriefingTasks] = useState<string[]>([])
@@ -48,6 +50,8 @@ function TimerContent() {
   const [error, setError] = useState('')
   const [quote] = useState(() => QUOTES[Math.floor(Math.random() * QUOTES.length)])
   const [entered, setEntered] = useState(false)
+  const [accountabilityItems, setAccountabilityItems] = useState<AccountabilityItem[]>([])
+  const [inputTask, setInputTask] = useState('')
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -106,7 +110,7 @@ function TimerContent() {
         if (s <= 1) {
           clearInterval(intervalRef.current!)
           playAlarm()
-          setPhase('debrief')
+          setPhase(mode === 'accountability' ? 'accountability' : 'debrief')
           return 0
         }
         return s - 1
@@ -220,14 +224,40 @@ function TimerContent() {
     }
   }
 
+  function addAccountabilityItem() {
+    if (!inputTask.trim()) return
+    setAccountabilityItems(prev => [...prev, { text: inputTask.trim(), completed: false }])
+    setInputTask('')
+  }
+
+  function toggleAccountabilityItem(index: number) {
+    setAccountabilityItems(prev => prev.map((item, i) =>
+      i === index ? { ...item, completed: !item.completed } : item
+    ))
+  }
+
+  async function finishAccountability() {
+    const completedTasks = accountabilityItems.filter(i => i.completed).map(i => i.text)
+    const notCompleted = accountabilityItems.filter(i => !i.completed).map(i => i.text)
+    const summary = [
+      completedTasks.length > 0 ? `Completed: ${completedTasks.join(', ')}` : '',
+      notCompleted.length > 0 ? `Not completed: ${notCompleted.join(', ')}` : '',
+    ].filter(Boolean).join(' | ')
+    await saveSession(summary, completedTasks)
+    setTasks(completedTasks)
+    setPhase('done')
+  }
+
   function resetTimer() {
-    setPhase('briefing')
+    setPhase(mode === 'accountability' ? 'input' : 'briefing')
     setSecondsLeft(totalSeconds)
     setBriefingTasks(tasks)
     setTasks([])
     setTranscript('')
     setRecordingSeconds(0)
     setError('')
+    setAccountabilityItems([])
+    setInputTask('')
   }
 
   return (
@@ -282,6 +312,54 @@ function TimerContent() {
           </div>
         )}
 
+        {/* INPUT (Accountability pre-timer) */}
+        {phase === 'input' && (
+          <div className="w-full max-w-sm">
+            <p className="text-xs text-[#b0c8b4] uppercase tracking-widest mb-2 text-center">Accountability mode</p>
+            <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-1 tracking-tight">What will you do?</h2>
+            <p className="text-sm text-[#a8c4a8] text-center mb-7">List your tasks for this session</p>
+
+            {/* Task list */}
+            <div className="space-y-2 mb-4">
+              {accountabilityItems.map((item, i) => (
+                <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[#e8f5e8] bg-white">
+                  <span className="text-[#3a9e52] font-bold text-sm w-4 flex-shrink-0">{i + 1}.</span>
+                  <span className="text-sm text-[#1a3020]">{item.text}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Input */}
+            <div className="flex gap-2 mb-7">
+              <input
+                value={inputTask}
+                onChange={e => setInputTask(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') addAccountabilityItem() }}
+                placeholder={accountabilityItems.length === 0 ? 'e.g. Finish the landing page copy' : 'Add another task...'}
+                className="flex-1 text-sm border border-[#e0ede0] rounded-xl px-4 py-3 outline-none bg-white text-[#1a3020] placeholder-[#c0d4c0]"
+                style={{ fontFamily: 'inherit' }}
+                autoFocus
+              />
+              {inputTask.trim() && (
+                <button onClick={addAccountabilityItem}
+                  className="px-4 py-3 rounded-xl text-[#3a9e52] font-bold text-xl bg-[#f0f9f2] hover:bg-[#e4f5e8] transition-colors">
+                  +
+                </button>
+              )}
+            </div>
+
+            {accountabilityItems.length > 0 && (
+              <button
+                onClick={() => { setSecondsLeft(totalSeconds); setPhase('running') }}
+                className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 4px 16px rgba(45,106,170,0.3)' }}
+              >
+                Start {durationMinutes} min session →
+              </button>
+            )}
+          </div>
+        )}
+
         {/* RUNNING */}
         {phase === 'running' && (
           <div className="text-center select-none w-full max-w-sm">
@@ -300,15 +378,24 @@ function TimerContent() {
             <p className="text-xs text-[#c0d4c0] tracking-widest uppercase mb-4">focusing</p>
             <p className="text-xs text-[#b0c8b4] italic mb-10 max-w-[240px] mx-auto leading-relaxed">&ldquo;{quote}&rdquo;</p>
 
-            {briefingTasks.length > 0 && (
+            {(mode === 'accountability' ? accountabilityItems.length > 0 : briefingTasks.length > 0) && (
               <div className="border-t border-[#eaf5e4] pt-6">
-                <p className="text-xs text-[#c0d4c0] uppercase tracking-widest mb-4">Working on</p>
+                <p className="text-xs text-[#c0d4c0] uppercase tracking-widest mb-4">
+                  {mode === 'accountability' ? 'This session' : 'Working on'}
+                </p>
                 <div className="space-y-2.5 text-left">
-                  {briefingTasks.map((task, i) => (
-                    <p key={i} className="text-sm text-[#5a8060] flex items-start gap-2.5">
-                      <span className="text-[#3a9e52] shrink-0 mt-0.5">→</span>{task}
-                    </p>
-                  ))}
+                  {mode === 'accountability'
+                    ? accountabilityItems.map((item, i) => (
+                        <p key={i} className="text-sm text-[#5a8060] flex items-start gap-2.5">
+                          <span className="text-[#3a9e52] shrink-0 mt-0.5 font-bold">{i + 1}.</span>{item.text}
+                        </p>
+                      ))
+                    : briefingTasks.map((task, i) => (
+                        <p key={i} className="text-sm text-[#5a8060] flex items-start gap-2.5">
+                          <span className="text-[#3a9e52] shrink-0 mt-0.5">→</span>{task}
+                        </p>
+                      ))
+                  }
                 </div>
               </div>
             )}
@@ -412,6 +499,49 @@ function TimerContent() {
             <div className="text-3xl mb-6 animate-pulse">✦</div>
             <p className="text-base font-medium text-[#1a3020]">Extracting your tasks...</p>
             <p className="text-xs text-[#b0c8b4] mt-2">Just a moment</p>
+          </div>
+        )}
+
+        {/* ACCOUNTABILITY REVIEW */}
+        {phase === 'accountability' && (
+          <div className="w-full max-w-sm">
+            <p className="text-4xl text-center mb-4">✅</p>
+            <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-1 tracking-tight">Session done.</h2>
+            <p className="text-sm text-[#a8c4a8] text-center mb-8">What did you actually complete?</p>
+
+            <div className="space-y-3 mb-8">
+              {accountabilityItems.map((item, i) => (
+                <button key={i} onClick={() => toggleAccountabilityItem(i)}
+                  className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border transition-all text-left"
+                  style={{
+                    background: item.completed ? '#f0f9f2' : '#fff',
+                    borderColor: item.completed ? '#3a9e52' : '#e8f0e8',
+                  }}>
+                  <span className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
+                    style={{
+                      borderColor: item.completed ? '#3a9e52' : '#c8dcc8',
+                      background: item.completed ? '#3a9e52' : 'transparent',
+                    }}>
+                    {item.completed && <span className="text-white text-xs font-bold">✓</span>}
+                  </span>
+                  <span className="text-sm text-[#1a3020] flex-1">{item.text}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="text-center mb-4">
+              <span className="text-xs text-[#b0c8b4]">
+                {accountabilityItems.filter(i => i.completed).length}/{accountabilityItems.length} completed
+              </span>
+            </div>
+
+            <button
+              onClick={finishAccountability}
+              className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 4px 16px rgba(45,106,170,0.3)' }}
+            >
+              Save & finish →
+            </button>
           </div>
         )}
 

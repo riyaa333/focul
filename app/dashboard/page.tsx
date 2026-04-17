@@ -43,6 +43,7 @@ export default function DashboardPage() {
   const [activeNav, setActiveNav] = useState<'dashboard' | 'streak' | 'history'>('dashboard')
   const [isLeaving, setIsLeaving] = useState(false)
   const [newTodo, setNewTodo] = useState('')
+  const [mode, setMode] = useState<'focus' | 'accountability'>('focus')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const hour = new Date().getHours()
@@ -130,10 +131,11 @@ export default function DashboardPage() {
   function startSession() {
     setIsLeaving(true)
     setTimeout(() => {
+      const modeParam = `&mode=${mode}`
       if (showCustom && customMins) {
-        router.push(`/timer?seconds=${timerSeconds}`)
+        router.push(`/timer?seconds=${timerSeconds}${modeParam}`)
       } else {
-        router.push(`/timer?duration=${activeDuration}`)
+        router.push(`/timer?duration=${activeDuration}${modeParam}`)
       }
     }, 380)
   }
@@ -310,14 +312,33 @@ export default function DashboardPage() {
 
               {/* Button section */}
               <div style={{ padding: '20px 28px', borderBottom: continuationTasks.length > 0 ? '1px solid #f3f1ee' : 'none' }}>
+                {/* Mode toggle */}
+                <div style={{ display: 'flex', background: '#f7f5f2', borderRadius: 100, padding: 4, marginBottom: 12 }}>
+                  {(['focus', 'accountability'] as const).map(m => (
+                    <button key={m} onClick={() => setMode(m)} style={{
+                      flex: 1, padding: '8px 12px', borderRadius: 100, fontSize: 12, fontWeight: 600,
+                      cursor: 'pointer', border: 'none',
+                      background: mode === m ? '#fff' : 'transparent',
+                      color: mode === m ? '#1a1410' : '#b0a898',
+                      boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                      transition: 'all 0.15s',
+                    }}>
+                      {m === 'focus' ? '⚡ Focus' : '✓ Accountability'}
+                    </button>
+                  ))}
+                </div>
                 <button onClick={startSession} style={{
                   width: '100%', padding: 16, borderRadius: 14,
                   fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer', border: 'none',
-                  background: 'linear-gradient(135deg, #2d8a44, #4aaa60)',
-                  boxShadow: '0 4px 20px rgba(45,138,68,0.22)',
-                  transition: 'opacity 0.15s',
+                  background: mode === 'accountability'
+                    ? 'linear-gradient(135deg, #2d6aaa, #4a8fd4)'
+                    : 'linear-gradient(135deg, #2d8a44, #4aaa60)',
+                  boxShadow: mode === 'accountability'
+                    ? '0 4px 20px rgba(45,106,170,0.22)'
+                    : '0 4px 20px rgba(45,138,68,0.22)',
+                  transition: 'all 0.2s',
                 }}>
-                  Start {showCustom && customMins ? `${customMins}${customUnit}` : `${activeDuration} min`} session →
+                  Start {showCustom && customMins ? `${customMins}${customUnit}` : `${activeDuration} min`} {mode} session →
                 </button>
               </div>
 
