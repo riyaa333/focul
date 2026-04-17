@@ -57,6 +57,8 @@ function TimerContent() {
   const [inputRecordingSeconds, setInputRecordingSeconds] = useState(0)
   const [inputProcessing, setInputProcessing] = useState(false)
 
+  const [waveHeights, setWaveHeights] = useState<number[]>(Array(12).fill(0.15))
+
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const inputRecordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -64,6 +66,9 @@ function TimerContent() {
   const inputChunksRef = useRef<Blob[]>([])
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const animFrameRef = useRef<number | null>(null)
+  const audioCtxRef = useRef<AudioContext | null>(null)
 
   function playAlarm() {
     try {
@@ -166,6 +171,29 @@ function TimerContent() {
       setRecording(true)
       setRecordingSeconds(0)
 
+      // Wire up real-time audio analyser for waveform
+      const audioCtx = new AudioContext()
+      audioCtxRef.current = audioCtx
+      const source = audioCtx.createMediaStreamSource(stream)
+      const analyser = audioCtx.createAnalyser()
+      analyser.fftSize = 64
+      analyser.smoothingTimeConstant = 0.8
+      source.connect(analyser)
+      analyserRef.current = analyser
+      const dataArray = new Uint8Array(analyser.frequencyBinCount)
+      const NUM_BARS = 12
+      function drawWave() {
+        animFrameRef.current = requestAnimationFrame(drawWave)
+        analyser.getByteFrequencyData(dataArray)
+        const slice = Math.floor(dataArray.length / NUM_BARS)
+        const heights = Array.from({ length: NUM_BARS }, (_, i) => {
+          const val = dataArray[i * slice] / 255
+          return Math.max(0.08, val)
+        })
+        setWaveHeights(heights)
+      }
+      drawWave()
+
       recordingIntervalRef.current = setInterval(() => {
         setRecordingSeconds(s => s + 1)
       }, 1000)
@@ -180,6 +208,11 @@ function TimerContent() {
 
     clearInterval(recordingIntervalRef.current!)
     setRecording(false)
+
+    // Stop audio analyser
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current)
+    if (audioCtxRef.current) audioCtxRef.current.close()
+    setWaveHeights(Array(12).fill(0.15))
 
     await new Promise<void>(resolve => {
       mr.onstop = () => resolve()
@@ -580,16 +613,15 @@ function TimerContent() {
                     </div>
                   </div>
 
-                  {/* Animated waveform */}
+                  {/* Live waveform — reacts to actual voice */}
                   <div className="flex items-center justify-center gap-1 mb-5" style={{ height: 36 }}>
-                    {[0.4, 0.7, 1, 0.85, 0.6, 1, 0.75, 0.5, 0.9, 0.65, 1, 0.8].map((h, i) => (
+                    {waveHeights.map((h, i) => (
                       <span key={i} className="rounded-full bg-[#3a9e52]"
                         style={{
                           width: 3,
                           height: `${h * 100}%`,
-                          opacity: 0.7 + h * 0.3,
-                          animation: `wavebar 0.${8 + (i % 4)}s ease-in-out infinite alternate`,
-                          animationDelay: `${i * 0.07}s`,
+                          opacity: 0.5 + h * 0.5,
+                          transition: 'height 0.08s ease-out, opacity 0.08s ease-out',
                         }} />
                     ))}
                   </div>
