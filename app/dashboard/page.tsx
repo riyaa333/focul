@@ -398,14 +398,14 @@ export default function DashboardPage() {
               {/* Button section */}
               <div style={{ padding: '20px 28px', borderBottom: continuationTasks.length > 0 ? '1px solid #f3f1ee' : 'none' }}>
                 {/* Mode toggle */}
-                <div style={{ display: 'flex', background: '#f7f5f2', borderRadius: 100, padding: 4, marginBottom: 12 }}>
-                  {(['focus', 'accountability'] as const).map(m => (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
+                  {(['focus', 'accountability'] as const).map((m, i) => (
                     <button key={m} onClick={() => setMode(m)} style={{
-                      flex: 1, padding: '8px 12px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-                      cursor: 'pointer', border: 'none',
-                      background: mode === m ? '#fff' : 'transparent',
-                      color: mode === m ? '#1a1410' : '#b0a898',
-                      boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                      padding: '5px 14px', borderRadius: 100, fontSize: 11, fontWeight: 600,
+                      cursor: 'pointer',
+                      border: mode === m ? 'none' : '1.5px solid #ede9e2',
+                      background: mode === m ? (m === 'focus' ? '#1a1410' : '#2d6aaa') : 'transparent',
+                      color: mode === m ? '#fff' : '#b0a898',
                       transition: 'all 0.15s',
                     }}>
                       {m === 'focus' ? '⚡ Focus' : '✓ Accountability'}

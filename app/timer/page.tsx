@@ -182,7 +182,7 @@ function TimerContent() {
       analyserRef.current = analyser
       const dataArray = new Uint8Array(analyser.frequencyBinCount)
       const NUM_BARS = 12
-      function drawWave() {
+      const drawWave = () => {
         animFrameRef.current = requestAnimationFrame(drawWave)
         analyser.getByteFrequencyData(dataArray)
         const slice = Math.floor(dataArray.length / NUM_BARS)
@@ -558,20 +558,16 @@ function TimerContent() {
           <div className="w-full max-w-xs text-center">
             {!recording ? (
               <>
-                <p className="text-4xl mb-5">🔔</p>
-                <h2 className="text-2xl font-bold text-[#1a3020] mb-2 tracking-tight">Time&apos;s up.</h2>
-                <p className="text-sm text-[#a8c4a8] mb-10">What did you do. What&apos;s next.</p>
+                <h2 className="text-2xl font-bold text-[#1a3020] mb-2 tracking-tight">What did you get done?</h2>
+                <p className="text-sm text-[#a8c4a8] mb-10">Speak for ~30 seconds. AI handles the rest.</p>
                 {error && <p className="text-red-400 text-xs mb-6">{error}</p>}
-                {/* Mic button */}
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-4">
                   <button
                     onClick={startRecording}
                     className="relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
                     style={{ width: 80, height: 80 }}
                   >
-                    {/* Pulse ring */}
                     <span className="absolute inset-0 rounded-full bg-[#3a9e52] opacity-15" style={{ transform: 'scale(1.35)' }} />
-                    {/* Button */}
                     <span className="relative flex items-center justify-center w-20 h-20 rounded-full"
                       style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 6px 24px rgba(58,158,82,0.35)' }}>
                       <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
@@ -582,28 +578,24 @@ function TimerContent() {
                       </svg>
                     </span>
                   </button>
-                  <p className="text-xs text-[#b0c8b4]">Tap to speak</p>
+                  <p className="text-xs text-[#c0d4c0]">Tap to start</p>
                 </div>
               </>
             ) : (
               <>
-                {/* Recording card */}
                 <div className="rounded-2xl bg-white border border-[#e8f5e8] p-6 mb-5 shadow-sm">
-                  {/* Recording indicator */}
-                  <div className="flex items-center justify-center gap-2 mb-6">
+                  <div className="flex items-center justify-center gap-2 mb-5">
                     <span className="w-2 h-2 bg-[#3a9e52] rounded-full animate-pulse" />
                     <span className="text-xs font-semibold tracking-widest uppercase text-[#3a9e52]">
-                      Recording — {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
+                      {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
                     </span>
                   </div>
-
-                  {/* Mic button (active state) */}
                   <div className="flex justify-center mb-5">
-                    <div className="relative flex items-center justify-center" style={{ width: 80, height: 80 }}>
-                      <span className="absolute inset-0 rounded-full bg-[#3a9e52] opacity-15 animate-ping" style={{ animationDuration: '1.5s' }} />
-                      <span className="relative flex items-center justify-center w-20 h-20 rounded-full"
+                    <div className="relative flex items-center justify-center" style={{ width: 72, height: 72 }}>
+                      <span className="absolute inset-0 rounded-full bg-[#3a9e52] opacity-10 animate-ping" style={{ animationDuration: '1.5s' }} />
+                      <span className="relative flex items-center justify-center w-[72px] h-[72px] rounded-full"
                         style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 6px 24px rgba(58,158,82,0.35)' }}>
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
                           <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
                           <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
                           <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
@@ -612,31 +604,18 @@ function TimerContent() {
                       </span>
                     </div>
                   </div>
-
-                  {/* Live waveform — reacts to actual voice */}
-                  <div className="flex items-center justify-center gap-1 mb-5" style={{ height: 36 }}>
+                  <div className="flex items-center justify-center gap-1" style={{ height: 32 }}>
                     {waveHeights.map((h, i) => (
                       <span key={i} className="rounded-full bg-[#3a9e52]"
-                        style={{
-                          width: 3,
-                          height: `${h * 100}%`,
-                          opacity: 0.5 + h * 0.5,
-                          transition: 'height 0.08s ease-out, opacity 0.08s ease-out',
-                        }} />
+                        style={{ width: 3, height: `${h * 100}%`, opacity: 0.5 + h * 0.5, transition: 'height 0.08s ease-out' }} />
                     ))}
                   </div>
-
-                  <p className="text-xs text-[#b0c8b4] italic">Speak naturally — AI will extract your tasks</p>
                 </div>
-
                 {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
-
-                <button
-                  onClick={stopRecording}
+                <button onClick={stopRecording}
                   className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                  style={{ background: '#e07070', boxShadow: '0 4px 16px rgba(224,112,112,0.3)' }}
-                >
-                  Done speaking
+                  style={{ background: '#e07070', boxShadow: '0 4px 16px rgba(224,112,112,0.3)' }}>
+                  Done
                 </button>
               </>
             )}
@@ -698,40 +677,33 @@ function TimerContent() {
         {/* DONE */}
         {phase === 'done' && (
           <div className="w-full max-w-sm text-center">
-            <p className="text-xs text-[#b0c8b4] uppercase tracking-widest mb-8">Next session starts with</p>
-            <div className="text-left space-y-3 mb-10">
-              {tasks.length > 0 ? tasks.map((task, i) => (
-                <p key={i} className="text-sm text-[#4a7055] flex items-start gap-3">
-                  <span className="text-[#3a9e52] shrink-0 font-semibold">{i + 1}.</span>{task}
-                </p>
-              )) : (
-                <p className="text-sm text-[#b0c8b4] text-center">No tasks extracted. Try again next time.</p>
-              )}
-            </div>
-            {transcript && (
-              <details className="text-left mb-8">
-                <summary className="text-xs text-[#b0c8b4] cursor-pointer">View transcript</summary>
-                <p className="text-xs text-[#a8c4a8] mt-2 leading-relaxed">{transcript}</p>
-              </details>
+            {tasks.length > 0 ? (
+              <>
+                <p className="text-xs text-[#b0c8b4] uppercase tracking-widest mb-6">Saved for next session</p>
+                <div className="text-left space-y-2.5 mb-10 bg-white rounded-2xl border border-[#eaf5e4] p-5">
+                  {tasks.map((task, i) => (
+                    <p key={i} className="text-sm text-[#4a7055] flex items-start gap-3">
+                      <span className="text-[#3a9e52] shrink-0 font-bold mt-0.5">✓</span>{task}
+                    </p>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="text-sm text-[#b0c8b4] mb-10">Nothing extracted — try speaking a bit longer next time.</p>
             )}
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={resetTimer}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 4px 16px rgba(58,158,82,0.25)' }}
-              >
-                Next session →
-              </button>
-              <button
-                onClick={() => {
-                  setEntered(false)
-                  setTimeout(() => router.push('/dashboard'), 380)
-                }}
-                className="px-6 py-3 rounded-full text-sm text-[#b0c8b4] hover:text-[#1a3020] transition-colors"
-              >
-                Dashboard
-              </button>
-            </div>
+            <button
+              onClick={resetTimer}
+              className="w-full py-4 rounded-full text-sm font-semibold text-white mb-3 transition-all hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 4px 16px rgba(58,158,82,0.25)' }}
+            >
+              Start next session →
+            </button>
+            <button
+              onClick={() => { setEntered(false); setTimeout(() => router.push('/dashboard'), 380) }}
+              className="text-xs text-[#c0d4c0] hover:text-[#1a3020] transition-colors"
+            >
+              ← back to dashboard
+            </button>
           </div>
         )}
       </div>
