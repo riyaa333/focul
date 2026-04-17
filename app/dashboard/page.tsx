@@ -44,6 +44,8 @@ export default function DashboardPage() {
   const [isLeaving, setIsLeaving] = useState(false)
   const [newTodo, setNewTodo] = useState('')
   const [mode, setMode] = useState<'focus' | 'accountability'>('focus')
+  const [calendarDate, setCalendarDate] = useState(() => new Date())
+  const [selectedDay, setSelectedDay] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const hour = new Date().getHours()
@@ -170,6 +172,7 @@ export default function DashboardPage() {
         display: 'flex',
         flexDirection: 'column',
         padding: '32px 14px',
+        overflowY: 'auto',
       }}>
 
         {/* Logo */}
@@ -185,7 +188,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Nav */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 20 }}>
           {[
             { key: 'dashboard', label: 'Dashboard' },
             { key: 'streak', label: 'Streak' },
@@ -207,6 +210,88 @@ export default function DashboardPage() {
             </button>
           ))}
         </nav>
+
+        {/* Calendar */}
+        {(() => {
+          const sessionDays = new Set(sessions.map(s => new Date(s.created_at).toDateString()))
+          const today = new Date()
+          const year = calendarDate.getFullYear()
+          const month = calendarDate.getMonth()
+          const firstDay = new Date(year, month, 1).getDay()
+          const daysInMonth = new Date(year, month + 1, 0).getDate()
+          const monthName = calendarDate.toLocaleString('default', { month: 'long' })
+          const cells: (number | null)[] = [...Array(firstDay).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)]
+
+          return (
+            <div style={{ background: '#fff', borderRadius: 14, padding: '14px 12px', marginBottom: 14, border: '1px solid #ede9e2', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                <button onClick={() => setCalendarDate(new Date(year, month - 1, 1))}
+                  style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#b0a898', fontSize: 14, padding: '0 4px' }}>‹</button>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#1a1410', letterSpacing: 0.3 }}>{monthName} {year}</span>
+                <button onClick={() => setCalendarDate(new Date(year, month + 1, 1))}
+                  style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#b0a898', fontSize: 14, padding: '0 4px' }}>›</button>
+              </div>
+
+              {/* Day labels */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: 4 }}>
+                {['S','M','T','W','T','F','S'].map((d, i) => (
+                  <div key={i} style={{ textAlign: 'center', fontSize: 9, fontWeight: 700, color: '#c0b8a8', padding: '2px 0' }}>{d}</div>
+                ))}
+              </div>
+
+              {/* Days grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
+                {cells.map((day, i) => {
+                  if (!day) return <div key={i} />
+                  const dateStr = new Date(year, month, day).toDateString()
+                  const isToday = dateStr === today.toDateString()
+                  const hasSession = sessionDays.has(dateStr)
+                  const isSelected = selectedDay === dateStr
+                  return (
+                    <button key={i} onClick={() => setSelectedDay(isSelected ? null : dateStr)}
+                      style={{
+                        width: '100%', aspectRatio: '1', borderRadius: 6, border: 'none',
+                        fontSize: 10, fontWeight: isToday ? 800 : 500, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexDirection: 'column', gap: 1, position: 'relative',
+                        background: isSelected ? '#1a1410' : isToday ? '#f0f9f2' : 'transparent',
+                        color: isSelected ? '#fff' : isToday ? '#2d8a44' : '#706860',
+                        transition: 'all 0.12s',
+                      }}>
+                      {day}
+                      {hasSession && (
+                        <span style={{
+                          width: 3, height: 3, borderRadius: '50%',
+                          background: isSelected ? '#7ddc8e' : '#3a9e52',
+                          display: 'block',
+                        }} />
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Selected day sessions */}
+              {selectedDay && (() => {
+                const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === selectedDay)
+                if (daySessions.length === 0) return (
+                  <p style={{ fontSize: 10, color: '#c0b8a8', textAlign: 'center', marginTop: 10 }}>No sessions this day</p>
+                )
+                return (
+                  <div style={{ marginTop: 10, borderTop: '1px solid #f3f1ee', paddingTop: 10 }}>
+                    {daySessions.map(s => (
+                      <div key={s.id} style={{ fontSize: 10, color: '#706860', padding: '3px 0', display: 'flex', justifyContent: 'space-between' }}>
+                        <span>{s.duration_minutes}m session</span>
+                        <span style={{ color: '#3a9e52' }}>{s.tasks?.length || 0} tasks</span>
+                      </div>
+                    ))}
+                  </div>
+                )
+              })()}
+            </div>
+          )
+        })()}
 
         {/* Stats */}
         <div style={{
