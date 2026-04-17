@@ -7,6 +7,11 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes wavebar {
+  from { transform: scaleY(0.3); }
+  to   { transform: scaleY(1); }
+}
+
 body > * {
   animation: fadeUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

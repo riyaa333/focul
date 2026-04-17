@@ -317,36 +317,91 @@ function TimerContent() {
 
         {/* DEBRIEF */}
         {phase === 'debrief' && (
-          <div className="w-full max-w-sm text-center">
-            <p className="text-3xl mb-6">🔔</p>
-            <h2 className="text-2xl font-semibold text-[#1a3020] mb-2 tracking-tight">Time&apos;s up.</h2>
-            <p className="text-sm text-[#a8c4a8] mb-8">What did you do. What&apos;s next.</p>
-
-            {error && <p className="text-red-400 text-xs mb-6">{error}</p>}
-
+          <div className="w-full max-w-xs text-center">
             {!recording ? (
-              <button
-                onClick={startRecording}
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 4px 16px rgba(58,158,82,0.3)' }}
-              >
-                Start speaking →
-              </button>
-            ) : (
-              <div className="space-y-6">
-                <div className="flex items-center justify-center gap-2">
-                  <span className="w-2 h-2 bg-red-400 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-[#1a3020] tabular-nums">
-                    {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
-                  </span>
+              <>
+                <p className="text-4xl mb-5">🔔</p>
+                <h2 className="text-2xl font-bold text-[#1a3020] mb-2 tracking-tight">Time&apos;s up.</h2>
+                <p className="text-sm text-[#a8c4a8] mb-10">What did you do. What&apos;s next.</p>
+                {error && <p className="text-red-400 text-xs mb-6">{error}</p>}
+                {/* Mic button */}
+                <div className="flex flex-col items-center gap-6">
+                  <button
+                    onClick={startRecording}
+                    className="relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+                    style={{ width: 80, height: 80 }}
+                  >
+                    {/* Pulse ring */}
+                    <span className="absolute inset-0 rounded-full bg-[#3a9e52] opacity-15" style={{ transform: 'scale(1.35)' }} />
+                    {/* Button */}
+                    <span className="relative flex items-center justify-center w-20 h-20 rounded-full"
+                      style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 6px 24px rgba(58,158,82,0.35)' }}>
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                        <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                        <line x1="8" y1="23" x2="16" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    </span>
+                  </button>
+                  <p className="text-xs text-[#b0c8b4]">Tap to speak</p>
                 </div>
+              </>
+            ) : (
+              <>
+                {/* Recording card */}
+                <div className="rounded-2xl bg-white border border-[#e8f5e8] p-6 mb-5 shadow-sm">
+                  {/* Recording indicator */}
+                  <div className="flex items-center justify-center gap-2 mb-6">
+                    <span className="w-2 h-2 bg-[#3a9e52] rounded-full animate-pulse" />
+                    <span className="text-xs font-semibold tracking-widest uppercase text-[#3a9e52]">
+                      Recording — {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
+                    </span>
+                  </div>
+
+                  {/* Mic button (active state) */}
+                  <div className="flex justify-center mb-5">
+                    <div className="relative flex items-center justify-center" style={{ width: 80, height: 80 }}>
+                      <span className="absolute inset-0 rounded-full bg-[#3a9e52] opacity-15 animate-ping" style={{ animationDuration: '1.5s' }} />
+                      <span className="relative flex items-center justify-center w-20 h-20 rounded-full"
+                        style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 6px 24px rgba(58,158,82,0.35)' }}>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                          <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                          <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                          <line x1="8" y1="23" x2="16" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Animated waveform */}
+                  <div className="flex items-center justify-center gap-1 mb-5" style={{ height: 36 }}>
+                    {[0.4, 0.7, 1, 0.85, 0.6, 1, 0.75, 0.5, 0.9, 0.65, 1, 0.8].map((h, i) => (
+                      <span key={i} className="rounded-full bg-[#3a9e52]"
+                        style={{
+                          width: 3,
+                          height: `${h * 100}%`,
+                          opacity: 0.7 + h * 0.3,
+                          animation: `wavebar 0.${8 + (i % 4)}s ease-in-out infinite alternate`,
+                          animationDelay: `${i * 0.07}s`,
+                        }} />
+                    ))}
+                  </div>
+
+                  <p className="text-xs text-[#b0c8b4] italic">Speak naturally — AI will extract your tasks</p>
+                </div>
+
+                {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
+
                 <button
                   onClick={stopRecording}
-                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white bg-red-400 hover:bg-red-500 transition-colors"
+                  className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+                  style={{ background: '#e07070', boxShadow: '0 4px 16px rgba(224,112,112,0.3)' }}
                 >
                   Done speaking
                 </button>
-              </div>
+              </>
             )}
           </div>
         )}
