@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Focul — Close the loop on your work day</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%23f5fdf5'/%3E%3Crect x='76' y='173' width='56' height='166' rx='28' fill='%23d4ead8'/%3E%3Crect x='152' y='103' width='56' height='307' rx='28' fill='%238dcc9e'/%3E%3Crect x='228' y='45' width='56' height='422' rx='28' fill='%231e5c30'/%3E%3Crect x='304' y='103' width='56' height='307' rx='28' fill='%233a9e52'/%3E%3Crect x='380' y='173' width='56' height='166' rx='28' fill='%238dcc9e'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate icon" href="/public/favicon.ico" />
+  <link rel="apple-touch-icon" href="/public/favicon.png" />
   <meta name="description" content="A 15-minute focus timer for scaling founders. When the bell rings, you speak. AI extracts your next tasks. The loop closes automatically." />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -818,7 +820,7 @@
     </div>
 
     <h1>The timer that<br/><em>remembers your work.</em></h1>
-    <p class="hero-sub">Set a timer. Focus. When it ends, speak for 30 seconds — AI captures your progress and keeps you on track.</p>
+    <p class="hero-sub">For founders who waste the first 10 minutes of every session figuring out where they left off.</p>
 
     <div id="waitlist">
       <form class="waitlist-form" id="waitlist-form">
@@ -1034,182 +1036,15 @@
         </svg>
       </div></div>
     </div>
-    <div class="stat-row reverse reveal">
-      <div class="stat-card-box">
-        <div class="stat-label">The fix</div>
-        <div class="stat-headline">30 seconds</div>
-        <p>That's all Focul needs. Speak for 30 seconds when your session ends and your next one is ready to go.</p>
-      </div>
-      <div class="stat-visual"><div class="stat-circle">
-        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#3a9e52" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
-        </svg>
-      </div></div>
-    </div>
   </div>
 </section>
 
-<hr class="divider" />
-
-<!-- LOOP DIAGRAM -->
-<section class="loop-section">
-  <div class="section-label">The closed loop</div>
-  <h2>Each session sets up<br/><em>the next one for you.</em></h2>
-
-  <div class="loop-flow" id="loop-flow">
-
-    <div class="lnode" id="ln0" data-step="0">
-      <div class="lnode-circle">
-        <svg class="lnode-icon" viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="13" cy="13" r="10"/><polyline points="13 8 13 13 16 15"/>
-        </svg>
-      </div>
-      <div class="lnode-label">Timer</div>
-      <div class="lnode-sub">15 min</div>
-    </div>
-
-    <div class="larrow" id="la0">
-      <svg width="56" height="16" viewBox="0 0 56 16" fill="none">
-        <line class="larrow-track" x1="2" y1="8" x2="46" y2="8" stroke="var(--accent)" stroke-width="2"/>
-        <line class="larrow-line" x1="2" y1="8" x2="46" y2="8" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 8"/>
-        <path d="M42 4l6 4-6 4" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-      </svg>
-      <div class="larrow-pulse"></div>
-    </div>
-
-    <div class="lnode" id="ln1" data-step="1">
-      <div class="lnode-circle">
-        <svg class="lnode-icon" viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M13 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
-          <path d="M7 11v1a6 6 0 0 0 12 0v-1"/><line x1="13" y1="18" x2="13" y2="22"/><line x1="10" y1="22" x2="16" y2="22"/>
-        </svg>
-      </div>
-      <div class="lnode-label">Debrief</div>
-      <div class="lnode-sub">60 sec</div>
-    </div>
-
-    <div class="larrow" id="la1">
-      <svg width="56" height="16" viewBox="0 0 56 16" fill="none">
-        <line class="larrow-track" x1="2" y1="8" x2="46" y2="8" stroke="var(--accent)" stroke-width="2"/>
-        <line class="larrow-line" x1="2" y1="8" x2="46" y2="8" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 8"/>
-        <path d="M42 4l6 4-6 4" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-      </svg>
-      <div class="larrow-pulse"></div>
-    </div>
-
-    <div class="lnode" id="ln2" data-step="2">
-      <div class="lnode-circle">
-        <svg class="lnode-icon" viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="13 3 15 10 22 12 15 14 13 21 11 14 4 12 11 10 13 3"/>
-        </svg>
-      </div>
-      <div class="lnode-label">AI Extract</div>
-      <div class="lnode-sub">auto</div>
-    </div>
-
-    <div class="larrow" id="la2">
-      <svg width="56" height="16" viewBox="0 0 56 16" fill="none">
-        <line class="larrow-track" x1="2" y1="8" x2="46" y2="8" stroke="var(--accent)" stroke-width="2"/>
-        <line class="larrow-line" x1="2" y1="8" x2="46" y2="8" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 8"/>
-        <path d="M42 4l6 4-6 4" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-      </svg>
-      <div class="larrow-pulse"></div>
-    </div>
-
-    <div class="lnode" id="ln3" data-step="3">
-      <div class="lnode-circle">
-        <svg class="lnode-icon" viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="3" width="16" height="20" rx="2"/>
-          <line x1="9" y1="9" x2="17" y2="9"/><line x1="9" y1="13" x2="17" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/>
-        </svg>
-      </div>
-      <div class="lnode-label">Briefing</div>
-      <div class="lnode-sub">ready</div>
-    </div>
-
-  </div>
-
-  <!-- Info card — updates with each step -->
-  <div class="loop-card" id="loop-card">
-    <div class="loop-card-emoji" id="loop-emoji">⏱</div>
-    <div class="loop-card-body">
-      <div class="loop-card-step" id="loop-step">Step 1 of 4</div>
-      <div class="loop-card-title" id="loop-title">Set the timer. Start working.</div>
-      <p class="loop-card-desc" id="loop-desc">15 minutes. One task. The timer lives in your menu bar and nothing else changes on your screen. Just work.</p>
-    </div>
-  </div>
-
-</section>
-
-<hr class="divider" />
-
-<!-- HOW IT WORKS -->
-<section class="how">
-  <div class="section-label">How it works</div>
-  <h2>One action from you.<br/><em>The app does the rest.</em></h2>
-  <div class="steps">
-
-    <div class="step reveal">
-      <div class="step-icon">
-        <svg viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="13" cy="13" r="10"/>
-          <line x1="13" y1="8" x2="13" y2="13" class="clock-sec"/>
-          <line x1="13" y1="13" x2="17" y2="15"/>
-        </svg>
-      </div>
-      <div class="step-content">
-        <h3>A timer runs in your menu bar</h3>
-        <p>15 minutes. No pop-ups. No apps to open. Just a clock in the top right corner. Keep your eyes on your work.</p>
-      </div>
-    </div>
-
-    <div class="step reveal">
-      <div class="step-icon">
-        <svg class="bell-icon" viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 10A5 5 0 0 0 8 10c0 7-3 9-3 9h16s-3-2-3-9"/>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-        </svg>
-      </div>
-      <div class="step-content">
-        <h3>The bell rings. Hold one key.</h3>
-        <p>The timer ends. A mic appears. Hold the key and speak. Say what you did and what is next. Let go when done.</p>
-      </div>
-    </div>
-
-    <div class="step reveal">
-      <div class="step-icon">
-        <svg class="spark-icon" viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="13 3 15 10 22 12 15 14 13 21 11 14 4 12 11 10 13 3"/>
-        </svg>
-      </div>
-      <div class="step-content">
-        <h3>AI pulls out your tasks</h3>
-        <p>It hears your words and finds your tasks. It uses your words, not its own. No clean up. No editing needed.</p>
-      </div>
-    </div>
-
-    <div class="step reveal">
-      <div class="step-icon">
-        <svg viewBox="0 0 26 26" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-          <polyline points="3.27 6.96 13 12.01 22.73 6.96"/><line x1="13" y1="22.08" x2="13" y2="12"/>
-        </svg>
-      </div>
-      <div class="step-content">
-        <h3>Your next session starts ready</h3>
-        <p>Your tasks load before the next timer starts. You see them right away. You know what to do. You start without wasting a minute.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
 
 <hr class="divider" />
 
 <!-- WHY 15 MINUTES -->
 <section class="why15">
-  <div class="section-label">The science</div>
+  <div class="section-label">Why it works</div>
   <h2>Pick your block size.<br/><em>The science backs all of them.</em></h2>
   <p style="font-size:18px;color:var(--muted);max-width:560px;margin:-8px 0 48px;">We default to 15 because it is the sharpest window. But 30 works too. And you can set any time you want.</p>
 
@@ -1306,8 +1141,8 @@
 <!-- FOR WHO -->
 <section class="for-who">
   <div class="section-label">Built for</div>
-  <h2>Built for founders<br/><em>who are too busy to keep up.</em></h2>
-  <p>You have real revenue. A real team. But your days feel like a blur. By 6pm you can not name one thing you moved. You are not lazy. Your tools just do not help.</p>
+  <h2>You're not lazy.<br/><em>Your tools just don't carry context forward.</em></h2>
+  <p>Real revenue. Real team. But by 6pm you can't name one thing you moved. The problem isn't discipline — it's that every tool resets when the session ends.</p>
   <ul class="checklist">
     <li><div class="check-icon"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg></div>You tried Notion, Todoist, and Pomodoro. None of them stuck.</li>
     <li><div class="check-icon"><svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg></div>Every time you sit down to work, you waste the first 10 minutes figuring out where you left off.</li>
