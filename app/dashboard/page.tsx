@@ -39,7 +39,6 @@ export default function DashboardPage() {
   const [user, setUser] = useState<{ email?: string; user_metadata?: { display_name?: string } } | null>(null)
   const [selected, setSelected] = useState(15)
   const [customMins, setCustomMins] = useState('')
-  const [customUnit, setCustomUnit] = useState<'s' | 'min' | 'hr'>('min')
   const [showCustom, setShowCustom] = useState(false)
   const [activeNav, setActiveNav] = useState<'dashboard' | 'streak' | 'history'>('dashboard')
   const [isLeaving, setIsLeaving] = useState(false)
@@ -138,18 +137,8 @@ export default function DashboardPage() {
     .filter(s => new Date(s.created_at).toDateString() === new Date().toDateString())
     .reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
 
-  const customToSeconds = () => {
-    const val = parseFloat(customMins) || 0
-    if (customUnit === 's') return Math.max(1, Math.round(val))
-    if (customUnit === 'hr') return Math.round(val * 3600)
-    return Math.round(val * 60) || 1200
-  }
-  const customToMinutes = () => {
-    const val = parseFloat(customMins) || 0
-    if (customUnit === 's') return Math.max(1, Math.ceil(val / 60))
-    if (customUnit === 'hr') return Math.round(val * 60)
-    return Math.round(val) || 20
-  }
+  const customToSeconds = () => (parseInt(customMins) || 20) * 60
+  const customToMinutes = () => parseInt(customMins) || 20
 
   const activeDuration = showCustom && customMins ? customToMinutes() : selected
   const timerSeconds = showCustom && customMins ? customToSeconds() : selected * 60
@@ -170,13 +159,8 @@ export default function DashboardPage() {
     }, 380)
   }
 
-  const timerDisplay = showCustom && customMins && customUnit === 's'
-    ? String(parseInt(customMins) || 0).padStart(2, '0')
-    : showCustom && customMins && customUnit === 'hr'
-    ? String(parseFloat(customMins) || 0)
-    : String(activeDuration).padStart(2, '0')
-
-  const timerSuffix = showCustom && customMins && customUnit === 's' ? 's' : ':00'
+  const timerDisplay = String(activeDuration).padStart(2, '0')
+  const timerSuffix = ':00'
 
   if (isMobile) {
     return (
@@ -287,7 +271,7 @@ export default function DashboardPage() {
                           }}>{unit}</button>
                         ))}
                       </div>
-                      <button onClick={() => { setShowCustom(false); setCustomMins(''); setCustomUnit('min') }}
+                      <button onClick={() => { setShowCustom(false); setCustomMins('') }}
                         style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent' }}>✕</button>
                     </div>
                   )}
@@ -312,7 +296,7 @@ export default function DashboardPage() {
                     background: mode === 'accountability' ? 'linear-gradient(135deg, #2d6aaa, #4a8fd4)' : 'linear-gradient(135deg, #2d8a44, #4aaa60)',
                     boxShadow: mode === 'accountability' ? '0 4px 20px rgba(45,106,170,0.22)' : '0 4px 20px rgba(45,138,68,0.22)',
                   }}>
-                    Start {showCustom && customMins ? `${customMins}${customUnit}` : `${activeDuration} min`} →
+                    Start {activeDuration} min →
                   </button>
                 </div>
 
@@ -673,22 +657,14 @@ export default function DashboardPage() {
                     </button>
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f5f2', borderRadius: 100, padding: '6px 14px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f5f2', borderRadius: 100, padding: '6px 16px' }}>
                     <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
                       onChange={e => setCustomMins(e.target.value)}
-                      style={{ width: 36, background: 'transparent', outline: 'none', fontSize: 12, fontWeight: 700, color: '#1a1410', textAlign: 'center', border: 'none', appearance: 'textfield' }} />
-                    <div style={{ display: 'flex', gap: 2, background: '#ede9e2', borderRadius: 100, padding: 2 }}>
-                      {(['s', 'min', 'hr'] as const).map(unit => (
-                        <button key={unit} onClick={() => setCustomUnit(unit)} style={{
-                          padding: '4px 10px', borderRadius: 100, fontSize: 11, fontWeight: 700,
-                          cursor: 'pointer', border: 'none',
-                          background: customUnit === unit ? '#1a1410' : 'transparent',
-                          color: customUnit === unit ? '#fff' : '#b0a898',
-                        }}>{unit}</button>
-                      ))}
-                    </div>
-                    <button onClick={() => { setShowCustom(false); setCustomMins(''); setCustomUnit('min') }}
-                      style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 2 }}>✕</button>
+                      onKeyDown={e => e.key === 'Enter' && startSession()}
+                      style={{ width: 40, background: 'transparent', outline: 'none', fontSize: 13, fontWeight: 700, color: '#1a1410', textAlign: 'center', border: 'none' }} />
+                    <span style={{ fontSize: 12, fontWeight: 600, color: '#b0a898' }}>min</span>
+                    <button onClick={() => { setShowCustom(false); setCustomMins('') }}
+                      style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
                   </div>
                 )}
               </div>
@@ -723,7 +699,7 @@ export default function DashboardPage() {
                   transition: 'all 0.2s',
                   letterSpacing: '0.01em',
                 }}>
-                  Start {showCustom && customMins ? `${customMins}${customUnit}` : `${activeDuration} min`} →
+                  Start {activeDuration} min →
                 </button>
               </div>
 
