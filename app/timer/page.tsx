@@ -9,26 +9,26 @@ type Phase = 'briefing' | 'input' | 'running' | 'debrief' | 'processing' | 'acco
 type AccountabilityItem = { text: string; completed: boolean }
 
 const QUOTES = [
-  "The secret of getting ahead is getting started.",
-  "Focus on being productive instead of busy.",
-  "One thing at a time. That's enough.",
-  "Do the hard thing first.",
-  "Progress, not perfection.",
-  "Ship it. Iterate. Repeat.",
-  "Clarity comes from action, not thought.",
-  "The work is the way.",
-  "Small steps. Big momentum.",
-  "Execution eats strategy for breakfast.",
-  "Build something people want, one sprint at a time.",
-  "The best time to start was yesterday. The next best time is now.",
-  "Momentum is a choice.",
-  "Done is better than perfect.",
-  "Make it work. Make it right. Make it fast.",
-  "Every expert was once a beginner who kept going.",
-  "Your future self will thank you for this sprint.",
-  "Less talk. More ship.",
-  "Constraints breed creativity.",
-  "Stay in the zone.",
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+  { text: "Done is better than perfect.", author: "Sheryl Sandberg" },
+  { text: "Ideas are easy. Execution is everything.", author: "John Doerr" },
+  { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+  { text: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs" },
+  { text: "It's not about ideas. It's about making ideas happen.", author: "Scott Belsky" },
+  { text: "Move fast and learn things.", author: "Sam Altman" },
+  { text: "Make every detail perfect and limit the number of details to perfect.", author: "Jack Dorsey" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "Chase the vision, not the money. The money will end up following you.", author: "Tony Hsieh" },
+  { text: "Build something 100 people love, not something 1 million people kind of like.", author: "Paul Graham" },
+  { text: "The best marketing strategy ever: care.", author: "Gary Vaynerchuk" },
+  { text: "If you are not embarrassed by the first version of your product, you've launched too late.", author: "Reid Hoffman" },
+  { text: "Work hard in silence. Let success make the noise.", author: "Frank Ocean" },
+  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+  { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
+  { text: "The biggest risk is not taking any risk.", author: "Mark Zuckerberg" },
+  { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
+  { text: "Sleep is the cousin of death — keep working.", author: "Nas" },
 ]
 
 function TimerContent() {
@@ -564,20 +564,35 @@ function TimerContent() {
         {/* RUNNING */}
         {phase === 'running' && (
           <div className="text-center select-none w-full max-w-sm">
-            <div className="font-black leading-none tabular-nums mb-6"
-              style={{ fontSize: 'clamp(72px, 18vw, 112px)', letterSpacing: '-6px' }}>
-              <span className="text-[#1a3020]">{String(minutes).padStart(2, '0')}</span>
-              <span className="text-[#d0e8d0]">:{String(seconds).padStart(2, '0')}</span>
-            </div>
-
-            <div className="w-56 mx-auto mb-6">
-              <div className="h-1 bg-[#e8f5e8] rounded-full overflow-hidden">
-                <div className="h-full bg-[#3a9e52] rounded-full transition-all duration-1000 ease-linear"
-                  style={{ width: `${progress * 100}%` }} />
+            {/* Split glow timer */}
+            <div className="relative flex items-center justify-center mb-8" style={{ height: 160 }}>
+              {/* Elliptical glow */}
+              <div style={{
+                position: 'absolute', width: 340, height: 160, borderRadius: '50%',
+                background: 'radial-gradient(ellipse, rgba(58,158,82,0.11) 0%, transparent 70%)',
+                pointerEvents: 'none',
+              }} />
+              {/* Minutes */}
+              <span className="font-black tabular-nums text-[#1a3020] leading-none"
+                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', position: 'relative', zIndex: 1 }}>
+                {String(minutes).padStart(2, '0')}
+              </span>
+              {/* Colon dots */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, margin: '0 4px 12px', position: 'relative', zIndex: 1 }}>
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#c8e0cc' }} />
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#c8e0cc' }} />
               </div>
+              {/* Seconds */}
+              <span className="font-black tabular-nums leading-none"
+                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', color: '#c0dcc4', position: 'relative', zIndex: 1 }}>
+                {String(seconds).padStart(2, '0')}
+              </span>
             </div>
 
-            <p className="text-sm text-[#6a9070] italic mb-8 px-4">&ldquo;{quote}&rdquo;</p>
+            <div className="mb-8 px-4 text-center">
+              <p className="text-sm text-[#6a9070] italic">&ldquo;{quote.text}&rdquo;</p>
+              <p className="text-xs text-[#a0b8a0] mt-1 not-italic">— {quote.author}</p>
+            </div>
 
             {(mode === 'accountability' ? accountabilityItems.length > 0 : briefingTasks.length > 0) && (
               <div className="border-t border-[#eaf5e4] pt-6">
