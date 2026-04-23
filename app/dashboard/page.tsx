@@ -548,7 +548,7 @@ export default function DashboardPage() {
           if (si !== -1 && rev[si].count > 0) { for (let i = si; i < rev.length; i++) { if (rev[i].count > 0) streak++; else break } }
 
           return (
-            <div style={{ background: '#fff', borderRadius: 14, padding: '16px 14px', marginBottom: 14, border: '1px solid #ede9e2', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+            <div
               onClick={() => setActiveNav('streak')} role="button" title="View streak details"
               onMouseEnter={e => (e.currentTarget.style.background = '#faf9f7')}
               onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
