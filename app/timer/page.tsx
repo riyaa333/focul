@@ -97,6 +97,29 @@ function TimerContent() {
     return () => cancelAnimationFrame(raf)
   }, [])
 
+  // ── Keyboard shortcut: Space to start/stop recording ─────────────────────
+  // Mirrors Wispr Flow's push-to-talk pattern — no clicking required.
+  // Guards: only fires when not typing in an input/textarea.
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.code !== 'Space') return
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return
+      e.preventDefault() // stop page scroll
+
+      if (phase === 'debrief') {
+        if (!recording) startRecording()
+        else stopRecording()
+      }
+      if (phase === 'input' && inputMode === 'voice') {
+        if (!inputRecording && !inputProcessing) startInputRecording()
+        else if (inputRecording) stopInputRecording()
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [phase, recording, inputRecording, inputProcessing, inputMode])
+
   useEffect(() => {
     async function loadBriefing() {
       const { data: { user } } = await supabase.auth.getUser()
@@ -109,7 +132,12 @@ function TimerContent() {
         .limit(1)
         .single()
 
-      if (data?.tasks) setBriefingTasks(data.tasks)
+      if (data?.tasks && data.tasks.length > 0) {
+        setBriefingTasks(data.tasks)
+      } else if (mode !== 'accountability') {
+        // No previous tasks — skip briefing, go straight in
+        setPhase('running')
+      }
     }
     loadBriefing()
   }, [router])
@@ -227,6 +255,18 @@ function TimerContent() {
     const formData = new FormData()
     formData.append('audio', blob, `debrief.${ext}`)
 
+    // Give the AI context about what the user was working on this session.
+    // Wispr Flow injects app context into transcription — we inject task context.
+    // This lets Whisper bias toward relevant vocabulary and lets Claude
+    // correct errors using actual project names/terms the user was working on.
+    const sessionContext = [
+      ...(mode === 'accountability' ? accountabilityItems.map(i => i.text) : []),
+      ...briefingTasks,
+    ].filter(Boolean)
+    if (sessionContext.length > 0) {
+      formData.append('context', sessionContext.join(', '))
+    }
+
     try {
       const res = await fetch('/api/transcribe', { method: 'POST', body: formData })
       const data = await res.json()
@@ -300,6 +340,10 @@ function TimerContent() {
     const blob = new Blob(inputChunksRef.current, { type: mr.mimeType })
     const formData = new FormData()
     formData.append('audio', blob, `tasks.${ext}`)
+    // Inject any already-typed tasks as context for this voice recording
+    if (accountabilityItems.length > 0) {
+      formData.append('context', accountabilityItems.map(i => i.text).join(', '))
+    }
     try {
       const res = await fetch('/api/transcribe', { method: 'POST', body: formData })
       const data = await res.json()
@@ -357,8 +401,8 @@ function TimerContent() {
         <button onClick={() => {
           setEntered(false)
           setTimeout(() => router.push('/dashboard'), 380)
-        }} className="text-xs text-[#b0c8b4] hover:text-[#1a3020] transition-colors">
-          ← back
+        }} className="text-xs font-medium text-[#b0c8b4] hover:text-[#1a3020] transition-colors tracking-wide">
+          ← Dashboard
         </button>
       </nav>
 
@@ -398,12 +442,11 @@ function TimerContent() {
         {/* INPUT (Accountability pre-timer) */}
         {phase === 'input' && (
           <div className="w-full max-w-sm">
-            <p className="text-xs text-[#b0c8b4] uppercase tracking-widest mb-2 text-center">Accountability mode</p>
-            <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-1 tracking-tight">What will you do?</h2>
-            <p className="text-sm text-[#a8c4a8] text-center mb-6">Speak or type your tasks for this session</p>
+            <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-2 tracking-tight">What&apos;s the plan?</h2>
+            <p className="text-sm text-[#a8c4a8] text-center mb-6">Set your tasks before the clock starts.</p>
 
             {/* Mode toggle */}
-            <div className="flex bg-[#f0f5f0] rounded-full p-1 mb-5">
+            <div className="flex bg-[#eef4ee] rounded-full p-1 mb-5">
               {(['voice', 'type'] as const).map(m => (
                 <button key={m} onClick={() => setInputMode(m)}
                   className="flex-1 py-2 rounded-full text-xs font-semibold transition-all"
@@ -412,7 +455,7 @@ function TimerContent() {
                     color: inputMode === m ? '#1a3020' : '#9ab09a',
                     boxShadow: inputMode === m ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                   }}>
-                  {m === 'voice' ? '🎙 Speak' : '⌨️ Type'}
+                  {m === 'voice' ? 'Speak' : 'Type'}
                 </button>
               ))}
             </div>
@@ -435,9 +478,14 @@ function TimerContent() {
             {inputMode === 'voice' && (
               <div className="flex flex-col items-center gap-4 mb-6">
                 {inputProcessing ? (
-                  <div className="text-center py-4">
-                    <div className="text-2xl mb-2 animate-pulse">✦</div>
-                    <p className="text-sm text-[#b0c8b4]">Extracting your tasks...</p>
+                  <div className="flex flex-col items-center gap-3 py-4">
+                    <div className="flex gap-1.5">
+                      {[0, 1, 2].map(i => (
+                        <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#4a8fd4]"
+                          style={{ animation: 'wavebar 0.7s ease-in-out infinite alternate', animationDelay: `${i * 0.15}s` }} />
+                      ))}
+                    </div>
+                    <p className="text-sm text-[#b0c8b4]">Extracting tasks...</p>
                   </div>
                 ) : !inputRecording ? (
                   <>
@@ -456,22 +504,24 @@ function TimerContent() {
                       </span>
                     </button>
                     <p className="text-xs text-[#b0c8b4]">
-                      {accountabilityItems.length === 0 ? 'Tap and say your tasks' : 'Tap to add more tasks'}
+                      {accountabilityItems.length === 0 ? 'Tap or press' : 'Tap or press'}{' '}
+                      <kbd style={{ background: '#e8f5e8', border: '1px solid #c8dcc8', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontFamily: 'inherit', color: '#5a8060' }}>Space</kbd>
+                      {accountabilityItems.length === 0 ? ' to say your tasks' : ' to add more'}
                     </p>
                   </>
                 ) : (
                   <div className="flex flex-col items-center gap-4 w-full">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                      <span className="text-xs font-semibold tracking-widest uppercase text-blue-400">
-                        Recording — {String(Math.floor(inputRecordingSeconds / 60)).padStart(2, '0')}:{String(inputRecordingSeconds % 60).padStart(2, '0')}
+                      <span className="w-2 h-2 bg-[#4a8fd4] rounded-full animate-pulse" />
+                      <span className="text-xs font-semibold tracking-widest uppercase text-[#4a8fd4]">
+                        {String(Math.floor(inputRecordingSeconds / 60)).padStart(2, '0')}:{String(inputRecordingSeconds % 60).padStart(2, '0')}
                       </span>
                     </div>
-                    <p className="text-xs text-[#b0c8b4] italic text-center">Say your tasks naturally, e.g. &quot;Finish the API, write tests, update docs&quot;</p>
+                    <p className="text-xs text-[#b0c8b4] text-center">Say your tasks naturally...</p>
                     <button onClick={stopInputRecording}
-                      className="px-8 py-3 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                      style={{ background: '#e07070', boxShadow: '0 4px 16px rgba(224,112,112,0.3)' }}>
-                      Done speaking
+                      className="px-8 py-3.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
+                      style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 4px 16px rgba(45,106,170,0.3)' }}>
+                      Stop recording
                     </button>
                   </div>
                 )}
@@ -520,18 +570,18 @@ function TimerContent() {
               <span className="text-[#d0e8d0]">:{String(seconds).padStart(2, '0')}</span>
             </div>
 
-            <div className="w-56 mx-auto mb-8">
+            <div className="w-56 mx-auto mb-6">
               <div className="h-1 bg-[#e8f5e8] rounded-full overflow-hidden">
                 <div className="h-full bg-[#3a9e52] rounded-full transition-all duration-1000 ease-linear"
                   style={{ width: `${progress * 100}%` }} />
               </div>
             </div>
 
+            <p className="text-sm text-[#6a9070] italic mb-8 px-4">&ldquo;{quote}&rdquo;</p>
+
             {(mode === 'accountability' ? accountabilityItems.length > 0 : briefingTasks.length > 0) && (
               <div className="border-t border-[#eaf5e4] pt-6">
-                <p className="text-xs text-[#c0d4c0] uppercase tracking-widest mb-4">
-                  {mode === 'accountability' ? 'This session' : 'Working on'}
-                </p>
+                <p className="text-xs text-[#c8dcc0] uppercase tracking-widest mb-4">Focus list</p>
                 <div className="space-y-2.5 text-left">
                   {mode === 'accountability'
                     ? accountabilityItems.map((item, i) => (
@@ -576,7 +626,9 @@ function TimerContent() {
                       </svg>
                     </span>
                   </button>
-                  <p className="text-xs text-[#c0d4c0]">Tap to start</p>
+                  <p className="text-xs text-[#c0d4c0]">
+                    Tap or press <kbd style={{ background: '#e8f5e8', border: '1px solid #c8dcc8', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontFamily: 'inherit', color: '#5a8060' }}>Space</kbd>
+                  </p>
                 </div>
               </>
             ) : (
@@ -612,9 +664,12 @@ function TimerContent() {
                 {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
                 <button onClick={stopRecording}
                   className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                  style={{ background: '#e07070', boxShadow: '0 4px 16px rgba(224,112,112,0.3)' }}>
-                  Done
+                  style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 4px 16px rgba(58,158,82,0.28)' }}>
+                  Done talking →
                 </button>
+                <p className="text-xs text-[#c0d4c0] mt-3">
+                  or press <kbd style={{ background: '#e8f5e8', border: '1px solid #c8dcc8', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontFamily: 'inherit', color: '#5a8060' }}>Space</kbd> to stop
+                </p>
               </>
             )}
           </div>
@@ -623,17 +678,20 @@ function TimerContent() {
         {/* PROCESSING */}
         {phase === 'processing' && (
           <div className="text-center">
-            <div className="text-3xl mb-6 animate-pulse">✦</div>
-            <p className="text-base font-medium text-[#1a3020]">Extracting your tasks...</p>
-            <p className="text-xs text-[#b0c8b4] mt-2">Just a moment</p>
+            <div className="flex justify-center gap-1.5 mb-6">
+              {[0, 1, 2].map(i => (
+                <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#3a9e52]"
+                  style={{ animation: 'wavebar 0.7s ease-in-out infinite alternate', animationDelay: `${i * 0.15}s` }} />
+              ))}
+            </div>
+            <p className="text-sm font-medium text-[#1a3020]">Extracting your tasks...</p>
           </div>
         )}
 
         {/* ACCOUNTABILITY REVIEW */}
         {phase === 'accountability' && (
           <div className="w-full max-w-sm">
-            <p className="text-4xl text-center mb-4">✅</p>
-            <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-1 tracking-tight">Session done.</h2>
+            <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-2 tracking-tight">Session done.</h2>
             <p className="text-sm text-[#a8c4a8] text-center mb-8">What did you actually complete?</p>
 
             <div className="space-y-3 mb-8">
@@ -687,7 +745,7 @@ function TimerContent() {
                 </div>
               </>
             ) : (
-              <p className="text-sm text-[#b0c8b4] mb-10">Nothing extracted — try speaking a bit longer next time.</p>
+              <p className="text-sm text-[#b0c8b4] mb-10">Great session. Try speaking a little longer next time for task extraction.</p>
             )}
             <button
               onClick={resetTimer}
