@@ -922,79 +922,161 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              {/* Heatmap — horizontal like GitHub contribution graph */}
-              <div style={{ width: '100%', background: '#fff', borderRadius: 20, padding: '20px 22px', border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.04)' }}>
-                <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Last 12 weeks</p>
-                {/* Day labels on the left */}
-                <div style={{ display: 'flex', gap: 4 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginRight: 2 }}>
-                    {dayLabels.map((d, i) => (
-                      <div key={i} style={{ height: 18, fontSize: 9, color: '#d4cfc8', fontWeight: 600, display: 'flex', alignItems: 'center' }}>{d}</div>
-                    ))}
-                  </div>
-                  {/* Weeks as columns, days as rows */}
-                  <div style={{ display: 'flex', gap: 4, flex: 1 }}>
-                    {weeks.map((week, wi) => (
-                      <div key={wi} style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-                        {week.map((day, di) => {
-                          const isToday = day.date === today
-                          const bg = day.count === 0 ? '#f0ede8' : day.count === 1 ? '#b8e4c0' : day.count === 2 ? '#6abe7e' : '#3a9e52'
-                          return (
-                            <div key={di} title={`${day.date}: ${day.count} session${day.count !== 1 ? 's' : ''}, ${day.mins}m`} style={{
-                              width: '100%', height: 18, borderRadius: 4, background: bg,
-                              border: isToday ? '2px solid #1a1410' : '2px solid transparent',
+              {/* 30-day bar chart */}
+              {(() => {
+                const last30: { date: string; mins: number; count: number; label: string }[] = []
+                for (let i = 29; i >= 0; i--) {
+                  const d = new Date(); d.setDate(d.getDate() - i)
+                  const dateStr = d.toDateString()
+                  const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === dateStr)
+                  const dayLabShort = ['S','M','T','W','T','F','S'][d.getDay()]
+                  last30.push({ date: dateStr, mins: daySessions.reduce((s, x) => s + x.duration_minutes, 0), count: daySessions.length, label: dayLabShort })
+                }
+                const maxMins = Math.max(...last30.map(d => d.mins), 1)
+                return (
+                  <div style={{ width: '100%', background: '#fff', borderRadius: 20, padding: '20px 22px', border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.04)' }}>
+                    <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 16 }}>Last 30 days</p>
+                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 60 }}>
+                      {last30.map((d, i) => {
+                        const isToday = d.date === today
+                        const barH = d.mins > 0 ? Math.max(4, Math.round((d.mins / maxMins) * 56)) : 3
+                        return (
+                          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, height: '100%', justifyContent: 'flex-end' }}
+                            title={`${d.date}: ${d.count} session${d.count !== 1 ? 's' : ''}, ${d.mins}m`}>
+                            <div style={{
+                              width: '100%', height: barH, borderRadius: 3,
+                              background: d.mins === 0 ? '#f0ede8' : isToday ? '#1a1410' : '#3a9e52',
+                              opacity: d.mins === 0 ? 1 : isToday ? 1 : 0.4 + 0.6 * (d.mins / maxMins),
                             }} />
-                          )
-                        })}
-                      </div>
-                    ))}
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <div style={{ display: 'flex', gap: 3, marginTop: 6 }}>
+                      {last30.map((d, i) => (
+                        <div key={i} style={{ flex: 1, textAlign: 'center', fontSize: 7, color: d.date === today ? '#3a9e52' : '#d4cfc8', fontWeight: d.date === today ? 700 : 400 }}>
+                          {i % 7 === 0 || d.date === today ? d.label : ''}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 12, justifyContent: 'flex-end' }}>
-                  <span style={{ fontSize: 9, color: '#c0b8a8' }}>Less</span>
-                  {['#f0ede8', '#b8e4c0', '#6abe7e', '#3a9e52'].map(c => (
-                    <div key={c} style={{ width: 11, height: 11, borderRadius: 3, background: c }} />
-                  ))}
-                  <span style={{ fontSize: 9, color: '#c0b8a8' }}>More</span>
-                </div>
-              </div>
+                )
+              })()}
             </div>
           )
         })()}
 
-        {activeNav === 'history' && (
-          <div style={{ width: '100%', maxWidth: 480, alignSelf: 'flex-start' }}>
-            <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 20 }}>Session history</h2>
-            {sessions.length === 0 ? (
-              <p style={{ fontSize: 13, color: '#b0a898' }}>No sessions yet. Start your first one!</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {sessions.map(session => (
-                  <div key={session.id} style={{
-                    background: '#fff', borderRadius: 16, padding: '14px 18px',
-                    border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
-                    display: 'flex', gap: 14, alignItems: 'flex-start',
-                  }}>
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3a9e52', flexShrink: 0, marginTop: 6 }} />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#1a1410' }}>{session.duration_minutes} min session</span>
-                        <span style={{ fontSize: 11, color: '#c0b8a8' }}>{timeAgo(session.created_at)}</span>
+        {activeNav === 'history' && (() => {
+          const totalMins = sessions.reduce((s, x) => s + x.duration_minutes, 0)
+          const avgMins = sessions.length ? Math.round(totalMins / sessions.length) : 0
+          const totalHrs = Math.floor(totalMins / 60)
+          const remMins = totalMins % 60
+          const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+          const dayCounts = [0, 0, 0, 0, 0, 0, 0]
+          const hourCounts = Array(24).fill(0)
+          sessions.forEach(s => {
+            const d = new Date(s.created_at)
+            dayCounts[d.getDay()]++
+            hourCounts[d.getHours()]++
+          })
+          const peakDayIdx = dayCounts.indexOf(Math.max(...dayCounts))
+          const peakHour = hourCounts.indexOf(Math.max(...hourCounts))
+          const fmtHour = (h: number) => {
+            const ampm = h < 12 ? 'AM' : 'PM'
+            const h12 = h % 12 || 12
+            return `${h12}–${(h12 % 12) + 1} ${ampm}`
+          }
+          const allTasks = sessions.flatMap(s => s.tasks || [])
+          const recentTopics = [...new Set(allTasks)].slice(0, 6)
+
+          return (
+            <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', width: '100%' }}>
+              {/* Session list */}
+              <div style={{ flex: 1, maxWidth: 480 }}>
+                <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 20 }}>Session history</h2>
+                {sessions.length === 0 ? (
+                  <p style={{ fontSize: 13, color: '#b0a898' }}>No sessions yet. Start your first one!</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {sessions.map(session => (
+                      <div key={session.id} style={{
+                        background: '#fff', borderRadius: 16, padding: '14px 18px',
+                        border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
+                        display: 'flex', gap: 14, alignItems: 'flex-start',
+                      }}>
+                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3a9e52', flexShrink: 0, marginTop: 6 }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: '#1a1410' }}>{session.duration_minutes} min session</span>
+                            <span style={{ fontSize: 11, color: '#c0b8a8' }}>{timeAgo(session.created_at)}</span>
+                          </div>
+                          {session.tasks?.length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                              {session.tasks.map((t, i) => (
+                                <p key={i} style={{ fontSize: 12, color: '#a09888', lineHeight: 1.4 }}>→ {t}</p>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      {session.tasks?.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                          {session.tasks.map((t, i) => (
-                            <p key={i} style={{ fontSize: 12, color: '#a09888', lineHeight: 1.4 }}>→ {t}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Patterns panel */}
+              <div style={{ width: 240, flexShrink: 0 }}>
+                <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 20 }}>Your patterns</h2>
+                {sessions.length === 0 ? (
+                  <div style={{ background: '#fff', borderRadius: 16, padding: '18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                    <p style={{ fontSize: 12, color: '#b0a898', lineHeight: 1.6 }}>Patterns appear after your first session — time of day, best days, recurring themes.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {/* Stats */}
+                    <div style={{ background: '#fff', borderRadius: 16, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                      <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Focus time</p>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+                        <span style={{ fontSize: 32, fontWeight: 900, color: '#1a1410', letterSpacing: -1, lineHeight: 1 }}>{totalHrs > 0 ? `${totalHrs}h ${remMins}m` : `${totalMins}m`}</span>
+                      </div>
+                      <p style={{ fontSize: 11, color: '#b0a898' }}>avg {avgMins}m per session · {sessions.length} total</p>
+                    </div>
+
+                    {/* Peak day + hour */}
+                    <div style={{ background: '#fff', borderRadius: 16, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                      <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>When you focus</p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                        {dayNames.map((d, i) => (
+                          <div key={d} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                            <div style={{
+                              width: 20, height: 20, borderRadius: 6,
+                              background: dayCounts[i] > 0 ? `rgba(58,158,82,${Math.min(0.2 + (dayCounts[i] / Math.max(...dayCounts)) * 0.8, 1)})` : '#f3f0eb',
+                              border: i === peakDayIdx && dayCounts[i] > 0 ? '1.5px solid #3a9e52' : '1.5px solid transparent',
+                            }} />
+                            <span style={{ fontSize: 9, color: '#c0b8a8', fontWeight: i === peakDayIdx ? 700 : 400 }}>{d[0]}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p style={{ fontSize: 11, color: '#6a8870' }}>Peak: {dayNames[peakDayIdx]}s · {fmtHour(peakHour)}</p>
+                    </div>
+
+                    {/* Recent topics */}
+                    {recentTopics.length > 0 && (
+                      <div style={{ background: '#fff', borderRadius: 16, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                        <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Recent topics</p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                          {recentTopics.map((t, i) => (
+                            <p key={i} style={{ fontSize: 11, color: '#7a7060', lineHeight: 1.4, borderLeft: '2px solid #ede9e2', paddingLeft: 8 }}>{t}</p>
                           ))}
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )
+        })()}
       </main>
     </div>
   )
