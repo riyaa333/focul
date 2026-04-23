@@ -258,21 +258,14 @@ export default function DashboardPage() {
                       }}>custom</button>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f5f2', borderRadius: 100, padding: '6px 14px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f5f2', borderRadius: 100, padding: '6px 16px' }}>
                       <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
                         onChange={e => setCustomMins(e.target.value)}
-                        style={{ width: 36, background: 'transparent', outline: 'none', fontSize: 12, fontWeight: 700, color: '#1a1410', textAlign: 'center', border: 'none' }} />
-                      <div style={{ display: 'flex', gap: 2, background: '#ede9e2', borderRadius: 100, padding: 2 }}>
-                        {(['s', 'min', 'hr'] as const).map(unit => (
-                          <button key={unit} onClick={() => setCustomUnit(unit)} style={{
-                            padding: '4px 8px', borderRadius: 100, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: 'none',
-                            background: customUnit === unit ? '#1a1410' : 'transparent',
-                            color: customUnit === unit ? '#fff' : '#b0a898',
-                          }}>{unit}</button>
-                        ))}
-                      </div>
+                        onKeyDown={e => e.key === 'Enter' && startSession()}
+                        style={{ width: 40, background: 'transparent', outline: 'none', fontSize: 13, fontWeight: 700, color: '#1a1410', textAlign: 'center', border: 'none' }} />
+                      <span style={{ fontSize: 12, fontWeight: 600, color: '#b0a898' }}>min</span>
                       <button onClick={() => { setShowCustom(false); setCustomMins('') }}
-                        style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent' }}>✕</button>
+                        style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
                     </div>
                   )}
                 </div>
