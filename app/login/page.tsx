@@ -13,6 +13,23 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const [resetMode, setResetMode] = useState(false)
+
+  async function handlePasswordReset(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setMessage('')
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    if (error) {
+      setError(error.message)
+    } else {
+      setMessage('Check your email for a password reset link.')
+    }
+    setLoading(false)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -99,9 +116,59 @@ export default function LoginPage() {
               textTransform: 'uppercase',
               color: '#3a9e52',
             }}>
-              {mode === 'login' ? 'Welcome back' : 'Create account'}
+              {resetMode ? 'Reset password' : mode === 'login' ? 'Welcome back' : 'Create account'}
             </span>
           </div>
+
+          {/* Password reset form */}
+          {resetMode ? (
+            <form onSubmit={handlePasswordReset} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label style={{
+                  display: 'block', fontSize: 11, fontWeight: 600,
+                  color: '#7aaa7a', marginBottom: 5, letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  placeholder="you@company.com"
+                  autoFocus
+                  style={{
+                    width: '100%', border: '1.5px solid #e4f0e4', borderRadius: 12,
+                    padding: '10px 14px', fontSize: 14, outline: 'none',
+                    background: '#fafdf8', color: '#1a3020', fontFamily: 'inherit',
+                    boxSizing: 'border-box', transition: 'border-color 0.15s',
+                  }}
+                  onFocus={e => e.target.style.borderColor = '#3a9e52'}
+                  onBlur={e => e.target.style.borderColor = '#e4f0e4'}
+                />
+              </div>
+              {error && (
+                <p style={{ fontSize: 12, color: '#e07070', background: '#fff5f5', padding: '8px 12px', borderRadius: 10, margin: 0, border: '1px solid #fde8e8' }}>{error}</p>
+              )}
+              {message && (
+                <p style={{ fontSize: 12, color: '#3a9e52', background: '#f0f9f2', padding: '8px 12px', borderRadius: 10, margin: 0, border: '1px solid #d4ead8' }}>{message}</p>
+              )}
+              <button type="submit" disabled={loading} style={{
+                width: '100%', padding: '13px', borderRadius: 50, border: 'none',
+                fontSize: 14, fontWeight: 700, color: '#fff', cursor: loading ? 'default' : 'pointer',
+                background: 'linear-gradient(135deg, #2d8a44, #4db864)',
+                boxShadow: '0 6px 20px rgba(58,158,82,0.32)', opacity: loading ? 0.7 : 1,
+                marginTop: 6, letterSpacing: '0.01em',
+              }}>
+                {loading ? 'Sending…' : 'Send reset link →'}
+              </button>
+              <button type="button" onClick={() => { setResetMode(false); setError(''); setMessage('') }}
+                style={{ background: 'none', border: 'none', color: '#a8c4a8', fontSize: 12, cursor: 'pointer', marginTop: -4 }}>
+                ← Back to sign in
+              </button>
+            </form>
+          ) : (
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
@@ -159,13 +226,21 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label style={{
-                display: 'block', fontSize: 11, fontWeight: 600,
-                color: '#7aaa7a', marginBottom: 5, letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-              }}>
-                Password
-              </label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                <label style={{
+                  fontSize: 11, fontWeight: 600,
+                  color: '#7aaa7a', letterSpacing: '0.04em',
+                  textTransform: 'uppercase',
+                }}>
+                  Password
+                </label>
+                {mode === 'login' && (
+                  <button type="button" onClick={() => { setResetMode(true); setError(''); setMessage('') }}
+                    style={{ background: 'none', border: 'none', color: '#a8c4a8', fontSize: 11, cursor: 'pointer', padding: 0 }}>
+                    Forgot password?
+                  </button>
+                )}
+              </div>
               <input
                 type="password"
                 value={password}
@@ -223,6 +298,7 @@ export default function LoginPage() {
               {loading ? 'Loading…' : mode === 'login' ? 'Sign in →' : 'Create account →'}
             </button>
           </form>
+          )}
         </div>
 
         <p style={{ textAlign: 'center', fontSize: 12, color: '#a8c4a8', marginTop: 18 }}>
