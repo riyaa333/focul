@@ -993,7 +993,7 @@ export default function DashboardPage() {
             return `${h12}–${(h12 % 12) + 1} ${ampm}`
           }
           const allTasks = sessions.flatMap(s => s.tasks || [])
-          const recentTopics = [...new Set(allTasks)].slice(0, 6)
+          const recentTopics = allTasks.filter((t, i, a) => a.indexOf(t) === i).slice(0, 6)
 
           return (
             <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', width: '100%' }}>
