@@ -922,42 +922,48 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              {/* 30-day bar chart */}
+              {/* 7-day rings */}
               {(() => {
-                const last30: { date: string; mins: number; count: number; label: string }[] = []
-                for (let i = 29; i >= 0; i--) {
-                  const d = new Date(); d.setDate(d.getDate() - i)
+                const week7 = Array.from({ length: 7 }, (_, i) => {
+                  const d = new Date(); d.setDate(d.getDate() - (6 - i))
                   const dateStr = d.toDateString()
                   const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === dateStr)
-                  const dayLabShort = ['S','M','T','W','T','F','S'][d.getDay()]
-                  last30.push({ date: dateStr, mins: daySessions.reduce((s, x) => s + x.duration_minutes, 0), count: daySessions.length, label: dayLabShort })
-                }
-                const maxMins = Math.max(...last30.map(d => d.mins), 1)
+                  const mins = daySessions.reduce((s, x) => s + x.duration_minutes, 0)
+                  const isToday = i === 6
+                  const dayLabel = ['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()]
+                  return { mins, isToday, dayLabel, dateStr }
+                })
+                const maxMins = 90
+                const r = 22, circ = 2 * Math.PI * r
                 return (
                   <div style={{ width: '100%', background: '#fff', borderRadius: 20, padding: '20px 22px', border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.04)' }}>
-                    <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 16 }}>Last 30 days</p>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 60 }}>
-                      {last30.map((d, i) => {
-                        const isToday = d.date === today
-                        const barH = d.mins > 0 ? Math.max(4, Math.round((d.mins / maxMins) * 56)) : 3
+                    <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 16 }}>This week</p>
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'space-between' }}>
+                      {week7.map((d, i) => {
+                        const pct = d.mins > 0 ? Math.min(d.mins / maxMins, 1) : 0
+                        const strokeLen = circ * pct
+                        const offset = circ * 0.25
                         return (
-                          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0, height: '100%', justifyContent: 'flex-end' }}
-                            title={`${d.date}: ${d.count} session${d.count !== 1 ? 's' : ''}, ${d.mins}m`}>
-                            <div style={{
-                              width: '100%', height: barH, borderRadius: 3,
-                              background: d.mins === 0 ? '#f0ede8' : isToday ? '#1a1410' : '#3a9e52',
-                              opacity: d.mins === 0 ? 1 : isToday ? 1 : 0.4 + 0.6 * (d.mins / maxMins),
-                            }} />
+                          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                            <svg width="100%" viewBox="0 0 52 52" style={{ overflow: 'visible' }}>
+                              <circle cx="26" cy="26" r={r} fill="none" stroke="#f0ede8" strokeWidth="5" />
+                              {d.mins > 0 && (
+                                <circle cx="26" cy="26" r={r} fill="none"
+                                  stroke={d.isToday ? '#1a1410' : '#3a9e52'}
+                                  strokeWidth="5"
+                                  strokeDasharray={`${strokeLen} ${circ}`}
+                                  strokeDashoffset={offset}
+                                  strokeLinecap="round" />
+                              )}
+                              <text x="26" y="30" textAnchor="middle"
+                                style={{ fontFamily: 'inherit', fontSize: 10, fontWeight: 700, fill: d.mins > 0 ? (d.isToday ? '#1a1410' : '#3a9e52') : '#d4cfc8' }}>
+                                {d.mins > 0 ? `${d.mins}m` : '—'}
+                              </text>
+                            </svg>
+                            <span style={{ fontSize: 10, fontWeight: d.isToday ? 700 : 500, color: d.isToday ? '#1a1410' : '#c0b8a8' }}>{d.dayLabel}</span>
                           </div>
                         )
                       })}
-                    </div>
-                    <div style={{ display: 'flex', gap: 3, marginTop: 6 }}>
-                      {last30.map((d, i) => (
-                        <div key={i} style={{ flex: 1, textAlign: 'center', fontSize: 7, color: d.date === today ? '#3a9e52' : '#d4cfc8', fontWeight: d.date === today ? 700 : 400 }}>
-                          {i % 7 === 0 || d.date === today ? d.label : ''}
-                        </div>
-                      ))}
                     </div>
                   </div>
                 )
