@@ -507,6 +507,18 @@ export default function DashboardPage() {
               {label}
             </button>
           ))}
+          <button
+            onClick={() => router.push('/settings')}
+            style={{
+              display: 'flex', alignItems: 'center',
+              padding: '9px 10px', borderRadius: 8,
+              fontSize: 13, fontWeight: 500, cursor: 'pointer',
+              border: 'none', textAlign: 'left', width: '100%',
+              background: 'transparent', color: '#a09888',
+              transition: 'all 0.15s',
+            }}>
+            Settings
+          </button>
         </nav>
 
         {/* Streak widget */}
