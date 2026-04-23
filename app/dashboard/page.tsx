@@ -261,7 +261,7 @@ export default function DashboardPage() {
                   </div>
                   {!showCustom ? (
                     <div style={{ display: 'flex', gap: 6 }}>
-                      {[15, 30, 45].map(d => (
+                      {[15, 30].map(d => (
                         <button key={d} onClick={() => setSelected(d)} style={{
                           padding: '7px 16px', borderRadius: 100, fontSize: 12, fontWeight: 600,
                           cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1a1410' : '#e8e2d8'}`,
@@ -492,7 +492,7 @@ export default function DashboardPage() {
         borderRight: '1px solid #e8e4de',
         display: 'flex',
         flexDirection: 'column',
-        padding: '32px 14px',
+        padding: '56px 14px',
         overflowY: 'auto',
       }}>
 
@@ -614,7 +614,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                  <p style={{ fontSize: 32, fontWeight: 800, color: '#1a1410', letterSpacing: -1.5 }}>{firstName}.</p>
+                  <p style={{ fontSize: 32, fontWeight: 800, color: '#1a1410', letterSpacing: -1.5 }}>{firstName}</p>
                   {!hasCustomName && (
                     <button
                       onClick={() => { setNameInput(''); setEditingName(true) }}
@@ -655,7 +655,7 @@ export default function DashboardPage() {
                 {/* Pills */}
                 {!showCustom ? (
                   <div style={{ display: 'flex', gap: 6 }}>
-                    {[15, 30, 45].map(d => (
+                    {[15, 30].map(d => (
                       <button key={d} onClick={() => setSelected(d)} style={{
                         padding: '8px 20px', borderRadius: 100, fontSize: 12, fontWeight: 600,
                         cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1a1410' : '#e8e2d8'}`,
