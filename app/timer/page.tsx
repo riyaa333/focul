@@ -573,18 +573,18 @@ function TimerContent() {
                 pointerEvents: 'none',
               }} />
               {/* Minutes */}
-              <span className="font-black tabular-nums text-[#1a3020] leading-none"
-                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', position: 'relative', zIndex: 1 }}>
+              <span className="font-black tabular-nums leading-none"
+                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', color: '#1a3020', position: 'relative', zIndex: 1 }}>
                 {String(minutes).padStart(2, '0')}
               </span>
               {/* Colon dots */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, margin: '0 4px 12px', position: 'relative', zIndex: 1 }}>
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#c8e0cc' }} />
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#c8e0cc' }} />
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#1a3020', opacity: 0.3 }} />
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#1a3020', opacity: 0.3 }} />
               </div>
               {/* Seconds */}
               <span className="font-black tabular-nums leading-none"
-                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', color: '#c0dcc4', position: 'relative', zIndex: 1 }}>
+                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', color: '#1a3020', position: 'relative', zIndex: 1 }}>
                 {String(seconds).padStart(2, '0')}
               </span>
             </div>
