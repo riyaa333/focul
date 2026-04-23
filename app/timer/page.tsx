@@ -59,6 +59,11 @@ function TimerContent() {
 
   const [waveHeights, setWaveHeights] = useState<number[]>(Array(12).fill(0.15))
 
+  const phaseRef = useRef(phase)
+  const recordingRef = useRef(recording)
+  useEffect(() => { phaseRef.current = phase }, [phase])
+  useEffect(() => { recordingRef.current = recording }, [recording])
+
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const recordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const inputRecordingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -96,6 +101,20 @@ function TimerContent() {
     const raf = requestAnimationFrame(() => setEntered(true))
     return () => cancelAnimationFrame(raf)
   }, [])
+
+  // ── Electron global shortcut (Cmd+Shift+Space) ──
+  // Registers once. Uses refs so it always reads current phase/recording state.
+  useEffect(() => {
+    const focul = (window as unknown as { focul?: { onStartRecording: (cb: () => void) => void; offStartRecording: () => void } }).focul
+    if (!focul?.onStartRecording) return
+    focul.onStartRecording(() => {
+      if (phaseRef.current === 'debrief') {
+        if (!recordingRef.current) startRecording()
+        else stopRecording()
+      }
+    })
+    return () => focul.offStartRecording?.()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Keyboard shortcut: Space to start/stop recording ─────────────────────
   // Mirrors Wispr Flow's push-to-talk pattern — no clicking required.
