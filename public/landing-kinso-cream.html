@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Focul — Close the loop on your work day</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="description" content="A 15-minute focus timer for founders. The bell rings, you speak. AI extracts your tasks. The loop closes automatically." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Fragment+Mono&family=Inter+Tight:ital,wght@1,800;1,900&display=swap" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f6f1e4;          /* warm cream — like aged paper */
+      --bg-2: #f1ead8;        /* one shade deeper for layered surfaces */
+      --surface: #ede5d0;     /* card surface */
+      --surface-2: #e8dec5;   /* nested card / mock background */
+      --border: rgba(60,40,15,0.10);
+      --border-strong: rgba(60,40,15,0.18);
+      --text: #1f1810;        /* warm-toned dark, not pure black */
+      --text-muted: rgba(31,24,16,0.66);
+      --text-faint: rgba(31,24,16,0.46);
+
+      /* Section accent palette — same hues, tuned to harmonise with cream */
+      --accent-blue:   #1572b8;
+      --accent-purple: #6b48b8;
+      --accent-orange: #b87838;
+      --accent-salmon: #b85a3c;
+      --accent-teal:   #2f857f;
+
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Geist", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .mono { font-family: "Fragment Mono", ui-monospace, monospace; }
+
+    /* ─── NAV ─── */
+    nav.top {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 32px;
+      background: rgba(246,241,228,0.78);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+    .brand-dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-teal); margin-right: 9px; vertical-align: middle;
+      box-shadow: 0 0 12px rgba(61,157,151,0.5);
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { font-size: 14px; color: var(--text-muted); transition: color 0.2s var(--ease); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      font-size: 14px; font-weight: 500;
+      padding: 9px 18px; border-radius: 999px;
+      background: var(--text); color: #fff;
+      transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+    }
+    .nav-cta:hover { transform: translateY(-1px); opacity: 0.88; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      padding: 180px 24px 120px;
+      text-align: center;
+      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(60% 50% at 50% 0%, rgba(124,90,197,0.10) 0%, transparent 70%),
+        radial-gradient(50% 40% at 20% 30%, rgba(0,153,255,0.08) 0%, transparent 70%),
+        radial-gradient(45% 40% at 85% 60%, rgba(237,131,99,0.08) 0%, transparent 70%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+      pointer-events: none;
+    }
+    .hero > * { position: relative; z-index: 1; }
+
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 500;
+      color: var(--text-muted);
+      padding: 6px 14px; border-radius: 999px;
+      background: rgba(0,0,0,0.03);
+      border: 1px solid var(--border);
+      margin-bottom: 32px;
+      animation: fadeIn 0.7s var(--ease) 0.05s both;
+    }
+    .hero-pill .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-teal);
+      box-shadow: 0 0 8px rgba(61,157,151,0.55);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+    h1.hero-title {
+      font-size: clamp(48px, 9vw, 112px);
+      font-weight: 800;
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      margin-bottom: 28px;
+      animation: rise 0.9s var(--ease) 0.12s both;
+    }
+    .hero-title .line-1 { color: var(--text); }
+    .hero-title .line-2 {
+      background: linear-gradient(90deg, #2f857f, #6b48b8, #b85a3c, #b87838, #2f857f);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientMove 9s ease infinite;
+      font-family: "Inter Tight", "Geist", sans-serif;
+      font-style: italic;
+      font-weight: 900;
+    }
+    @keyframes gradientMove {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 1.6vw, 19px);
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 44px;
+      line-height: 1.55;
+      animation: rise 0.9s var(--ease) 0.22s both;
+    }
+
+    .hero-actions { display: flex; flex-direction: column; align-items: center; gap: 16px; animation: rise 0.9s var(--ease) 0.32s both; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 15px; font-weight: 500;
+      padding: 14px 26px; border-radius: 999px;
+      background: var(--text); color: #fff;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      will-change: transform;
+    }
+    .btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 36px rgba(0,0,0,0.22); }
+    .btn-primary svg { transition: transform 0.3s var(--ease); }
+    .btn-primary:hover svg { transform: translateX(3px); }
+
+    .hero-proof { font-size: 13px; color: var(--text-faint); }
+    .hero-proof strong { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    @keyframes rise   { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ─── SECTION SHELL ─── */
+    section.feature, section.aside, section.faq, section.cta-band {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 32px;
+    }
+    .section-label {
+      display: inline-block;
+      font-family: "Fragment Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      color: var(--text-faint);
+      margin-bottom: 28px;
+    }
+    .section-label.blue   { color: var(--accent-blue); }
+    .section-label.purple { color: var(--accent-purple); }
+    .section-label.orange { color: var(--accent-orange); }
+    .section-label.teal   { color: var(--accent-teal); }
+    .section-label.salmon { color: var(--accent-salmon); }
+
+    h2.section-title {
+      font-size: clamp(36px, 5.5vw, 64px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      margin-bottom: 22px;
+      max-width: 780px;
+    }
+    .section-body {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+    .section-body + .section-body { margin-top: 14px; }
+
+    /* ─── INTEGRATIONS STRIP ─── */
+    section.integrations {
+      max-width: 1200px; margin: 0 auto;
+      padding: 60px 32px;
+      text-align: center;
+    }
+    .integrations-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 48px; flex-wrap: wrap;
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+    .integration-chip {
+      font-family: "Fragment Mono", monospace;
+      font-size: 13px; color: var(--text-muted);
+      padding: 10px 18px; border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.4s var(--ease);
+    }
+    .integration-chip:hover { color: var(--text); border-color: var(--border-strong); transform: translateY(-2px); }
+
+    /* ─── FEATURE BLOCKS (alternating L/R) ─── */
+    section.feature {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    section.feature.flip { direction: rtl; }
+    section.feature.flip > * { direction: ltr; }
+    .feature-mock {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #f1ead8 0%, #e6dcc4 100%);
+      border: 1px solid var(--border-strong);
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .feature-mock::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(60% 50% at 50% 0%, var(--accent-glow, rgba(0,133,224,0.16)) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(255,250,238,0.55) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .feature-mock.blue   { --accent-glow: rgba(0,133,224,0.20); }
+    .feature-mock.purple { --accent-glow: rgba(107,72,184,0.20); }
+    .feature-mock.orange { --accent-glow: rgba(200,147,88,0.20); }
+
+    .mock-window {
+      position: absolute; inset: 26px; border-radius: 14px;
+      background: rgba(252,247,236,0.7);
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      display: flex; flex-direction: column; gap: 12px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    }
+    .mock-tabs { display: flex; gap: 6px; margin-bottom: 6px; }
+    .mock-tabs span { width: 9px; height: 9px; border-radius: 50%; background: rgba(0,0,0,0.12); }
+    .mock-line {
+      height: 12px; border-radius: 6px;
+      background: linear-gradient(90deg, rgba(0,0,0,0.10), rgba(0,0,0,0.04));
+    }
+    .mock-line.short { width: 60%; }
+    .mock-line.shorter { width: 40%; }
+    .mock-line.accent {
+      background: linear-gradient(90deg, var(--accent-glow, var(--accent-blue)), transparent);
+      height: 16px; border-radius: 8px;
+    }
+    .mock-block {
+      padding: 14px; border-radius: 10px;
+      background: rgba(0,0,0,0.025);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .mock-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: "Fragment Mono", monospace; font-size: 11px;
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(0,0,0,0.05); color: var(--text-muted);
+      align-self: flex-start;
+    }
+    .mock-big-num {
+      font-size: 44px; font-weight: 800; letter-spacing: -0.04em;
+      color: var(--text); font-variant-numeric: tabular-nums;
+    }
+
+    /* ─── ASIDE / VALUE BLOCK ─── */
+    section.aside {
+      text-align: center; padding: 140px 32px;
+    }
+    .aside-mock {
+      max-width: 900px; margin: 56px auto 0;
+      aspect-ratio: 16 / 9; border-radius: 24px;
+      background: linear-gradient(180deg, #f1ead8 0%, #e6dcc4 100%);
+      border: 1px solid var(--border-strong);
+      position: relative; overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .aside-mock::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(60% 50% at 50% 0%, rgba(107,72,184,0.14) 0%, transparent 70%),
+        radial-gradient(40% 30% at 80% 80%, rgba(200,147,88,0.10) 0%, transparent 70%);
+    }
+    .aside-mock-content {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px;
+      font-family: "Fragment Mono", monospace; color: var(--text-muted);
+      font-size: 14px;
+    }
+    .aside-mock-content strong { color: var(--text); font-size: 22px; font-weight: 700; font-family: "Geist", sans-serif; letter-spacing: -0.02em; }
+
+    /* ─── FAQ ─── */
+    section.faq {
+      max-width: 920px; margin: 0 auto; padding: 140px 32px;
+    }
+    .faq-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: flex-start; }
+    .faq-grid h2 { font-size: clamp(36px, 4.5vw, 56px); }
+    .faq-grid > p { font-size: 16px; color: var(--text-muted); line-height: 1.6; margin-top: 22px; }
+    .faq-list { display: flex; flex-direction: column; gap: 0; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+    .faq-q {
+      width: 100%; padding: 26px 0; background: none; border: none;
+      display: flex; justify-content: space-between; align-items: center; gap: 20px;
+      font-family: inherit; font-size: 18px; font-weight: 500; color: var(--text);
+      text-align: left; cursor: pointer;
+      transition: color 0.2s var(--ease);
+    }
+    .faq-q:hover { color: var(--accent-teal); }
+    .faq-toggle {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      border: 1px solid var(--border-strong);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.4s var(--ease), background 0.3s var(--ease);
+      color: var(--text-muted);
+    }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); background: var(--text); color: #fff; border-color: var(--text); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.5s var(--ease), padding 0.5s var(--ease), opacity 0.4s var(--ease);
+      font-size: 15px; color: var(--text-muted); line-height: 1.7;
+      opacity: 0;
+    }
+    .faq-item.open .faq-a {
+      max-height: 320px; padding: 0 0 26px; opacity: 1;
+    }
+
+    /* ─── CTA BAND ─── */
+    section.cta-band {
+      max-width: 1200px;
+      padding: 100px 32px 140px;
+      text-align: center;
+    }
+    .cta-card {
+      position: relative;
+      padding: 80px 40px;
+      border-radius: 32px;
+      background:
+        radial-gradient(80% 100% at 50% 0%, rgba(107,72,184,0.10) 0%, transparent 65%),
+        linear-gradient(180deg, #f1ead8 0%, #ede5d0 100%);
+      border: 1px solid var(--border-strong);
+      overflow: hidden;
+    }
+    .cta-card::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, #000 30%, transparent 80%);
+    }
+    .cta-card > * { position: relative; }
+    .cta-card h2 {
+      font-size: clamp(36px, 5vw, 56px); font-weight: 700;
+      letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 18px;
+    }
+    .cta-card h2 em {
+      font-style: italic; font-family: "Inter Tight", sans-serif; font-weight: 900;
+      background: linear-gradient(90deg, #2f857f, #6b48b8, #b85a3c);
+      background-size: 200% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gradientMove 9s ease infinite;
+    }
+    .cta-card p { color: var(--text-muted); max-width: 540px; margin: 0 auto 36px; font-size: 17px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      max-width: 1200px; margin: 0 auto;
+      padding: 40px 32px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border);
+      font-size: 13px; color: var(--text-faint);
+    }
+    footer .links { display: flex; gap: 28px; }
+    footer a:hover { color: var(--text); }
+
+    /* ─── REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); will-change: transform, opacity; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { transition: none; transform: none; opacity: 1; }
+      .hero-title .line-2, .cta-card h2 em { animation: none; background-position: 0 50%; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav.top { padding: 14px 20px; }
+      .nav-links { display: none; }
+      section.feature { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      section.feature.flip { direction: ltr; }
+      .faq-grid { grid-template-columns: 1fr; gap: 40px; }
+      .cta-card { padding: 56px 24px; }
+      footer { flex-direction: column; gap: 16px; padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═════ NAV ═════ -->
+<nav class="top">
+  <a class="brand" href="#"><span class="brand-dot"></span>Focul</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#faq">FAQs</a>
+    <a href="/login">Login</a>
+  </div>
+  <a class="nav-cta" href="/waitlist">Get Started →</a>
+</nav>
+
+<!-- ═════ HERO ═════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-pill"><span class="dot"></span>Now accepting early access</div>
+
+  <h1 class="hero-title">
+    <span class="line-1">One timer,</span><br/>
+    <span class="line-2">every focused minute.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Focul is a 15-minute focus timer for founders. When the bell rings, you speak.
+    AI extracts your tasks, blockers, and next actions. Your next session starts
+    with a clear plan — every time.
+  </p>
+
+  <div class="hero-actions">
+    <a class="btn-primary" href="/waitlist">
+      Join now
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+    <p class="hero-proof">Join <strong id="wl-count">47</strong> others on the waitlist.</p>
+  </div>
+</section>
+
+<!-- ═════ INTEGRATIONS / TOOLS ═════ -->
+<section class="integrations reveal">
+  <div class="integrations-row">
+    <span class="integration-chip">macOS</span>
+    <span class="integration-chip">Notion</span>
+    <span class="integration-chip">Linear</span>
+    <span class="integration-chip">Slack</span>
+    <span class="integration-chip">Google Cal</span>
+    <span class="integration-chip">Whisper</span>
+    <span class="integration-chip">Claude</span>
+  </div>
+</section>
+
+<!-- ═════ FEATURE 1 — FOCUS MODE (BLUE) ═════ -->
+<section class="feature reveal" id="features">
+  <div>
+    <div class="section-label blue mono">FOCUS MODE</div>
+    <h2 class="section-title">Stay heads-down with a timer that lives in your menu bar.</h2>
+    <p class="section-body">
+      The 15-minute block runs silently in your menu bar. No notifications,
+      no app switching. One glance tells you how long you have left.
+    </p>
+    <p class="section-body">
+      The bell rings — and that's it. No pop-ups, no friction. Just a quiet signal
+      that it's time to debrief.
+    </p>
+  </div>
+  <div class="feature-mock blue">
+    <div class="mock-window">
+      <div class="mock-tabs"><span></span><span></span><span></span></div>
+      <div class="mock-pill mono">⏱ 14:32 — Focus session</div>
+      <div class="mock-big-num">14:32</div>
+      <div class="mock-line accent"></div>
+      <div class="mock-line short"></div>
+      <div class="mock-line shorter"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ FEATURE 2 — VOICE DEBRIEF (PURPLE) ═════ -->
+<section class="feature flip reveal">
+  <div>
+    <div class="section-label purple mono">VOICE DEBRIEF</div>
+    <h2 class="section-title">Talk for 60 seconds. AI does the rest.</h2>
+    <p class="section-body">
+      When the timer ends, hold ⌘R and speak. Say what you finished, what's
+      next, what's blocking you. No typing, no forms.
+    </p>
+    <p class="section-body">
+      Whisper transcribes you. Claude extracts your tasks. In about 5 seconds
+      your next session has a clear plan.
+    </p>
+  </div>
+  <div class="feature-mock purple">
+    <div class="mock-window">
+      <div class="mock-tabs"><span></span><span></span><span></span></div>
+      <div class="mock-pill mono" style="color:#de8363;">● Recording · 0:47</div>
+      <div class="mock-line accent"></div>
+      <div class="mock-block">
+        <div class="mock-pill mono" style="background:rgba(124,90,197,0.18);color:#a888d6;">AI · Transcript</div>
+        <div class="mock-line"></div>
+        <div class="mock-line short"></div>
+        <div class="mock-line shorter"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ FEATURE 3 — TASK CONTINUITY (ORANGE) ═════ -->
+<section class="feature reveal">
+  <div>
+    <div class="section-label orange mono">TASK CONTINUITY</div>
+    <h2 class="section-title">Your next session starts with a clear list.</h2>
+    <p class="section-body">
+      Open Focul tomorrow morning and your tasks are already there — pulled
+      from yesterday's voice. No re-reading old notes. No staring at a blank
+      page wondering where you left off.
+    </p>
+    <p class="section-body">
+      Check them off, say what's next, repeat. The loop closes itself.
+    </p>
+  </div>
+  <div class="feature-mock orange">
+    <div class="mock-window">
+      <div class="mock-tabs"><span></span><span></span><span></span></div>
+      <div class="mock-pill mono" style="color:#edbf86;">📋 3 tasks for today</div>
+      <div class="mock-block">
+        <div class="mock-line"></div>
+        <div class="mock-line short"></div>
+      </div>
+      <div class="mock-block">
+        <div class="mock-line"></div>
+        <div class="mock-line shorter"></div>
+      </div>
+      <div class="mock-block" style="opacity:0.5;">
+        <div class="mock-line short"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ ASIDE — TAKE A LOOK INSIDE ═════ -->
+<section class="aside reveal" id="how">
+  <div class="section-label teal mono">HOW IT WORKS</div>
+  <h2 class="section-title" style="margin: 0 auto 22px;">Take a look inside Focul.</h2>
+  <p class="section-body" style="margin: 0 auto;">
+    A 15-minute focus loop that captures itself, organises itself, and hands
+    your work forward to the next session.
+  </p>
+  <div class="aside-mock">
+    <div class="aside-mock-content">
+      <strong>Focus → Bell → Speak → Briefing</strong>
+      <div>The four steps that close the loop.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ ASIDE — MORNING BRIEFING ═════ -->
+<section class="aside reveal">
+  <div class="section-label salmon mono">FEATURES</div>
+  <h2 class="section-title" style="margin: 0 auto 22px;">
+    Start every day knowing<br/>what matters.
+  </h2>
+  <p class="section-body" style="margin: 0 auto;">
+    Focul serves you a morning briefing built from your last debrief — your top
+    tasks, blockers, and the one thing you said you'd do first.
+  </p>
+</section>
+
+<!-- ═════ FAQ ═════ -->
+<section class="faq reveal" id="faq">
+  <div class="faq-grid">
+    <div>
+      <div class="section-label mono">FAQs</div>
+      <h2>Frequently<br/>Asked<br/>Questions</h2>
+      <p>Everything you need to know about Focul, from setup to security. Still curious? Drop us a message and we'll get back to you.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Does it work on Windows?</span>
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Not yet. Focul is a macOS menu bar app. Windows is on the roadmap.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Do I need internet to use it?</span>
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">The timer works offline. The voice debrief needs internet — it processes your audio and returns your tasks in about 5 seconds.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Where does my voice data go?</span>
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Your audio is transcribed via Whisper and immediately discarded. The transcript is processed by Claude to extract tasks, then saved to your account. We don't sell or share your data.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Do I have to speak every time?</span>
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">No. The debrief is optional. If you skip it, your session still gets logged. But the voice debrief is where the magic happens — most people do it every time after the first week.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Is there a free trial?</span>
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">Yes. 14 days free, no card needed. The first 500 founders on the waitlist get 6 months free at launch.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>How is Focul different from a Pomodoro timer?</span>
+          <span class="faq-toggle">+</span>
+        </button>
+        <div class="faq-a">A Pomodoro counts down. Focul does that too — and then captures what you did, extracts your next tasks, and hands them forward. The timer is just step 1 of 4.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════ CTA BAND ═════ -->
+<section class="cta-band reveal">
+  <div class="cta-card">
+    <h2>Do 10 sessions.<br/><em>See what changes.</em></h2>
+    <p>After 10 sessions you'll know where every minute went. After 30, you won't want to stop.</p>
+    <a class="btn-primary" href="/waitlist">
+      Join now
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ═════ FOOTER ═════ -->
+<footer>
+  <a class="brand" href="#"><span class="brand-dot"></span>Focul</a>
+  <div class="links">
+    <a href="/waitlist">Waitlist</a>
+    <a href="#faq">FAQs</a>
+    <a href="/login">Login</a>
+  </div>
+  <span>© 2026 Focul</span>
+</footer>
+
+<script>
+// FAQ toggle
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// Live waitlist count
+fetch('/api/waitlist/count').then(r => r.json()).then(d => {
+  const n = (d && typeof d.count === 'number') ? d.count : 0;
+  const el = document.getElementById('wl-count');
+  if (el) el.textContent = n < 47 ? 47 + n : n;
+}).catch(() => {});
+
+// Scroll reveal
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  function check() {
+    const trigger = window.innerHeight * 0.88;
+    els.forEach(el => {
+      if (el.classList.contains('visible')) return;
+      if (el.getBoundingClientRect().top < trigger) el.classList.add('visible');
+    });
+  }
+  requestAnimationFrame(() => requestAnimationFrame(check));
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { check(); ticking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', check, { passive: true });
+})();
+</script>
+</body>
+</html>
