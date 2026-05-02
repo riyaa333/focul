@@ -11,9 +11,9 @@ export const metadata: Metadata = {
     "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
   icons: {
     icon: [
-      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.png?v=2", type: "image/png" },
     ],
-    apple: "/favicon.png",
+    apple: "/favicon.png?v=2",
   },
   openGraph: {
     type: "website",
