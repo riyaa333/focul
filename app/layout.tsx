@@ -5,14 +5,38 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://focul.co"),
   title: "Focul — Close the loop on your work day",
   description:
-    "A 15-minute focus timer for scaling founders. When the bell rings, speak for 60 seconds. AI picks out your next tasks. Your next session starts with a clear plan.",
+    "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },
     ],
     apple: "/favicon.png",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://focul.co",
+    siteName: "Focul",
+    title: "Focul — Close the loop on your work day",
+    description:
+      "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
+    images: [
+      {
+        url: "/focul-logo-final.png",
+        width: 1200,
+        height: 630,
+        alt: "Focul",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Focul — Close the loop on your work day",
+    description:
+      "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
+    images: ["/focul-logo-final.png"],
   },
 }
 

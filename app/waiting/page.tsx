@@ -70,7 +70,7 @@ function WaitingInner() {
         </h1>
 
         <p className={s.sub}>
-          We'll email you the moment your spot opens. First 500 founders get 6 months free.
+          First 500 founders get founder pricing. We'll be in touch as Focul opens up.
         </p>
 
         {error && <p className={s.err}>{error}</p>}
@@ -106,22 +106,22 @@ function WaitingInner() {
           <li>
             <span className={s.tlStep}>1</span>
             <div>
-              <strong>Within 24 hours</strong>
-              <p>You'll get a confirmation email and a few questions about how you work.</p>
+              <strong>You're on the list</strong>
+              <p>Your spot is locked in. The earlier the position, the sooner you get access.</p>
             </div>
           </li>
           <li>
             <span className={s.tlStep}>2</span>
             <div>
-              <strong>When your spot opens</strong>
-              <p>We send you the macOS DMG and your access link. Set up takes under 2 minutes.</p>
+              <strong>When Focul launches</strong>
+              <p>macOS app coming soon. You'll be among the first founders to get access and help shape it.</p>
             </div>
           </li>
           <li>
             <span className={s.tlStep}>3</span>
             <div>
               <strong>First 500 founders</strong>
-              <p>Six months free. No card. Feedback once a month — that's the deal.</p>
+              <p>Founder pricing locked in. No card today. Just feedback as the product ships.</p>
             </div>
           </li>
         </ol>
