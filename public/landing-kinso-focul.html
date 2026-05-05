@@ -93,161 +93,86 @@
     }
     .nav-cta:hover { transform: translateY(-1px); opacity: 0.88; }
 
-    /* ─── HERO ─── */
+    /* ─── HERO (v2 — two-column) ─── */
     .hero {
       position: relative;
-      min-height: 100vh;
-      padding: 180px 24px 120px;
-      text-align: center;
-      overflow: hidden;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 120px 32px 96px;
+      max-width: 1280px;
+      margin: 0 auto;
     }
-    .hero-bg {
-      position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background:
-        radial-gradient(60% 50% at 50% 0%, rgba(124,90,197,0.10) 0%, transparent 70%),
-        radial-gradient(50% 40% at 20% 30%, rgba(0,153,255,0.08) 0%, transparent 70%),
-        radial-gradient(45% 40% at 85% 60%, rgba(237,131,99,0.08) 0%, transparent 70%);
+    .hero-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 220px);
     }
-    .hero-grid {
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
-      background-size: 56px 56px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
-      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
-      pointer-events: none;
-    }
-    .hero > * { position: relative; z-index: 1; }
-
-    /* Floating focul-native icons — light-theme glassmorphic cards with soft colored glow */
-    .hero-icons { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
-    .float-icon {
-      position: absolute;
-      width: 72px; height: 72px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.85);
-      border: 1px solid currentColor;
-      display: flex; align-items: center; justify-content: center;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      animation: floatBob 6s ease-in-out infinite;
-      will-change: transform;
-    }
-    .float-icon svg { width: 34px; height: 34px; stroke-width: 1.7; stroke: currentColor; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-    /* Each icon: brand color + soft outer glow + subtle inner tint */
-    .float-icon.i-timer  { top: 19%; left: 11%;  animation-delay: 0s;   color: var(--accent-green);  box-shadow: 0 8px 32px rgba(45,138,74,0.18),  inset 0 0 16px rgba(45,138,74,0.06); }
-    .float-icon.i-mic    { top: 15%; right: 13%; animation-delay: 1.2s; color: var(--accent-orange); box-shadow: 0 8px 32px rgba(184,120,56,0.18), inset 0 0 16px rgba(184,120,56,0.06); }
-    .float-icon.i-list   { top: 50%; left: 6%;   animation-delay: 0.6s; color: var(--accent-teal);   box-shadow: 0 8px 32px rgba(47,133,127,0.18), inset 0 0 16px rgba(47,133,127,0.06); }
-    .float-icon.i-flame  { top: 46%; right: 7%;  animation-delay: 1.8s; color: var(--accent-salmon); box-shadow: 0 8px 32px rgba(184,90,60,0.18),  inset 0 0 16px rgba(184,90,60,0.06); }
-    .float-icon.i-sprint { bottom: 19%; left: 14%; animation-delay: 2.4s; color: var(--accent-blue);   box-shadow: 0 8px 32px rgba(37,99,235,0.18),  inset 0 0 16px rgba(37,99,235,0.06); }
-    .float-icon.i-brain  { bottom: 22%; right: 15%; animation-delay: 3.0s; color: var(--accent-purple); box-shadow: 0 8px 32px rgba(91,58,163,0.18),  inset 0 0 16px rgba(91,58,163,0.06); }
-    @keyframes floatBob {
-      0%, 100% { transform: translateY(0) rotate(-3deg); }
-      50%      { transform: translateY(-12px) rotate(3deg); }
-    }
-    @media (max-width: 1024px) {
-      .float-icon { width: 60px; height: 60px; border-radius: 16px; }
-      .float-icon svg { width: 28px; height: 28px; }
-    }
-    @media (max-width: 768px) {
-      .float-icon.i-list, .float-icon.i-flame { display: none; }
-    }
-    @media (max-width: 560px) {
-      .float-icon { display: none; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .float-icon { animation: none; }
+    @media (max-width: 980px) {
+      .hero-grid-2col { grid-template-columns: 1fr; gap: 56px; min-height: 0; }
     }
 
     .hero-pill {
       display: inline-flex; align-items: center; gap: 8px;
-      font-size: 12px; font-weight: 500;
-      color: var(--text-muted);
+      font-size: 13px; font-weight: 500;
+      color: var(--accent-green);
+      background: var(--surface-2);
+      border: 1px solid rgba(45,138,74,0.18);
       padding: 6px 14px; border-radius: 999px;
-      background: rgba(0,0,0,0.03);
-      border: 1px solid var(--border);
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       animation: fadeIn 0.7s var(--ease) 0.05s both;
     }
     .hero-pill .dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent-teal);
-      box-shadow: 0 0 8px rgba(61,157,151,0.55);
+      background: var(--accent-green);
       animation: pulse 2s ease-in-out infinite;
     }
+    .hero-pill strong { font-weight: 600; font-variant-numeric: tabular-nums; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
 
     h1.hero-title {
-      font-size: clamp(48px, 9vw, 112px);
-      font-weight: 800;
-      line-height: 0.98;
-      letter-spacing: -0.045em;
-      margin-bottom: 28px;
+      font-size: clamp(40px, 5.6vw, 68px);
+      font-weight: 600;
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 24px;
+      animation: rise 0.9s var(--ease) 0.12s both;
     }
-    .hero-title .line-1 { color: var(--text); }
-    .hero-title .line-2 {
-      font-family: "Inter Tight", "Geist", sans-serif;
-      font-style: italic;
-      font-weight: 900;
-    }
-    /* Gradient applied to each word in line-2 (so background-clip:text works inside the staggered spans) */
-    .hero-title .line-2 .word {
-      background: linear-gradient(90deg, #2d8a4a, #6fa83d, #2f857f, #2563eb, #2d8a4a);
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: wordRise 0.85s var(--ease) forwards, gradientMove 9s ease infinite;
-    }
-    /* Word-by-word stagger on hero headline (Kinso pattern) */
-    .word {
-      display: inline-block;
-      opacity: 0;
-      transform: translateY(40px);
-      animation: wordRise 0.85s var(--ease) forwards;
-    }
-    .hero-title .word:nth-child(1) { animation-delay: 0.12s; }
-    .hero-title .word:nth-child(2) { animation-delay: 0.20s; }
-    .hero-title .word:nth-child(3) { animation-delay: 0.28s; }
-    .hero-title .word:nth-child(4) { animation-delay: 0.36s; }
-    .hero-title .word:nth-child(5) { animation-delay: 0.44s; }
-    @keyframes wordRise {
-      from { opacity: 0; transform: translateY(40px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes gradientMove {
-      0%, 100% { background-position: 0% 50%; }
-      50%      { background-position: 100% 50%; }
-    }
-
-    /* Mouse-tracked spotlight on hero (kinso signature) */
-    .hero-spotlight {
-      position: absolute; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(
-        400px 400px at var(--mx, 50%) var(--my, 30%),
-        rgba(45,138,74,0.10) 0%,
-        rgba(111,168,61,0.05) 35%,
-        transparent 70%
-      );
-      transition: background 0.15s var(--ease);
+    .hero-title em {
+      font-style: normal;
+      color: var(--accent-green);
     }
 
     .hero-sub {
-      font-size: clamp(16px, 1.6vw, 19px);
+      font-size: 18px;
       color: var(--text-muted);
-      max-width: 620px;
-      margin: 0 auto 44px;
-      line-height: 1.55;
+      max-width: 480px;
+      line-height: 1.6;
+      margin-bottom: 32px;
       animation: rise 0.9s var(--ease) 0.22s both;
     }
 
-    .hero-actions { display: flex; flex-direction: column; align-items: center; gap: 16px; animation: rise 0.9s var(--ease) 0.32s both; }
+    .hero-feature-pills {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 36px;
+      animation: rise 0.9s var(--ease) 0.30s both;
+    }
+    .hero-feature-pill {
+      font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 7px 14px; border-radius: 999px;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      animation: rise 0.9s var(--ease) 0.38s both;
+    }
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 15px; font-weight: 500;
-      padding: 14px 26px; border-radius: 999px;
+      padding: 14px 24px; border-radius: 12px;
       background: var(--text); color: #fff;
       transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
       will-change: transform;
@@ -255,9 +180,178 @@
     .btn-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 36px rgba(0,0,0,0.22); }
     .btn-primary svg { transition: transform 0.3s var(--ease); }
     .btn-primary:hover svg { transform: translateX(3px); }
+    .btn-secondary {
+      font-size: 15px; font-weight: 500;
+      color: var(--text-muted);
+      padding: 14px 18px;
+      transition: color 0.2s var(--ease);
+    }
+    .btn-secondary:hover { color: var(--text); }
 
-    .hero-proof { font-size: 13px; color: var(--text-faint); }
-    .hero-proof strong { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .hero-proof-row {
+      margin-top: 28px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--text-faint);
+      animation: rise 0.9s var(--ease) 0.46s both;
+    }
+    .hero-proof-row strong { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .hero-avatars { display: flex; }
+    .hero-avatars span {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--bg);
+      margin-left: -6px;
+      background: linear-gradient(135deg, #8dcc9e, #1e5c30);
+    }
+    .hero-avatars span:first-child { margin-left: 0; }
+
+    /* Right column — floating mock cards */
+    .hero-mocks {
+      position: relative;
+      height: 560px;
+      animation: rise 1s var(--ease) 0.20s both;
+    }
+    @media (max-width: 980px) { .hero-mocks { height: 480px; } }
+    .mock-card {
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(13,31,21,0.05), 0 24px 64px rgba(13,31,21,0.12);
+      border: 1px solid var(--border);
+      position: absolute;
+    }
+
+    .mock-menubar {
+      top: 0;
+      left: 6%;
+      right: 4%;
+      padding: 0;
+      overflow: hidden;
+      transform: rotate(-1.5deg);
+    }
+    .menubar-os {
+      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
+      height: 28px;
+      display: flex; align-items: center;
+      padding: 0 12px; gap: 16px;
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+    }
+    .menubar-apple { width: 12px; height: 12px; margin-top: -1px; }
+    .menubar-apple svg { width: 100%; height: 100%; fill: rgba(255,255,255,0.92); }
+    .menubar-app { font-weight: 600; font-size: 13px; }
+    .menubar-menus { display: flex; gap: 14px; opacity: 0.78; font-size: 13px; }
+    .menubar-spacer { flex: 1; }
+    .menubar-focul {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(141,204,158,0.18);
+      padding: 3px 10px 3px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(141,204,158,0.25);
+    }
+    .menubar-wave { display: flex; align-items: center; gap: 1.5px; height: 14px; }
+    .menubar-wave span { display: block; width: 2px; border-radius: 1px; background: #8dcc9e; }
+    .menubar-wave span:nth-child(1) { height: 4px; opacity: 0.55; }
+    .menubar-wave span:nth-child(2) { height: 8px; opacity: 0.8; }
+    .menubar-wave span:nth-child(3) { height: 12px; opacity: 1; }
+    .menubar-wave span:nth-child(4) { height: 8px; opacity: 0.8; }
+    .menubar-wave span:nth-child(5) { height: 4px; opacity: 0.55; }
+    .menubar-time { font-variant-numeric: tabular-nums; color: white; font-weight: 500; font-size: 12px; }
+    .menubar-clock { color: rgba(255,255,255,0.7); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .menubar-body { padding: 36px 28px 32px; text-align: center; }
+    .menubar-label {
+      font-size: 12px; font-weight: 500;
+      color: var(--accent-green);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .menubar-big {
+      font-size: 64px; font-weight: 500;
+      letter-spacing: -0.025em;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .menubar-sub { color: var(--text-muted); font-size: 14px; }
+
+    .mock-tasks {
+      bottom: 0;
+      left: -2%;
+      right: 16%;
+      padding: 22px;
+      transform: rotate(1.8deg);
+    }
+    .tasks-head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tasks-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      display: grid; place-items: center;
+      color: var(--accent-green);
+    }
+    .tasks-title { font-size: 14px; font-weight: 600; color: var(--text); }
+    .tasks-meta { font-size: 12px; color: var(--text-muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+    .task {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .task-check {
+      width: 16px; height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-strong);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .task-tag {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-2);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .mock-voice {
+      top: 240px;
+      right: -4%;
+      padding: 14px 18px;
+      width: 220px;
+      transform: rotate(2.5deg);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .voice-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      display: grid; place-items: center;
+      color: white;
+      flex-shrink: 0;
+    }
+    .voice-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .voice-text { font-size: 12px; }
+    .voice-text strong { display: block; color: var(--text); font-weight: 600; font-size: 13px; }
+    .voice-text span { color: var(--text-muted); }
+    .voice-wave { display: flex; align-items: center; gap: 2px; height: 14px; margin: 4px 0; }
+    .voice-wave span {
+      display: block; width: 2px; background: #8dcc9e;
+      border-radius: 1px;
+      animation: voiceBounce 1.2s ease-in-out infinite;
+    }
+    .voice-wave span:nth-child(1) { height: 4px; animation-delay: 0s; }
+    .voice-wave span:nth-child(2) { height: 10px; animation-delay: 0.1s; }
+    .voice-wave span:nth-child(3) { height: 6px; animation-delay: 0.2s; }
+    .voice-wave span:nth-child(4) { height: 12px; animation-delay: 0.3s; }
+    .voice-wave span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+    .voice-wave span:nth-child(6) { height: 4px; animation-delay: 0.5s; }
+    .voice-wave span:nth-child(7) { height: 9px; animation-delay: 0.6s; }
+    @keyframes voiceBounce { 0%,100%{transform:scaleY(0.6)} 50%{transform:scaleY(1)} }
 
     @keyframes rise   { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -590,53 +684,85 @@
   <a class="nav-cta" href="/waitlist">Get Started →</a>
 </nav>
 
-<!-- ═════ HERO ═════ -->
+<!-- ═════ HERO (v2 — two-column) ═════ -->
 <section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-spotlight" id="hero-spotlight"></div>
-  <div class="hero-grid"></div>
+  <div class="hero-grid-2col">
+    <div class="hero-text">
+      <div class="hero-pill"><span class="dot"></span>Now accepting early access · <strong id="wl-count">47</strong> founders in</div>
 
-  <!-- Floating focul-native icons -->
-  <div class="hero-icons" aria-hidden="true">
-    <div class="float-icon i-timer" title="Timer">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
-    </div>
-    <div class="float-icon i-mic" title="Voice debrief">
-      <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
-    </div>
-    <div class="float-icon i-list" title="Tasks">
-      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 20 6"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
-    </div>
-    <div class="float-icon i-flame" title="Streak">
-      <svg viewBox="0 0 24 24"><path d="M12 2c1.5 3 4 5 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5 1-3.5 0 0 1.5 1 1.5 3 1-1 1.5-2.5 1.5-7.5z"/><path d="M16 14c0 4-1.5 7-4 7s-4-3-4-7"/></svg>
-    </div>
-    <div class="float-icon i-sprint" title="Sprint">
-      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    </div>
-    <div class="float-icon i-brain" title="Focus">
-      <svg viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
-    </div>
-  </div>
+      <h1 class="hero-title">One timer,<br><em>every focused minute.</em></h1>
 
-  <div class="hero-pill"><span class="dot"></span>Now accepting early access</div>
+      <p class="hero-sub">A 15-minute focus timer for founders. When the bell rings, you speak. AI extracts your tasks, blockers, and next actions — automatically.</p>
 
-  <h1 class="hero-title">
-    <span class="line-1"><span class="word">One</span> <span class="word">timer,</span></span><br/>
-    <span class="line-2"><span class="word">every</span> <span class="word">focused</span> <span class="word">minute.</span></span>
-  </h1>
+      <div class="hero-feature-pills">
+        <span class="hero-feature-pill">15-min timer</span>
+        <span class="hero-feature-pill">60s voice debrief</span>
+        <span class="hero-feature-pill">AI extracts tasks</span>
+        <span class="hero-feature-pill">Lives in your menu bar</span>
+        <span class="hero-feature-pill">Offline-ready</span>
+      </div>
 
-  <p class="hero-sub">
-    Focul is a 15-minute focus timer for founders. When the bell rings, you speak.
-    AI extracts your tasks, blockers, and next actions. Your next session starts
-    with a clear plan — every time.
-  </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="/waitlist">
+          Get early access
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn-secondary" href="#how">See how it works</a>
+      </div>
 
-  <div class="hero-actions">
-    <a class="btn-primary" href="/waitlist">
-      Join now
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-    </a>
-    <p class="hero-proof">Join <strong id="wl-count">47</strong> others on the waitlist.</p>
+      <div class="hero-proof-row">
+        <div class="hero-avatars"><span></span><span></span><span></span><span></span></div>
+        Building alongside <strong id="wl-count-2">47</strong> other founders
+      </div>
+    </div>
+
+    <div class="hero-mocks">
+      <div class="mock-card mock-menubar">
+        <div class="menubar-os">
+          <div class="menubar-apple">
+            <svg viewBox="0 0 24 24"><path d="M17.5 12.5c0-3 2.4-4.4 2.5-4.4-1.4-2-3.5-2.3-4.3-2.3-1.8-.2-3.5 1.1-4.4 1.1-.9 0-2.4-1.1-3.9-1-2 0-3.9 1.2-4.9 3-2.1 3.6-.5 9 1.5 11.9 1 1.5 2.2 3 3.7 3 1.5 0 2-1 3.8-1 1.7 0 2.2 1 3.7 1 1.5 0 2.5-1.5 3.5-3 1.1-1.7 1.5-3.4 1.5-3.5-.1 0-2.7-1-2.7-4zM14.6 4c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.6.8-3.5 1.8-.7.9-1.4 2.3-1.2 3.6 1.4.1 2.7-.7 3.5-1.6z"/></svg>
+          </div>
+          <span class="menubar-app">Focul</span>
+          <div class="menubar-menus"><span>File</span><span>Session</span><span>View</span></div>
+          <div class="menubar-spacer"></div>
+          <div class="menubar-focul">
+            <div class="menubar-wave"><span></span><span></span><span></span><span></span><span></span></div>
+            <span class="menubar-time" id="bar-time">14:32</span>
+          </div>
+          <span class="menubar-clock">9:41 AM</span>
+        </div>
+        <div class="menubar-body">
+          <div class="menubar-label">Focused</div>
+          <div class="menubar-big" id="big-time">14:32</div>
+          <div class="menubar-sub">Bell rings, then 60s voice debrief</div>
+        </div>
+      </div>
+
+      <div class="mock-card mock-voice">
+        <div class="voice-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </div>
+        <div class="voice-text">
+          <strong>Recording debrief</strong>
+          <div class="voice-wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <span>0:42 / 1:00</span>
+        </div>
+      </div>
+
+      <div class="mock-card mock-tasks">
+        <div class="tasks-head">
+          <div class="tasks-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="tasks-title">Tasks extracted</div>
+          <div class="tasks-meta">just now · 4 items</div>
+        </div>
+        <div class="task"><div class="task-check"></div><span>Email Stripe re: webhook retry behavior</span><span class="task-tag">action</span></div>
+        <div class="task"><div class="task-check"></div><span>Review Sarah's PR on the auth flow</span><span class="task-tag">action</span></div>
+        <div class="task"><div class="task-check"></div><span>Block Friday morning for investor calls</span><span class="task-tag">calendar</span></div>
+        <div class="task"><div class="task-check"></div><span>Waiting on legal feedback on terms v3</span><span class="task-tag">blocker</span></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -870,8 +996,8 @@ function toggleFaq(btn) {
 
 // ── Live waitlist count + count-up animation ──
 (async function() {
-  const el = document.getElementById('wl-count');
-  if (!el) return;
+  const els = [document.getElementById('wl-count'), document.getElementById('wl-count-2')].filter(Boolean);
+  if (!els.length) return;
   let target = 47;
   try {
     const r = await fetch('/api/waitlist/count');
@@ -879,17 +1005,33 @@ function toggleFaq(btn) {
     const n = (d && typeof d.count === 'number') ? d.count : 0;
     target = n < 47 ? 47 + n : n;
   } catch {}
-  // Animate from 0 → target over 1.4s with ease-out curve
   const start = performance.now();
   const dur = 1400;
   function step(now) {
     const t = Math.min(1, (now - start) / dur);
-    const eased = 1 - Math.pow(1 - t, 3);     // ease-out cubic
-    el.textContent = Math.round(target * eased);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const v = Math.round(target * eased);
+    els.forEach(el => el.textContent = v);
     if (t < 1) requestAnimationFrame(step);
-    else el.textContent = target;
+    else els.forEach(el => el.textContent = target);
   }
   requestAnimationFrame(step);
+})();
+
+// ── Hero menu-bar timer countdown ──
+(function() {
+  const big = document.getElementById('big-time');
+  const bar = document.getElementById('bar-time');
+  if (!big || !bar) return;
+  let seconds = 14 * 60 + 32;
+  setInterval(() => {
+    seconds = seconds <= 0 ? 14 * 60 + 32 : seconds - 1;
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    const t = m + ':' + String(s).padStart(2, '0');
+    big.textContent = t;
+    bar.textContent = t;
+  }, 1000);
 })();
 
 // ── Mouse spotlight on hero (radial follows cursor) ──
