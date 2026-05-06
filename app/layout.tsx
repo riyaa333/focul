@@ -24,10 +24,10 @@ export const metadata: Metadata = {
       "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
     images: [
       {
-        url: "/focul-logo-final.png",
+        url: "/focul-og.png",
         width: 1200,
-        height: 630,
-        alt: "Focul",
+        height: 627,
+        alt: "Focul — Close the loop on your work day",
       },
     ],
   },
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Focul — Close the loop on your work day",
     description:
       "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
-    images: ["/focul-logo-final.png"],
+    images: ["/focul-og.png"],
   },
 }
 
