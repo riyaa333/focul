@@ -112,7 +112,27 @@
       min-height: calc(100vh - 220px);
     }
     @media (max-width: 980px) {
-      .hero-grid-2col { grid-template-columns: 1fr; gap: 56px; min-height: 0; }
+      .hero { padding: 96px 20px 64px; }
+      .hero-grid-2col { grid-template-columns: 1fr; gap: 48px; min-height: 0; }
+      .hero-mocks { height: 460px; overflow: hidden; padding: 0 8px; }
+      .mock-menubar { left: 0; right: 0; transform: rotate(-1deg); }
+      .menubar-body { padding: 28px 20px 24px; }
+      .menubar-big { font-size: 56px; }
+      .mock-tasks { left: 0; right: 0; transform: rotate(1.2deg); }
+      .mock-voice { right: 0; transform: rotate(2deg); width: auto; left: auto; max-width: 220px; }
+    }
+    @media (max-width: 480px) {
+      h1.hero-title { font-size: 38px; }
+      .hero-pill { font-size: 12px; padding: 5px 12px; }
+      .hero-feature-pills { margin-bottom: 28px; }
+      .hero-mocks { height: 420px; }
+      .menubar-big { font-size: 48px; }
+      .menubar-os { font-size: 11px; padding: 0 10px; gap: 10px; }
+      .menubar-menus { gap: 10px; }
+      .menubar-clock { display: none; }
+      .mock-tasks { padding: 16px; }
+      .task { font-size: 13px; }
+      .mock-voice { padding: 12px 14px; max-width: 180px; }
     }
 
     .hero-pill {
@@ -692,7 +712,7 @@
 <section class="hero" id="hero">
   <div class="hero-grid-2col">
     <div class="hero-text">
-      <div class="hero-pill"><span class="dot"></span>Now accepting early access · <strong id="wl-count">47</strong> founders in</div>
+      <div class="hero-pill"><span class="dot"></span><span class="hero-pill-text">Now accepting early access · <strong id="wl-count">47</strong> founders in</span></div>
 
       <h1 class="hero-title">One timer,<br><em>every focused minute.</em></h1>
 
@@ -716,7 +736,7 @@
 
       <div class="hero-proof-row">
         <div class="hero-avatars"><span></span><span></span><span></span><span></span></div>
-        Building alongside <strong id="wl-count-2">47</strong> other founders
+        <span class="hero-proof-text">Building alongside <strong id="wl-count-2">47</strong> other founders</span>
       </div>
     </div>
 
