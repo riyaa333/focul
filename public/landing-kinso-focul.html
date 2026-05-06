@@ -76,12 +76,16 @@
       -webkit-backdrop-filter: blur(20px) saturate(160%);
       border-bottom: 1px solid var(--border);
     }
-    .brand { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
-    .brand-dot {
-      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent-teal); margin-right: 9px; vertical-align: middle;
-      box-shadow: 0 0 12px rgba(61,157,151,0.5);
+    .brand {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 18px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text);
     }
+    .brand-mark {
+      width: 22px; height: 22px;
+      flex-shrink: 0;
+    }
+    .brand-mark svg { display: block; width: 100%; height: 100%; }
     .nav-links { display: flex; gap: 28px; }
     .nav-links a { font-size: 14px; color: var(--text-muted); transition: color 0.2s var(--ease); }
     .nav-links a:hover { color: var(--text); }
@@ -674,7 +678,7 @@
 
 <!-- ═════ NAV ═════ -->
 <nav class="top">
-  <a class="brand" href="#"><span class="brand-dot"></span>Focul</a>
+  <a class="brand" href="#"><span class="brand-mark"><svg viewBox="0 0 160 160" aria-hidden="true"><rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/><rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/><rect x="74" y="33" width="12" height="94" rx="6" fill="#1e5c30"/><rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/><rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/></svg></span>Focul</a>
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#how">How it works</a>
@@ -976,7 +980,7 @@
 
 <!-- ═════ FOOTER ═════ -->
 <footer>
-  <a class="brand" href="#"><span class="brand-dot"></span>Focul</a>
+  <a class="brand" href="#"><span class="brand-mark"><svg viewBox="0 0 160 160" aria-hidden="true"><rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/><rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/><rect x="74" y="33" width="12" height="94" rx="6" fill="#1e5c30"/><rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/><rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/></svg></span>Focul</a>
   <div class="links">
     <a href="/waitlist">Waitlist</a>
     <a href="#faq">FAQs</a>
