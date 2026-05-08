@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focul — Dashboard v2 (Bento)</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --bg-2: #f3f1ec;
+    --surface: #ffffff;
+    --surface-dark: #0d1f15;
+    --border: rgba(30,55,32,0.10);
+    --border-strong: rgba(30,55,32,0.18);
+    --text: #0d1f15;
+    --text-muted: rgba(13,31,21,0.62);
+    --text-faint: rgba(13,31,21,0.42);
+    --green-deep: #1e5c30;
+    --green-mid: #8dcc9e;
+    --green-light: #d4ead8;
+    --shadow-sm: 0 1px 3px rgba(13,31,21,0.04);
+    --shadow-md: 0 4px 12px rgba(13,31,21,0.06), 0 12px 32px rgba(13,31,21,0.08);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Sidebar — slim, icon-first */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 100vh;
+  }
+  aside {
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex; flex-direction: column;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 17px; font-weight: 700; letter-spacing: -0.02em;
+    padding: 8px 12px;
+    margin-bottom: 32px;
+  }
+  .brand-mark { width: 22px; height: 22px; }
+  .brand-mark svg { display: block; width: 100%; height: 100%; }
+  .nav-section { margin-bottom: 24px; }
+  .nav-section-label {
+    font-size: 11px; font-weight: 500;
+    color: var(--text-faint);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s var(--ease);
+  }
+  .nav-item.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
+  .nav-item:hover:not(.active) { background: rgba(255,255,255,0.5); color: var(--text); }
+  .nav-icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.8; }
+  .nav-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 12px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    flex-shrink: 0;
+  }
+  .sidebar-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .sidebar-email { font-size: 11px; color: var(--text-faint); }
+
+  /* Main */
+  main {
+    padding: 32px 40px;
+    overflow-y: auto;
+  }
+  .topbar {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .greeting-block .label {
+    font-size: 12px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .greeting-block h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .quick-actions { display: flex; gap: 8px; }
+  .quick-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    transition: all 0.15s var(--ease);
+  }
+  .quick-btn:hover { color: var(--text); border-color: var(--border-strong); }
+  .quick-btn.primary {
+    background: var(--green-deep);
+    color: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(30,92,48,0.18);
+  }
+  .quick-btn.primary:hover { background: #144020; }
+
+  /* Bento grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: minmax(120px, auto);
+    gap: 16px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    transition: all 0.2s var(--ease);
+  }
+  .card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 12px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .card-meta { font-size: 11px; color: var(--text-faint); }
+
+  /* Timer card — big, dominant */
+  .card.timer {
+    grid-column: span 7;
+    grid-row: span 2;
+    padding: 32px;
+    background: linear-gradient(135deg, #ffffff 0%, #fbfbf8 100%);
+    text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .timer-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--green-deep);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .timer-display {
+    font-size: clamp(80px, 9vw, 128px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 8px;
+  }
+  .timer-display .colon { color: var(--green-mid); }
+  .timer-sub {
+    font-size: 14px; color: var(--text-muted);
+    margin-bottom: 28px;
+  }
+  .duration-pills {
+    display: inline-flex;
+    background: var(--bg-2);
+    padding: 4px;
+    border-radius: 999px;
+    margin: 0 auto 28px;
+  }
+  .pill {
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .pill.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
+  .start-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--green-deep); color: #fff;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px; font-weight: 600;
+    border: none; cursor: pointer;
+    margin: 0 auto;
+    transition: all 0.2s var(--ease);
+    box-shadow: 0 4px 16px rgba(30,92,48,0.22);
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,92,48,0.32); }
+  .start-btn svg { width: 16px; height: 16px; }
+
+  /* Streak heatmap card */
+  .card.streak {
+    grid-column: span 5;
+    grid-row: span 2;
+    background: var(--surface-dark);
+    color: white;
+    border: none;
+    overflow: hidden;
+    position: relative;
+  }
+  .card.streak::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(400px circle at 80% 0%, rgba(141,204,158,0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .card.streak .card-title { color: rgba(255,255,255,0.55); }
+  .card.streak .card-meta { color: rgba(255,255,255,0.4); }
+  .streak-big {
+    font-size: 56px; font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .streak-big .flame { color: #ffb558; font-size: 40px; margin-left: 8px; }
+  .streak-sub {
+    font-size: 13px; color: rgba(255,255,255,0.55);
+    margin-bottom: 24px;
+  }
+  .heatmap {
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  .heat-cell {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+  }
+  .heat-cell.l1 { background: rgba(141,204,158,0.25); }
+  .heat-cell.l2 { background: rgba(141,204,158,0.45); }
+  .heat-cell.l3 { background: rgba(141,204,158,0.7); }
+  .heat-cell.l4 { background: rgba(141,204,158,1); }
+  .streak-legend {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; color: rgba(255,255,255,0.4);
+  }
+  .streak-legend-cells { display: flex; gap: 3px; }
+  .streak-legend-cell { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* Today's tasks */
+  .card.tasks {
+    grid-column: span 7;
+    grid-row: span 2;
+  }
+  .task {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--bg-2);
+  }
+  .task:last-child { border-bottom: none; }
+  .task-check {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border-strong);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .task-check.done {
+    background: var(--green-deep);
+    border-color: var(--green-deep);
+    position: relative;
+  }
+  .task-check.done::after {
+    content: ""; position: absolute;
+    width: 5px; height: 9px;
+    border: solid white; border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg) translate(-1px, -3px);
+    top: 3px; left: 6px;
+  }
+  .task-text { flex: 1; color: var(--text); }
+  .task.done .task-text { color: var(--text-faint); text-decoration: line-through; }
+  .task-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .task-tag.action { background: var(--green-light); color: var(--green-deep); }
+  .task-tag.blocker { background: #fdeae0; color: #b85a3c; }
+  .task-tag.calendar { background: #e8edff; color: #2563eb; }
+
+  /* Last debrief */
+  .card.debrief {
+    grid-column: span 5;
+    grid-row: span 2;
+  }
+  .debrief-quote {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    font-style: italic;
+    padding: 12px 0;
+    border-left: 2px solid var(--green-mid);
+    padding-left: 14px;
+    margin-bottom: 14px;
+  }
+  .debrief-stats {
+    display: flex; gap: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--bg-2);
+  }
+  .stat {
+    flex: 1;
+  }
+  .stat-value {
+    font-size: 22px; font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 11px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  /* Today summary strip (full width) */
+  .card.summary {
+    grid-column: span 12;
+    padding: 20px 24px;
+  }
+  .summary-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .summary-stat {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .summary-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--green-light);
+    color: var(--green-deep);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .summary-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .summary-text-block { display: flex; flex-direction: column; }
+  .summary-value { font-size: 18px; font-weight: 600; color: var(--text); line-height: 1.1; }
+  .summary-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 160 160">
+          <rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+          <rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+          <rect x="74" y="33" width="12" height="94" rx="6" fill="#1e5c30"/>
+          <rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+          <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+        </svg>
+      </span>
+      <span>Focul</span>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Workspace</div>
+      <div class="nav-item active">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2c1.5 3 4 5 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5 1-3.5 0 0 1.5 1 1.5 3 1-1 1.5-2.5 1.5-7.5z"/></svg></span>
+        <span>Streak</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></span>
+        <span>History</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Library</div>
+      <div class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 20 6"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+        <span>Tasks</span>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg></span>
+        <span>Debriefs</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">System</div>
+      <div class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <span>Settings</span>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-avatar"></div>
+      <div>
+        <div class="sidebar-name">Riya</div>
+        <div class="sidebar-email">Founder · Focul</div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div class="greeting-block">
+        <div class="label">Friday · 8 May</div>
+        <h1>Good evening, Riya 👋</h1>
+      </div>
+      <div class="quick-actions">
+        <button class="quick-btn">⌘ K Search</button>
+        <button class="quick-btn primary">+ New session</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Timer (big, top-left) -->
+      <div class="card timer">
+        <div class="timer-label">Ready when you are</div>
+        <div class="timer-display">15<span class="colon">:</span>00</div>
+        <div class="timer-sub">Bell rings, then 60s voice debrief</div>
+        <div class="duration-pills">
+          <div class="pill active">15 min</div>
+          <div class="pill">30 min</div>
+          <div class="pill">Custom</div>
+        </div>
+        <button class="start-btn">
+          Start session
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Streak (dark card, top-right) -->
+      <div class="card streak">
+        <div class="card-head">
+          <div class="card-title">Streak</div>
+          <div class="card-meta">last 14 days</div>
+        </div>
+        <div class="streak-big">4 <span class="flame">🔥</span></div>
+        <div class="streak-sub">days · best so far: 12</div>
+        <div class="heatmap">
+          <div class="heat-cell l3"></div><div class="heat-cell l4"></div><div class="heat-cell l2"></div><div class="heat-cell"></div>
+          <div class="heat-cell l1"></div><div class="heat-cell l3"></div><div class="heat-cell l4"></div>
+          <div class="heat-cell l2"></div><div class="heat-cell l4"></div><div class="heat-cell l3"></div>
+          <div class="heat-cell"></div><div class="heat-cell l2"></div><div class="heat-cell l3"></div><div class="heat-cell l4"></div>
+        </div>
+        <div class="streak-legend">
+          <span>Less</span>
+          <div class="streak-legend-cells">
+            <div class="streak-legend-cell" style="background:rgba(255,255,255,0.06)"></div>
+            <div class="streak-legend-cell" style="background:rgba(141,204,158,0.25)"></div>
+            <div class="streak-legend-cell" style="background:rgba(141,204,158,0.45)"></div>
+            <div class="streak-legend-cell" style="background:rgba(141,204,158,0.7)"></div>
+            <div class="streak-legend-cell" style="background:rgba(141,204,158,1)"></div>
+          </div>
+          <span>More</span>
+        </div>
+      </div>
+
+      <!-- Coming up (tasks) -->
+      <div class="card tasks">
+        <div class="card-head">
+          <div class="card-title">Coming up</div>
+          <div class="card-meta">From your last debrief · 2h ago</div>
+        </div>
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Email Stripe re: webhook retry behavior</div>
+          <div class="task-tag action">action</div>
+        </div>
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Review Sarah's PR on the auth flow</div>
+          <div class="task-tag action">action</div>
+        </div>
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Block Friday morning for investor calls</div>
+          <div class="task-tag calendar">calendar</div>
+        </div>
+        <div class="task done">
+          <div class="task-check done"></div>
+          <div class="task-text">Ship favicon transparency fix</div>
+          <div class="task-tag action">action</div>
+        </div>
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Waiting on legal feedback on terms v3</div>
+          <div class="task-tag blocker">blocker</div>
+        </div>
+      </div>
+
+      <!-- Last debrief -->
+      <div class="card debrief">
+        <div class="card-head">
+          <div class="card-title">Last debrief</div>
+          <div class="card-meta">2h ago · 0:54</div>
+        </div>
+        <div class="debrief-quote">
+          "Just finished the Stripe webhook investigation. Looks like the retry logic isn't backing off correctly. Sarah's PR for auth is mostly clean — just needs the session-token tweak…"
+        </div>
+        <div class="debrief-stats">
+          <div class="stat">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Tasks captured</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">2</div>
+            <div class="stat-label">Blockers</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">0:54</div>
+            <div class="stat-label">Duration</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today summary strip -->
+      <div class="card summary">
+        <div class="summary-row">
+          <div class="summary-stat">
+            <div class="summary-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></div>
+            <div class="summary-text-block">
+              <div class="summary-value">3 sessions · 45 min</div>
+              <div class="summary-label">Focused today</div>
+            </div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 20 6"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div>
+            <div class="summary-text-block">
+              <div class="summary-value">11 captured · 4 done</div>
+              <div class="summary-label">Tasks</div>
+            </div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
+            <div class="summary-text-block">
+              <div class="summary-value">3:12 spoken</div>
+              <div class="summary-label">Voice today</div>
+            </div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1.5 3 4 5 4 8a4 4 0 0 1-8 0c0-1.5.5-2.5 1-3.5 0 0 1.5 1 1.5 3 1-1 1.5-2.5 1.5-7.5z"/></svg></div>
+            <div class="summary-text-block">
+              <div class="summary-value">4 days</div>
+              <div class="summary-label">Current streak</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

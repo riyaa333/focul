@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focul — Dashboard v1 (Minimal)</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --bg-2: #f3f1ec;
+    --surface: #ffffff;
+    --border: rgba(30,55,32,0.10);
+    --border-strong: rgba(30,55,32,0.18);
+    --text: #0d1f15;
+    --text-muted: rgba(13,31,21,0.62);
+    --text-faint: rgba(13,31,21,0.42);
+    --green-deep: #1e5c30;
+    --green-mid: #8dcc9e;
+    --green-light: #d4ead8;
+    --shadow-md: 0 4px 12px rgba(13,31,21,0.05), 0 24px 64px rgba(13,31,21,0.10);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Top nav (replaces left sidebar — frees up horizontal space) */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(250,249,247,0.85);
+    backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 17px; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .brand-mark { width: 22px; height: 22px; }
+  .brand-mark svg { display: block; width: 100%; height: 100%; }
+  .nav-tabs { display: flex; gap: 4px; background: var(--bg-2); padding: 4px; border-radius: 999px; }
+  .nav-tab {
+    padding: 7px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+  }
+  .nav-tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-streak {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500;
+    color: var(--green-deep);
+    background: var(--green-light);
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .nav-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+  }
+
+  /* Main */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+
+  /* Greeting */
+  .greeting {
+    font-size: 13px; color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  h1 {
+    font-size: 36px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 48px;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--green-deep);
+  }
+
+  /* Hero timer — the singular dominant element */
+  .timer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 64px 48px;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .timer-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--green-deep);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .timer-display {
+    font-size: clamp(96px, 14vw, 144px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 8px;
+  }
+  .timer-display .colon { color: var(--green-mid); }
+  .timer-sub {
+    font-size: 14px; color: var(--text-muted);
+    margin-bottom: 36px;
+  }
+  .duration-pills {
+    display: inline-flex;
+    background: var(--bg-2);
+    padding: 4px;
+    border-radius: 999px;
+    margin-bottom: 36px;
+  }
+  .pill {
+    padding: 9px 22px;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+  }
+  .pill.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .start-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--green-deep); color: #fff;
+    padding: 18px 36px;
+    border-radius: 16px;
+    font-size: 17px; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: transform 0.2s var(--ease), box-shadow 0.3s var(--ease);
+    box-shadow: 0 4px 16px rgba(30,92,48,0.24);
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,92,48,0.32); }
+  .start-btn svg { width: 18px; height: 18px; }
+
+  /* Today strip — minimal, three small cards */
+  .today-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .today-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: all 0.2s var(--ease);
+  }
+  .today-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+  .today-label {
+    font-size: 11px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .today-value {
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .today-sub { font-size: 12px; color: var(--text-faint); }
+
+  /* Coming up — collapsible row of tasks */
+  .coming-up {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+  }
+  .coming-up-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .coming-up-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .coming-up-meta { font-size: 12px; color: var(--text-faint); }
+  .task-list { display: flex; flex-direction: column; gap: 2px; }
+  .task {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--text);
+    border-bottom: 1px solid var(--bg-2);
+  }
+  .task:last-child { border-bottom: none; }
+  .task-check {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border-strong);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+  }
+  .task-check:hover { border-color: var(--green-deep); background: var(--green-light); }
+  .task-text { flex: 1; }
+  .task-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .task-tag.action { background: var(--green-light); color: var(--green-deep); }
+  .task-tag.blocker { background: #fdeae0; color: #b85a3c; }
+  .task-tag.calendar { background: #e8edff; color: #2563eb; }
+</style>
+</head>
+<body>
+  <nav>
+    <div class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 160 160">
+          <rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+          <rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+          <rect x="74" y="33" width="12" height="94" rx="6" fill="#1e5c30"/>
+          <rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+          <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+        </svg>
+      </span>
+      <span>Focul</span>
+    </div>
+    <div class="nav-tabs">
+      <div class="nav-tab active">Today</div>
+      <div class="nav-tab">Streak</div>
+      <div class="nav-tab">History</div>
+      <div class="nav-tab">Settings</div>
+    </div>
+    <div class="nav-right">
+      <span class="nav-streak">🔥 4-day streak</span>
+      <div class="nav-avatar"></div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="greeting">Friday · 8 May</div>
+    <h1>Good evening, <em>Riya</em>.</h1>
+
+    <div class="timer-card">
+      <div class="timer-label">Ready when you are</div>
+      <div class="timer-display">15<span class="colon">:</span>00</div>
+      <div class="timer-sub">Bell rings, then 60s voice debrief</div>
+
+      <div class="duration-pills">
+        <div class="pill active">15 min</div>
+        <div class="pill">30 min</div>
+        <div class="pill">Custom</div>
+      </div>
+      <br>
+
+      <button class="start-btn">
+        Start session
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <div class="today-strip">
+      <div class="today-card">
+        <div class="today-label">Sessions today</div>
+        <div class="today-value">3</div>
+        <div class="today-sub">45 min focused</div>
+      </div>
+      <div class="today-card">
+        <div class="today-label">Tasks captured</div>
+        <div class="today-value">11</div>
+        <div class="today-sub">7 actions, 2 blockers</div>
+      </div>
+      <div class="today-card">
+        <div class="today-label">Streak</div>
+        <div class="today-value">4 🔥</div>
+        <div class="today-sub">Best: 12 days</div>
+      </div>
+    </div>
+
+    <div class="coming-up">
+      <div class="coming-up-head">
+        <div class="coming-up-title">Coming up</div>
+        <div class="coming-up-meta">From your last debrief · 2h ago</div>
+      </div>
+      <div class="task-list">
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Email Stripe re: webhook retry behavior</div>
+          <div class="task-tag action">action</div>
+        </div>
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Review Sarah's PR on the auth flow</div>
+          <div class="task-tag action">action</div>
+        </div>
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Block Friday morning for investor calls</div>
+          <div class="task-tag calendar">calendar</div>
+        </div>
+        <div class="task">
+          <div class="task-check"></div>
+          <div class="task-text">Waiting on legal feedback on terms v3</div>
+          <div class="task-tag blocker">blocker</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

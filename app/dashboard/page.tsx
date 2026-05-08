@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import OnboardingModal from './OnboardingModal'
+import { FocusCoach } from './FocusCoach'
 
 type Session = {
   id: string
@@ -159,6 +160,13 @@ export default function DashboardPage() {
     }, 380)
   }
 
+  function startCoachSession(minutes: number) {
+    setIsLeaving(true)
+    setTimeout(() => {
+      router.push(`/timer?duration=${minutes}&mode=${mode}`)
+    }, 380)
+  }
+
   const timerDisplay = String(activeDuration).padStart(2, '0')
   const timerSuffix = ':00'
 
@@ -233,6 +241,11 @@ export default function DashboardPage() {
               </p>
             )}
           </div>
+
+          {/* Focus Coach (mobile) */}
+          {activeNav === 'dashboard' && (
+            <FocusCoach onStart={startCoachSession} isMobile />
+          )}
 
           {/* Timer card */}
           {activeNav === 'dashboard' && (
@@ -573,10 +586,10 @@ export default function DashboardPage() {
       </aside>
 
       {/* ── Main ── */}
-      <main style={{ flex: 1, overflowY: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 48 }}>
+      <main style={{ flex: 1, overflowY: 'auto', display: 'flex', alignItems: activeNav === 'dashboard' ? 'flex-start' : 'center', justifyContent: 'center', padding: activeNav === 'dashboard' ? '64px 48px 96px' : 48 }}>
 
         {activeNav === 'dashboard' && (
-          <div style={{ width: '100%', maxWidth: 440 }}>
+          <div style={{ width: '100%', maxWidth: 720 }}>
 
             {/* Greeting */}
             <div style={{ marginBottom: 36 }}>
@@ -626,118 +639,217 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* Card */}
+            {/* Focus Coach (desktop) */}
+            <FocusCoach onStart={startCoachSession} />
+
+            {/* ── Hero timer card (v1 minimal) ── */}
             <div style={{
               background: '#fff',
               borderRadius: 24,
               border: '1px solid #ede9e2',
               boxShadow: '0 4px 32px rgba(0,0,0,0.05)',
-              overflow: 'hidden',
+              padding: '56px 48px 48px',
+              textAlign: 'center',
+              marginBottom: 24,
             }}>
+              <p style={{
+                fontSize: 11, fontWeight: 600, letterSpacing: 1.6, textTransform: 'uppercase',
+                color: '#1e5c30', marginBottom: 22,
+              }}>
+                Ready when you are
+              </p>
 
-              {/* Timer section */}
-              <div style={{ padding: '36px 36px 28px', borderBottom: '1px solid #f3f1ee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
-                <div style={{ fontSize: 88, fontWeight: 900, letterSpacing: -6, lineHeight: 1, color: '#1a1410' }}>
-                  {timerDisplay}<span style={{ color: '#e8e2d8' }}>{timerSuffix}</span>
-                </div>
-
-                {/* Pills */}
-                {!showCustom ? (
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    {[15, 30].map(d => (
-                      <button key={d} onClick={() => setSelected(d)} style={{
-                        padding: '8px 20px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-                        cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1a1410' : '#e8e2d8'}`,
-                        color: selected === d ? '#1a1410' : '#b0a898', background: 'transparent',
-                        transition: 'all 0.15s',
-                      }}>
-                        {d} min
-                      </button>
-                    ))}
-                    <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
-                      padding: '8px 20px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-                      cursor: 'pointer', border: '1.5px solid #e8e2d8', color: '#b0a898', background: 'transparent',
-                    }}>
-                      custom
-                    </button>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f5f2', borderRadius: 100, padding: '6px 16px' }}>
-                    <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
-                      onChange={e => setCustomMins(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && startSession()}
-                      style={{ width: 40, background: 'transparent', outline: 'none', fontSize: 13, fontWeight: 700, color: '#1a1410', textAlign: 'center', border: 'none' }} />
-                    <span style={{ fontSize: 12, fontWeight: 600, color: '#b0a898' }}>min</span>
-                    <button onClick={() => { setShowCustom(false); setCustomMins('') }}
-                      style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
-                  </div>
-                )}
+              <div style={{
+                fontSize: 128, fontWeight: 500, letterSpacing: -7, lineHeight: 1,
+                color: '#1a1410', fontVariantNumeric: 'tabular-nums', marginBottom: 12,
+              }}>
+                {timerDisplay}<span style={{ color: '#8dcc9e' }}>{timerSuffix}</span>
               </div>
 
-              {/* Button section */}
-              <div style={{ padding: '20px 28px', borderBottom: continuationTasks.length > 0 ? '1px solid #f3f1ee' : 'none' }}>
-                {/* Mode toggle */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
-                  <div style={{ display: 'flex', background: '#f3f1ee', borderRadius: 100, padding: 3 }}>
-                    {(['focus', 'accountability'] as const).map(m => (
-                      <button key={m} onClick={() => setMode(m)} style={{
-                        padding: '5px 16px', borderRadius: 100, fontSize: 11, fontWeight: 600,
-                        cursor: 'pointer', border: 'none',
-                        background: mode === m ? (m === 'focus' ? '#1a1410' : '#2d6aaa') : 'transparent',
-                        color: mode === m ? '#fff' : '#b0a898',
-                        transition: 'all 0.18s',
-                      }}>
-                        {m === 'focus' ? 'Focus' : 'Accountability'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <button onClick={startSession} style={{
-                  width: '100%', padding: '15px 0', borderRadius: 14,
-                  fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer', border: 'none',
-                  background: mode === 'accountability'
-                    ? 'linear-gradient(135deg, #2d6aaa, #4a8fd4)'
-                    : 'linear-gradient(135deg, #2d8a44, #4aaa60)',
-                  boxShadow: mode === 'accountability'
-                    ? '0 4px 20px rgba(45,106,170,0.22)'
-                    : '0 4px 20px rgba(45,138,68,0.22)',
-                  transition: 'all 0.2s',
-                  letterSpacing: '0.01em',
+              <p style={{ fontSize: 14, color: '#b0a898', marginBottom: 32 }}>
+                Bell rings, then 60s voice debrief
+              </p>
+
+              {/* Duration pills */}
+              {!showCustom ? (
+                <div style={{
+                  display: 'inline-flex', background: '#f3f1ee', padding: 4, borderRadius: 100,
+                  marginBottom: 32,
                 }}>
-                  Start {activeDuration} min →
-                </button>
-              </div>
-
-              {/* Tasks section */}
-              {continuationTasks.length > 0 && (
-                <div style={{ padding: '16px 28px' }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 10 }}>
-                    From {timeAgo(lastSession.created_at)}
-                  </p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-                    {continuationTasks.slice(0, 3).map((task, i) => (
-                      <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12.5, color: '#8a7e72', lineHeight: 1.45 }}>
-                        <span style={{ color: '#c8dcc0', fontWeight: 600, flexShrink: 0, marginTop: 1 }}>·</span>
-                        {task}
-                      </div>
-                    ))}
-                  </div>
+                  {[15, 30].map(d => (
+                    <button key={d} onClick={() => setSelected(d)} style={{
+                      padding: '9px 22px', borderRadius: 100, fontSize: 14, fontWeight: 500,
+                      cursor: 'pointer', border: 'none',
+                      background: selected === d && !showCustom ? '#fff' : 'transparent',
+                      color: selected === d && !showCustom ? '#1a1410' : '#a09888',
+                      boxShadow: selected === d && !showCustom ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                      transition: 'all 0.15s',
+                    }}>
+                      {d} min
+                    </button>
+                  ))}
+                  <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
+                    padding: '9px 22px', borderRadius: 100, fontSize: 14, fontWeight: 500,
+                    cursor: 'pointer', border: 'none',
+                    background: 'transparent', color: '#a09888',
+                  }}>
+                    Custom
+                  </button>
+                </div>
+              ) : (
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: '#f3f1ee', borderRadius: 100, padding: '8px 18px',
+                  marginBottom: 32,
+                }}>
+                  <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
+                    onChange={e => setCustomMins(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && startSession()}
+                    style={{
+                      width: 48, background: 'transparent', outline: 'none', fontSize: 14,
+                      fontWeight: 600, color: '#1a1410', textAlign: 'center', border: 'none',
+                    }} />
+                  <span style={{ fontSize: 13, fontWeight: 500, color: '#a09888' }}>min</span>
+                  <button onClick={() => { setShowCustom(false); setCustomMins('') }}
+                    style={{ fontSize: 13, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
                 </div>
               )}
+
+              {/* Mode toggle (compact, sits above start button) */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
+                <div style={{ display: 'flex', background: '#f7f5f2', borderRadius: 100, padding: 3 }}>
+                  {(['focus', 'accountability'] as const).map(m => (
+                    <button key={m} onClick={() => setMode(m)} style={{
+                      padding: '6px 18px', borderRadius: 100, fontSize: 11, fontWeight: 600,
+                      cursor: 'pointer', border: 'none',
+                      background: mode === m ? (m === 'focus' ? '#1a1410' : '#2d6aaa') : 'transparent',
+                      color: mode === m ? '#fff' : '#a09888',
+                      transition: 'all 0.18s',
+                    }}>
+                      {m === 'focus' ? 'Focus' : 'Accountability'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Start button */}
+              <button onClick={startSession} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                padding: '16px 36px', borderRadius: 16,
+                fontSize: 16, fontWeight: 600, color: '#fff', cursor: 'pointer', border: 'none',
+                background: mode === 'accountability' ? '#2d6aaa' : '#1e5c30',
+                boxShadow: mode === 'accountability'
+                  ? '0 4px 16px rgba(45,106,170,0.24)'
+                  : '0 4px 16px rgba(30,92,48,0.24)',
+                transition: 'all 0.2s',
+                letterSpacing: '0.01em',
+              }}>
+                Start {activeDuration}-min session
+                <span style={{ fontSize: 14 }}>→</span>
+              </button>
             </div>
 
-            {/* ── To-do list ── */}
+            {/* ── Today strip (3-up) ── */}
+            {(() => {
+              const todayDateStr = new Date().toDateString()
+              const yesterdayStr = new Date(Date.now() - 86400000).toDateString()
+              const days84: { date: string; count: number }[] = []
+              for (let i = 83; i >= 0; i--) {
+                const d = new Date(); d.setDate(d.getDate() - i)
+                const ds = d.toDateString()
+                days84.push({ date: ds, count: sessions.filter(s => new Date(s.created_at).toDateString() === ds).length })
+              }
+              let streak = 0
+              const rev = [...days84].reverse()
+              const si = rev.findIndex(d => d.date === todayDateStr || d.date === yesterdayStr)
+              if (si !== -1 && rev[si].count > 0) {
+                for (let i = si; i < rev.length; i++) { if (rev[i].count > 0) streak++; else break }
+              }
+              const todayTaskCount = sessions
+                .filter(s => new Date(s.created_at).toDateString() === todayDateStr)
+                .reduce((sum, s) => sum + (s.tasks?.length || 0), 0)
+              const cardStyle: React.CSSProperties = {
+                background: '#fff', border: '1px solid #ede9e2', borderRadius: 14,
+                padding: '18px 20px', transition: 'all 0.2s',
+              }
+              const labelStyle: React.CSSProperties = {
+                fontSize: 11, color: '#b0a898', textTransform: 'uppercase',
+                letterSpacing: 1.2, marginBottom: 10, fontWeight: 600,
+              }
+              const valueStyle: React.CSSProperties = {
+                fontSize: 28, fontWeight: 600, letterSpacing: -0.6, color: '#1a1410',
+                fontVariantNumeric: 'tabular-nums', lineHeight: 1, marginBottom: 6,
+              }
+              const subStyle: React.CSSProperties = { fontSize: 12, color: '#c0b8a8' }
+              return (
+                <div style={{
+                  display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 12, marginBottom: 24,
+                }}>
+                  <div style={cardStyle}>
+                    <p style={labelStyle}>Sessions today</p>
+                    <p style={valueStyle}>{todayCount}</p>
+                    <p style={subStyle}>{todayMins} min focused</p>
+                  </div>
+                  <div style={cardStyle}>
+                    <p style={labelStyle}>Tasks captured</p>
+                    <p style={valueStyle}>{todayTaskCount}</p>
+                    <p style={subStyle}>From today's debriefs</p>
+                  </div>
+                  <div style={cardStyle}>
+                    <p style={labelStyle}>Streak</p>
+                    <p style={valueStyle}>{streak} <span style={{ fontSize: 22 }}>🔥</span></p>
+                    <p style={subStyle}>{streak === 0 ? 'Start one today' : 'Keep it going'}</p>
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Continuation tasks from last debrief */}
+            {continuationTasks.length > 0 && (
+              <div style={{
+                background: '#fff', border: '1px solid #ede9e2', borderRadius: 14,
+                padding: '20px 22px', marginBottom: 14,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                  <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.4, textTransform: 'uppercase', color: '#1a1410' }}>
+                    Coming up
+                  </p>
+                  <p style={{ fontSize: 11, color: '#c0b8a8' }}>
+                    From your last debrief · {timeAgo(lastSession.created_at)}
+                  </p>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {continuationTasks.slice(0, 5).map((task, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'flex-start', gap: 12,
+                      padding: '10px 0', fontSize: 14, color: '#1a1410',
+                      borderBottom: i < Math.min(continuationTasks.length, 5) - 1 ? '1px solid #f3f1ee' : 'none',
+                    }}>
+                      <div style={{
+                        width: 18, height: 18, borderRadius: 5,
+                        border: '1.5px solid #d4cfc8', flexShrink: 0, marginTop: 1,
+                        cursor: 'pointer',
+                      }} />
+                      <span style={{ flex: 1, lineHeight: 1.45 }}>{task}</span>
+                      <span style={{
+                        fontSize: 11, padding: '3px 9px', borderRadius: 100,
+                        background: '#d4ead8', color: '#1e5c30', fontWeight: 500,
+                      }}>action</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── To-do list (v1 minimal) ── */}
             <div style={{
-              background: '#fff',
-              borderRadius: 24,
-              border: '1px solid #ede9e2',
-              boxShadow: '0 4px 32px rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-              marginTop: 16,
+              background: '#fff', border: '1px solid #ede9e2', borderRadius: 14,
+              padding: '20px 22px',
             }}>
-              <div style={{ padding: '20px 28px 16px', borderBottom: '1px solid #f3f1ee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8' }}>
-                  To-do
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.4, textTransform: 'uppercase', color: '#1a1410' }}>
+                  Your tasks
                 </p>
                 {todos.filter(t => t.completed).length > 0 && (
                   <span style={{ fontSize: 11, color: '#c0b8a8' }}>
@@ -747,49 +859,49 @@ export default function DashboardPage() {
               </div>
 
               {/* Add todo input */}
-              <div style={{ padding: '12px 28px', borderBottom: '1px solid #f3f1ee', display: 'flex', gap: 8 }}>
+              <div style={{
+                display: 'flex', gap: 8, padding: '10px 0',
+                borderBottom: '1px solid #f3f1ee',
+              }}>
                 <input
                   value={newTodo}
                   onChange={e => setNewTodo(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addTodo(newTodo)}
                   placeholder="Add a task..."
                   style={{
-                    flex: 1, fontSize: 13, border: 'none', outline: 'none',
-                    background: 'transparent', color: '#1a1410',
-                    fontFamily: 'inherit',
+                    flex: 1, fontSize: 14, border: 'none', outline: 'none',
+                    background: 'transparent', color: '#1a1410', fontFamily: 'inherit',
                   }}
                 />
                 {newTodo.trim() && (
                   <button onClick={() => addTodo(newTodo)} style={{
-                    fontSize: 18, color: '#3a9e52', border: 'none', background: 'transparent',
-                    cursor: 'pointer', lineHeight: 1, padding: '0 4px',
-                  }}>+</button>
+                    fontSize: 13, fontWeight: 500, color: '#1e5c30',
+                    border: 'none', background: 'transparent', cursor: 'pointer',
+                    padding: '0 6px',
+                  }}>Add</button>
                 )}
               </div>
 
               {/* Todo items */}
-              <div style={{ padding: '8px 0', maxHeight: 280, overflowY: 'auto' }}>
+              <div style={{ paddingTop: 4, maxHeight: 320, overflowY: 'auto' }}>
                 {todos.length === 0 ? (
-                  <p style={{ fontSize: 12, color: '#c0b8a8', padding: '16px 28px', textAlign: 'center' }}>
+                  <p style={{ fontSize: 13, color: '#c0b8a8', padding: '20px 0', textAlign: 'center' }}>
                     Add tasks or finish a session to get started
                   </p>
                 ) : (
                   <>
-                    {/* Incomplete */}
-                    {todos.filter(t => !t.completed).map(todo => (
+                    {todos.filter(t => !t.completed).map((todo, i, arr) => (
                       <div key={todo.id} style={{
-                        display: 'flex', alignItems: 'flex-start', gap: 10,
-                        padding: '9px 28px', cursor: 'default',
-                      }}
-                        onMouseEnter={e => (e.currentTarget.style.background = '#faf9f7')}
-                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                      >
+                        display: 'flex', alignItems: 'flex-start', gap: 12,
+                        padding: '10px 0',
+                        borderBottom: i < arr.length - 1 ? '1px solid #f3f1ee' : 'none',
+                      }}>
                         <button onClick={() => toggleTodo(todo.id, true)} style={{
-                          width: 16, height: 16, borderRadius: 4, flexShrink: 0, marginTop: 1,
+                          width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
                           border: '1.5px solid #d4cfc8', background: 'transparent',
-                          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          cursor: 'pointer',
                         }} />
-                        <span style={{ fontSize: 13, color: '#4a3f35', lineHeight: 1.45, flex: 1 }}>{todo.text}</span>
+                        <span style={{ fontSize: 14, color: '#1a1410', lineHeight: 1.45, flex: 1 }}>{todo.text}</span>
                         <button onClick={() => deleteTodo(todo.id)} style={{
                           fontSize: 14, color: '#d4cfc8', border: 'none', background: 'transparent',
                           cursor: 'pointer', opacity: 0, transition: 'opacity 0.15s', lineHeight: 1,
@@ -800,19 +912,18 @@ export default function DashboardPage() {
                       </div>
                     ))}
 
-                    {/* Completed (collapsed, muted) */}
                     {todos.filter(t => t.completed).map(todo => (
                       <div key={todo.id} style={{
-                        display: 'flex', alignItems: 'flex-start', gap: 10,
-                        padding: '7px 28px', opacity: 0.45,
+                        display: 'flex', alignItems: 'flex-start', gap: 12,
+                        padding: '8px 0', opacity: 0.45,
                       }}>
                         <button onClick={() => toggleTodo(todo.id, false)} style={{
-                          width: 16, height: 16, borderRadius: 4, flexShrink: 0, marginTop: 1,
-                          border: '1.5px solid #3a9e52', background: '#3a9e52',
+                          width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
+                          border: '1.5px solid #1e5c30', background: '#1e5c30',
                           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                           color: '#fff', fontSize: 10, fontWeight: 700,
                         }}>✓</button>
-                        <span style={{ fontSize: 13, color: '#a09888', lineHeight: 1.45, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
+                        <span style={{ fontSize: 14, color: '#a09888', lineHeight: 1.45, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
                         <button onClick={() => deleteTodo(todo.id)} style={{
                           fontSize: 14, color: '#d4cfc8', border: 'none', background: 'transparent',
                           cursor: 'pointer', lineHeight: 1,
