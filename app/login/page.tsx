@@ -111,6 +111,68 @@ export default function LoginPage() {
           .login-layout { grid-template-columns: 1fr; }
           .login-brand-side { display: none; }
         }
+
+        /* Animated voice-wave bars */
+        .voice-wave {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          height: 110px;
+        }
+        .voice-wave span {
+          display: block;
+          width: 12px;
+          border-radius: 6px;
+          transform-origin: center;
+          will-change: transform;
+        }
+        .voice-wave span:nth-child(1) {
+          height: 38px;
+          background: rgba(212,234,216,0.32);
+          animation: vw-out 1.4s ease-in-out infinite;
+          animation-delay: 0s;
+        }
+        .voice-wave span:nth-child(2) {
+          height: 69px;
+          background: rgba(141,204,158,0.55);
+          animation: vw-mid 1.6s ease-in-out infinite;
+          animation-delay: 0.12s;
+        }
+        .voice-wave span:nth-child(3) {
+          height: 94px;
+          background: rgba(168,224,185,0.95);
+          animation: vw-center 1.5s ease-in-out infinite;
+          animation-delay: 0.22s;
+        }
+        .voice-wave span:nth-child(4) {
+          height: 69px;
+          background: rgba(141,204,158,0.55);
+          animation: vw-mid 1.6s ease-in-out infinite;
+          animation-delay: 0.33s;
+        }
+        .voice-wave span:nth-child(5) {
+          height: 38px;
+          background: rgba(212,234,216,0.32);
+          animation: vw-out 1.4s ease-in-out infinite;
+          animation-delay: 0.45s;
+        }
+
+        @keyframes vw-out {
+          0%, 100% { transform: scaleY(0.6); }
+          50%      { transform: scaleY(1.25); }
+        }
+        @keyframes vw-mid {
+          0%, 100% { transform: scaleY(0.55); }
+          50%      { transform: scaleY(1.35); }
+        }
+        @keyframes vw-center {
+          0%, 100% { transform: scaleY(0.5); }
+          50%      { transform: scaleY(1.45); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .voice-wave span { animation: none; }
+        }
       `}</style>
 
       <div className="login-layout">
@@ -148,13 +210,13 @@ export default function LoginPage() {
           </a>
 
           <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="84" height="84" viewBox="0 0 160 160" style={{ opacity: 0.92 }} aria-hidden="true">
-              <rect x="38" y="61" width="12" height="38" rx="6" fill="rgba(212,234,216,0.32)"/>
-              <rect x="56" y="46" width="12" height="69" rx="6" fill="rgba(141,204,158,0.55)"/>
-              <rect x="74" y="33" width="12" height="94" rx="6" fill="rgba(168,224,185,0.95)"/>
-              <rect x="92" y="46" width="12" height="69" rx="6" fill="rgba(141,204,158,0.55)"/>
-              <rect x="110" y="61" width="12" height="38" rx="6" fill="rgba(212,234,216,0.32)"/>
-            </svg>
+            <div className="voice-wave" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
 
           <p style={{
