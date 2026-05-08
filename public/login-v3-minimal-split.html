@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focul — Login v3 (Minimal Split)</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --ink: #0a120d;
+    --on-dark: #f0ebe2;
+    --on-dark-soft: #b6c0b9;
+    --on-dark-muted: #6c7770;
+    --border: rgba(30,55,32,0.10);
+    --border-strong: rgba(30,55,32,0.18);
+    --border-dark: rgba(255,255,255,0.06);
+    --text: #0d1f15;
+    --text-muted: rgba(13,31,21,0.62);
+    --text-faint: rgba(13,31,21,0.42);
+    --green-deep: #1e5c30;
+    --green-mid: #8dcc9e;
+    --green-glow: #a8e0b9;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100vh; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .brand-side { display: none; }
+  }
+
+  /* ── Left: brand ── */
+  .brand-side {
+    background: var(--ink);
+    color: var(--on-dark);
+    padding: 40px 48px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-side::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(800px circle at 50% 50%, rgba(141,204,158,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .brand-side > * { position: relative; z-index: 1; }
+
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
+    color: var(--on-dark);
+    text-decoration: none;
+  }
+  .brand-mark { width: 22px; height: 22px; }
+  .brand-mark svg { display: block; width: 100%; height: 100%; }
+
+  .center-mark {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .center-mark svg {
+    width: 84px; height: 84px;
+    opacity: 0.92;
+  }
+
+  .footer-line {
+    font-size: 13px;
+    color: var(--on-dark-muted);
+    line-height: 1.5;
+    max-width: 280px;
+  }
+  .footer-line em {
+    font-style: normal;
+    color: var(--on-dark-soft);
+  }
+
+  /* ── Right: form ── */
+  .form-side {
+    padding: 48px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg);
+  }
+  .form-block {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .subhead {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  form {
+    display: flex; flex-direction: column;
+    gap: 14px;
+  }
+
+  .field { position: relative; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .field input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 14px;
+    color: var(--text);
+    font-family: inherit;
+    transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--green-deep);
+    box-shadow: 0 0 0 3px rgba(30,92,48,0.06);
+  }
+  .field input::placeholder { color: var(--text-faint); }
+
+  .field-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .forgot {
+    font-size: 12px; color: var(--text-muted);
+    text-decoration: none; font-weight: 500;
+  }
+  .forgot:hover { color: var(--green-deep); }
+
+  .signin-btn {
+    width: 100%;
+    padding: 13px 24px;
+    margin-top: 6px;
+    border-radius: 10px;
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s var(--ease);
+  }
+  .signin-btn:hover { transform: translateY(-1px); opacity: 0.94; }
+
+  .signup-line {
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .signup-line a {
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-strong);
+    padding-bottom: 1px;
+  }
+  .signup-line a:hover { border-color: var(--green-deep); color: var(--green-deep); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- Left: just brand + ambient mark + one quiet line -->
+  <div class="brand-side">
+    <a href="/" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 160 160">
+          <rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+          <rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+          <rect x="74" y="33" width="12" height="94" rx="6" fill="#a8e0b9"/>
+          <rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+          <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+        </svg>
+      </span>
+      <span>Focul</span>
+    </a>
+
+    <div class="center-mark">
+      <svg viewBox="0 0 160 160" aria-hidden="true">
+        <rect x="38" y="61" width="12" height="38" rx="6" fill="rgba(212,234,216,0.32)"/>
+        <rect x="56" y="46" width="12" height="69" rx="6" fill="rgba(141,204,158,0.55)"/>
+        <rect x="74" y="33" width="12" height="94" rx="6" fill="rgba(168,224,185,0.95)"/>
+        <rect x="92" y="46" width="12" height="69" rx="6" fill="rgba(141,204,158,0.55)"/>
+        <rect x="110" y="61" width="12" height="38" rx="6" fill="rgba(212,234,216,0.32)"/>
+      </svg>
+    </div>
+
+    <p class="footer-line">
+      One timer. <em>Every focused minute.</em>
+    </p>
+  </div>
+
+  <!-- Right: just the form -->
+  <div class="form-side">
+    <div class="form-block">
+      <h1>Sign in.</h1>
+      <p class="subhead">Pick up where your last session left off.</p>
+
+      <form>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@company.com" />
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="password">Password</label>
+            <a href="#" class="forgot">Forgot?</a>
+          </div>
+          <input type="password" id="password" placeholder="••••••••" />
+        </div>
+
+        <button type="submit" class="signin-btn">Sign in</button>
+      </form>
+
+      <p class="signup-line">No account? <a href="#">Create one</a></p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

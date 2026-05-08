@@ -64,255 +64,298 @@ export default function LoginPage() {
     setLoading(false)
   }
 
+  // ── Shared field styles ──
+  const labelStyle: React.CSSProperties = {
+    display: 'block', fontSize: 12, fontWeight: 500,
+    color: 'rgba(13,31,21,0.62)', marginBottom: 6,
+  }
+  const inputStyle: React.CSSProperties = {
+    width: '100%', padding: '12px 14px', borderRadius: 10,
+    border: '1px solid rgba(30,55,32,0.10)', background: '#fff',
+    fontSize: 14, color: '#0d1f15', fontFamily: 'inherit',
+    outline: 'none', boxSizing: 'border-box',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
+  }
+  const onInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = '#1e5c30'
+    e.target.style.boxShadow = '0 0 0 3px rgba(30,92,48,0.06)'
+  }
+  const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = 'rgba(30,55,32,0.10)'
+    e.target.style.boxShadow = 'none'
+  }
+
+  const headline = resetMode
+    ? 'Reset password.'
+    : mode === 'login' ? 'Sign in.' : 'Create your account.'
+  const subheadText = resetMode
+    ? "Enter your email and we'll send you a reset link."
+    : mode === 'login'
+      ? 'Pick up where your last session left off.'
+      : 'Start closing the loop on your work day.'
+
   return (
     <div style={{
       minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#f9fdf6',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif',
+      color: '#0d1f15',
+      WebkitFontSmoothing: 'antialiased',
     }}>
-      <div style={{ width: '100%', maxWidth: 340, padding: '0 20px' }}>
+      <style>{`
+        .login-layout {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          min-height: 100vh;
+        }
+        @media (max-width: 900px) {
+          .login-layout { grid-template-columns: 1fr; }
+          .login-brand-side { display: none; }
+        }
+      `}</style>
 
-        {/* Logo mark above card */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9 }}>
-            <svg width="28" height="28" viewBox="0 0 160 160">
-              <rect x="18" y="58" width="18" height="52" rx="9" fill="#d4ead8"/>
-              <rect x="42" y="36" width="18" height="96" rx="9" fill="#8dcc9e"/>
-              <rect x="66" y="18" width="18" height="132" rx="9" fill="#1e5c30"/>
-              <rect x="90" y="36" width="18" height="96" rx="9" fill="#3a9e52"/>
-              <rect x="114" y="58" width="18" height="52" rx="9" fill="#8dcc9e"/>
-            </svg>
-            <span style={{ fontSize: 24, fontWeight: 800, color: '#1a3020', letterSpacing: -0.5 }}>
-              Foc<span style={{ color: '#3a9e52' }}>ul</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Card — matches the green voice recording card */}
-        <div style={{
-          background: '#fff',
-          borderRadius: 20,
-          border: '1px solid #e8f5e8',
-          padding: '24px 24px 20px',
-          boxShadow: '0 2px 16px rgba(58,158,82,0.08)',
+      <div className="login-layout">
+        {/* ── Left: brand side (dark) ── */}
+        <div className="login-brand-side" style={{
+          background: '#0a120d',
+          color: '#f0ebe2',
+          padding: '40px 48px',
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-between',
+          position: 'relative', overflow: 'hidden',
         }}>
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'radial-gradient(800px circle at 50% 50%, rgba(141,204,158,0.05), transparent 60%)',
+            pointerEvents: 'none',
+          }} />
 
-          {/* Header row — like the recording timer indicator */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 20 }}>
-            <span style={{
-              width: 7, height: 7,
-              background: '#3a9e52',
-              borderRadius: '50%',
-              display: 'inline-block',
-              boxShadow: '0 0 0 3px rgba(58,158,82,0.15)',
-            }} />
-            <span style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              color: '#3a9e52',
-            }}>
-              {resetMode ? 'Reset password' : mode === 'login' ? 'Welcome back' : 'Create account'}
+          <a href="/" style={{
+            position: 'relative', zIndex: 1,
+            display: 'inline-flex', alignItems: 'center', gap: 10,
+            fontSize: 16, fontWeight: 600, letterSpacing: '-0.01em',
+            color: '#f0ebe2', textDecoration: 'none',
+          }}>
+            <span style={{ width: 22, height: 22, display: 'inline-block' }}>
+              <svg viewBox="0 0 160 160" style={{ display: 'block', width: '100%', height: '100%' }}>
+                <rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+                <rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+                <rect x="74" y="33" width="12" height="94" rx="6" fill="#a8e0b9"/>
+                <rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+                <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+              </svg>
             </span>
+            <span>Focul</span>
+          </a>
+
+          <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="84" height="84" viewBox="0 0 160 160" style={{ opacity: 0.92 }} aria-hidden="true">
+              <rect x="38" y="61" width="12" height="38" rx="6" fill="rgba(212,234,216,0.32)"/>
+              <rect x="56" y="46" width="12" height="69" rx="6" fill="rgba(141,204,158,0.55)"/>
+              <rect x="74" y="33" width="12" height="94" rx="6" fill="rgba(168,224,185,0.95)"/>
+              <rect x="92" y="46" width="12" height="69" rx="6" fill="rgba(141,204,158,0.55)"/>
+              <rect x="110" y="61" width="12" height="38" rx="6" fill="rgba(212,234,216,0.32)"/>
+            </svg>
           </div>
 
-          {/* Password reset form */}
-          {resetMode ? (
-            <form onSubmit={handlePasswordReset} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div>
-                <label style={{
-                  display: 'block', fontSize: 11, fontWeight: 600,
-                  color: '#7aaa7a', marginBottom: 5, letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                }}>
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  placeholder="you@company.com"
-                  autoFocus
-                  style={{
-                    width: '100%', border: '1.5px solid #e4f0e4', borderRadius: 12,
-                    padding: '10px 14px', fontSize: 14, outline: 'none',
-                    background: '#fafdf8', color: '#1a3020', fontFamily: 'inherit',
-                    boxSizing: 'border-box', transition: 'border-color 0.15s',
-                  }}
-                  onFocus={e => e.target.style.borderColor = '#3a9e52'}
-                  onBlur={e => e.target.style.borderColor = '#e4f0e4'}
-                />
-              </div>
-              {error && (
-                <p style={{ fontSize: 12, color: '#e07070', background: '#fff5f5', padding: '8px 12px', borderRadius: 10, margin: 0, border: '1px solid #fde8e8' }}>{error}</p>
-              )}
-              {message && (
-                <p style={{ fontSize: 12, color: '#3a9e52', background: '#f0f9f2', padding: '8px 12px', borderRadius: 10, margin: 0, border: '1px solid #d4ead8' }}>{message}</p>
-              )}
-              <button type="submit" disabled={loading} style={{
-                width: '100%', padding: '13px', borderRadius: 50, border: 'none',
-                fontSize: 14, fontWeight: 700, color: '#fff', cursor: loading ? 'default' : 'pointer',
-                background: 'linear-gradient(135deg, #2d8a44, #4db864)',
-                boxShadow: '0 6px 20px rgba(58,158,82,0.32)', opacity: loading ? 0.7 : 1,
-                marginTop: 6, letterSpacing: '0.01em',
-              }}>
-                {loading ? 'Sending…' : 'Send reset link →'}
-              </button>
-              <button type="button" onClick={() => { setResetMode(false); setError(''); setMessage('') }}
-                style={{ background: 'none', border: 'none', color: '#a8c4a8', fontSize: 12, cursor: 'pointer', marginTop: -4 }}>
-                ← Back to sign in
-              </button>
-            </form>
-          ) : (
-
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-
-            {/* Name field — signup only */}
-            {mode === 'signup' && (
-              <div>
-                <label style={{
-                  display: 'block', fontSize: 11, fontWeight: 600,
-                  color: '#7aaa7a', marginBottom: 5, letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                }}>
-                  What should we call you?
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  placeholder="Riya"
-                  autoFocus
-                  style={{
-                    width: '100%', border: '1.5px solid #e4f0e4', borderRadius: 12,
-                    padding: '10px 14px', fontSize: 14, outline: 'none',
-                    background: '#fafdf8', color: '#1a3020', fontFamily: 'inherit',
-                    boxSizing: 'border-box', transition: 'border-color 0.15s',
-                  }}
-                  onFocus={e => e.target.style.borderColor = '#3a9e52'}
-                  onBlur={e => e.target.style.borderColor = '#e4f0e4'}
-                />
-              </div>
-            )}
-
-            <div>
-              <label style={{
-                display: 'block', fontSize: 11, fontWeight: 600,
-                color: '#7aaa7a', marginBottom: 5, letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-              }}>
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                placeholder="you@company.com"
-                style={{
-                  width: '100%', border: '1.5px solid #e4f0e4', borderRadius: 12,
-                  padding: '10px 14px', fontSize: 14, outline: 'none',
-                  background: '#fafdf8', color: '#1a3020', fontFamily: 'inherit',
-                  boxSizing: 'border-box', transition: 'border-color 0.15s',
-                }}
-                onFocus={e => e.target.style.borderColor = '#3a9e52'}
-                onBlur={e => e.target.style.borderColor = '#e4f0e4'}
-              />
-            </div>
-
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                <label style={{
-                  fontSize: 11, fontWeight: 600,
-                  color: '#7aaa7a', letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                }}>
-                  Password
-                </label>
-                {mode === 'login' && (
-                  <button type="button" onClick={() => { setResetMode(true); setError(''); setMessage('') }}
-                    style={{ background: 'none', border: 'none', color: '#a8c4a8', fontSize: 11, cursor: 'pointer', padding: 0 }}>
-                    Forgot password?
-                  </button>
-                )}
-              </div>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                minLength={6}
-                placeholder="••••••••"
-                style={{
-                  width: '100%', border: '1.5px solid #e4f0e4', borderRadius: 12,
-                  padding: '10px 14px', fontSize: 14, outline: 'none',
-                  background: '#fafdf8', color: '#1a3020', fontFamily: 'inherit',
-                  boxSizing: 'border-box', transition: 'border-color 0.15s',
-                }}
-                onFocus={e => e.target.style.borderColor = '#3a9e52'}
-                onBlur={e => e.target.style.borderColor = '#e4f0e4'}
-              />
-            </div>
-
-            {error && (
-              <p style={{
-                fontSize: 12, color: '#e07070', background: '#fff5f5',
-                padding: '8px 12px', borderRadius: 10, margin: 0,
-                border: '1px solid #fde8e8',
-              }}>
-                {error}
-              </p>
-            )}
-            {message && (
-              <p style={{
-                fontSize: 12, color: '#3a9e52', background: '#f0f9f2',
-                padding: '8px 12px', borderRadius: 10, margin: 0,
-                border: '1px solid #d4ead8',
-              }}>
-                {message}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%', padding: '13px', borderRadius: 50, border: 'none',
-                fontSize: 14, fontWeight: 700, color: '#fff',
-                cursor: loading ? 'default' : 'pointer',
-                background: 'linear-gradient(135deg, #2d8a44, #4db864)',
-                boxShadow: '0 6px 20px rgba(58,158,82,0.32)',
-                opacity: loading ? 0.7 : 1,
-                transition: 'opacity 0.15s, box-shadow 0.15s',
-                marginTop: 6,
-                letterSpacing: '0.01em',
-              }}
-              onMouseEnter={e => { if (!loading) (e.target as HTMLButtonElement).style.opacity = '0.88' }}
-              onMouseLeave={e => { if (!loading) (e.target as HTMLButtonElement).style.opacity = '1' }}
-            >
-              {loading ? 'Loading…' : mode === 'login' ? 'Sign in →' : 'Create account →'}
-            </button>
-          </form>
-          )}
+          <p style={{
+            position: 'relative', zIndex: 1,
+            fontSize: 13, color: '#6c7770', lineHeight: 1.5, maxWidth: 280,
+          }}>
+            One timer. <span style={{ color: '#b6c0b9' }}>Every focused minute.</span>
+          </p>
         </div>
 
-        <p style={{ textAlign: 'center', fontSize: 12, color: '#a8c4a8', marginTop: 18 }}>
-          {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-          <button
-            onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setMessage(''); setName('') }}
-            style={{
-              color: '#3a9e52', fontWeight: 700, background: 'transparent',
-              border: 'none', cursor: 'pointer', fontSize: 12,
-            }}
-          >
-            {mode === 'login' ? 'Sign up' : 'Sign in'}
-          </button>
-        </p>
+        {/* ── Right: form side (cream) ── */}
+        <div style={{
+          padding: '48px',
+          display: 'flex', flexDirection: 'column',
+          justifyContent: 'center', alignItems: 'center',
+          background: '#faf9f7',
+        }}>
+          <div style={{ width: '100%', maxWidth: 320 }}>
+            <h1 style={{
+              fontSize: 28, fontWeight: 600, letterSpacing: '-0.02em',
+              marginBottom: 8, lineHeight: 1.2,
+            }}>
+              {headline}
+            </h1>
+            <p style={{
+              fontSize: 14, color: 'rgba(13,31,21,0.62)', marginBottom: 32,
+            }}>
+              {subheadText}
+            </p>
+
+            {/* ── Reset password form ── */}
+            {resetMode ? (
+              <form onSubmit={handlePasswordReset} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div>
+                  <label style={labelStyle}>Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    placeholder="you@company.com"
+                    autoFocus
+                    style={inputStyle}
+                    onFocus={onInputFocus}
+                    onBlur={onInputBlur}
+                  />
+                </div>
+
+                {error && (
+                  <p style={{
+                    fontSize: 12, color: '#b85a3c', background: '#fdeae0',
+                    padding: '8px 12px', borderRadius: 8, margin: 0,
+                  }}>
+                    {error}
+                  </p>
+                )}
+                {message && (
+                  <p style={{
+                    fontSize: 12, color: '#1e5c30', background: '#d4ead8',
+                    padding: '8px 12px', borderRadius: 8, margin: 0,
+                  }}>
+                    {message}
+                  </p>
+                )}
+
+                <button type="submit" disabled={loading} style={{
+                  width: '100%', padding: '13px 24px', marginTop: 6,
+                  borderRadius: 10, background: '#0a120d', color: '#faf9f7',
+                  fontSize: 14, fontWeight: 600, border: 'none',
+                  cursor: loading ? 'default' : 'pointer',
+                  opacity: loading ? 0.7 : 1,
+                  transition: 'opacity 0.2s, transform 0.15s',
+                }}>
+                  {loading ? 'Sending…' : 'Send reset link'}
+                </button>
+
+                <button type="button" onClick={() => { setResetMode(false); setError(''); setMessage('') }}
+                  style={{
+                    background: 'none', border: 'none',
+                    color: 'rgba(13,31,21,0.62)', fontSize: 13,
+                    cursor: 'pointer', marginTop: -4,
+                  }}>
+                  ← Back to sign in
+                </button>
+              </form>
+            ) : (
+              /* ── Login / signup form ── */
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                {mode === 'signup' && (
+                  <div>
+                    <label style={labelStyle}>Name</label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={e => setName(e.target.value)}
+                      placeholder="Riya"
+                      autoFocus
+                      style={inputStyle}
+                      onFocus={onInputFocus}
+                      onBlur={onInputBlur}
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label style={labelStyle}>Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                    placeholder="you@company.com"
+                    style={inputStyle}
+                    onFocus={onInputFocus}
+                    onBlur={onInputBlur}
+                  />
+                </div>
+
+                <div>
+                  <div style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    marginBottom: 6,
+                  }}>
+                    <label style={{ ...labelStyle, marginBottom: 0 }}>Password</label>
+                    {mode === 'login' && (
+                      <button type="button"
+                        onClick={() => { setResetMode(true); setError(''); setMessage('') }}
+                        style={{
+                          background: 'none', border: 'none', padding: 0,
+                          fontSize: 12, color: 'rgba(13,31,21,0.62)',
+                          fontWeight: 500, cursor: 'pointer',
+                        }}>
+                        Forgot?
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    placeholder="••••••••"
+                    style={inputStyle}
+                    onFocus={onInputFocus}
+                    onBlur={onInputBlur}
+                  />
+                </div>
+
+                {error && (
+                  <p style={{
+                    fontSize: 12, color: '#b85a3c', background: '#fdeae0',
+                    padding: '8px 12px', borderRadius: 8, margin: 0,
+                  }}>
+                    {error}
+                  </p>
+                )}
+                {message && (
+                  <p style={{
+                    fontSize: 12, color: '#1e5c30', background: '#d4ead8',
+                    padding: '8px 12px', borderRadius: 8, margin: 0,
+                  }}>
+                    {message}
+                  </p>
+                )}
+
+                <button type="submit" disabled={loading} style={{
+                  width: '100%', padding: '13px 24px', marginTop: 6,
+                  borderRadius: 10, background: '#0a120d', color: '#faf9f7',
+                  fontSize: 14, fontWeight: 600, border: 'none',
+                  cursor: loading ? 'default' : 'pointer',
+                  opacity: loading ? 0.7 : 1,
+                  transition: 'opacity 0.2s, transform 0.15s',
+                }}>
+                  {loading ? 'Loading…' : mode === 'login' ? 'Sign in' : 'Create account'}
+                </button>
+              </form>
+            )}
+
+            {!resetMode && (
+              <p style={{
+                marginTop: 24, fontSize: 13,
+                color: 'rgba(13,31,21,0.62)', textAlign: 'center',
+              }}>
+                {mode === 'login' ? 'No account? ' : 'Already have an account? '}
+                <button
+                  onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setError(''); setMessage(''); setName('') }}
+                  style={{
+                    color: '#0d1f15', fontWeight: 600,
+                    background: 'transparent', border: 'none',
+                    cursor: 'pointer', fontSize: 13,
+                    borderBottom: '1px solid rgba(30,55,32,0.18)',
+                    paddingBottom: 1,
+                  }}
+                >
+                  {mode === 'login' ? 'Create one' : 'Sign in'}
+                </button>
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )
