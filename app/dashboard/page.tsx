@@ -734,161 +734,160 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* ── Today strip (3-up) ── */}
-            {(() => {
-              const todayDateStr = new Date().toDateString()
-              const yesterdayStr = new Date(Date.now() - 86400000).toDateString()
-              const days84: { date: string; count: number }[] = []
-              for (let i = 83; i >= 0; i--) {
-                const d = new Date(); d.setDate(d.getDate() - i)
-                const ds = d.toDateString()
-                days84.push({ date: ds, count: sessions.filter(s => new Date(s.created_at).toDateString() === ds).length })
-              }
-              let streak = 0
-              const rev = [...days84].reverse()
-              const si = rev.findIndex(d => d.date === todayDateStr || d.date === yesterdayStr)
-              if (si !== -1 && rev[si].count > 0) {
-                for (let i = si; i < rev.length; i++) { if (rev[i].count > 0) streak++; else break }
-              }
-              const todayTaskCount = sessions
-                .filter(s => new Date(s.created_at).toDateString() === todayDateStr)
-                .reduce((sum, s) => sum + (s.tasks?.length || 0), 0)
-              const cardStyle: React.CSSProperties = {
-                background: '#fff', border: '1px solid #ede9e2', borderRadius: 14,
-                padding: '18px 20px', transition: 'all 0.2s',
-              }
-              const labelStyle: React.CSSProperties = {
-                fontSize: 11, color: '#b0a898', textTransform: 'uppercase',
-                letterSpacing: 1.2, marginBottom: 10, fontWeight: 600,
-              }
-              const valueStyle: React.CSSProperties = {
-                fontSize: 28, fontWeight: 600, letterSpacing: -0.6, color: '#1a1410',
-                fontVariantNumeric: 'tabular-nums', lineHeight: 1, marginBottom: 6,
-              }
-              const subStyle: React.CSSProperties = { fontSize: 12, color: '#c0b8a8' }
-              return (
-                <div style={{
-                  display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 12, marginBottom: 24,
-                }}>
-                  <div style={cardStyle}>
-                    <p style={labelStyle}>Sessions today</p>
-                    <p style={valueStyle}>{todayCount}</p>
-                    <p style={subStyle}>{todayMins} min focused</p>
-                  </div>
-                  <div style={cardStyle}>
-                    <p style={labelStyle}>Tasks captured</p>
-                    <p style={valueStyle}>{todayTaskCount}</p>
-                    <p style={subStyle}>From today's debriefs</p>
-                  </div>
-                  <div style={cardStyle}>
-                    <p style={labelStyle}>Streak</p>
-                    <p style={valueStyle}>{streak} <span style={{ fontSize: 22 }}>🔥</span></p>
-                    <p style={subStyle}>{streak === 0 ? 'Start one today' : 'Keep it going'}</p>
+            {/* ── Today (editorial — no boxes) ── */}
+            <section style={{ marginTop: 56, marginBottom: 56 }}>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                marginBottom: 18, paddingBottom: 14,
+                borderBottom: '1px solid rgba(30,55,32,0.06)',
+              }}>
+                <h2 style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em', color: '#0d1f15', margin: 0 }}>
+                  Today
+                </h2>
+                <span style={{ fontSize: 12, color: 'rgba(13,31,21,0.42)' }}>{dateLabel}</span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
+                <div>
+                  <div style={{
+                    fontSize: 48, fontWeight: 600, letterSpacing: '-0.035em',
+                    color: '#0d1f15', fontVariantNumeric: 'tabular-nums',
+                    lineHeight: 1, marginBottom: 8,
+                  }}>{todayCount}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(13,31,21,0.62)', lineHeight: 1.4 }}>
+                    <strong style={{ color: '#0d1f15', fontWeight: 600 }}>sessions</strong> · {todayMins} min focused
                   </div>
                 </div>
-              )
-            })()}
+                <div>
+                  <div style={{
+                    fontSize: 48, fontWeight: 600, letterSpacing: '-0.035em',
+                    color: '#0d1f15', fontVariantNumeric: 'tabular-nums',
+                    lineHeight: 1, marginBottom: 8,
+                  }}>{todayTaskCount}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(13,31,21,0.62)', lineHeight: 1.4 }}>
+                    <strong style={{ color: '#0d1f15', fontWeight: 600 }}>tasks</strong> captured from debriefs
+                  </div>
+                </div>
+                <div>
+                  <div style={{
+                    fontSize: 48, fontWeight: 600, letterSpacing: '-0.035em',
+                    background: computedStreak > 0 ? 'linear-gradient(135deg, #ff8a3c, #b85a3c)' : 'transparent',
+                    WebkitBackgroundClip: computedStreak > 0 ? 'text' : 'unset',
+                    backgroundClip: computedStreak > 0 ? 'text' : 'unset',
+                    WebkitTextFillColor: computedStreak > 0 ? 'transparent' : '#0d1f15',
+                    color: '#0d1f15',
+                    fontVariantNumeric: 'tabular-nums',
+                    lineHeight: 1, marginBottom: 8,
+                  }}>{computedStreak} {computedStreak > 0 && '🔥'}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(13,31,21,0.62)', lineHeight: 1.4 }}>
+                    <strong style={{ color: '#0d1f15', fontWeight: 600 }}>day streak</strong> · {computedStreak === 0 ? 'start one today' : 'keep it going'}
+                  </div>
+                </div>
+              </div>
+            </section>
 
-            {/* Continuation tasks from last debrief */}
+            {/* ── Coming up (editorial — no box) ── */}
             {continuationTasks.length > 0 && (
-              <div style={{
-                background: '#fff', border: '1px solid #ede9e2', borderRadius: 14,
-                padding: '20px 22px', marginBottom: 14,
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                  <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.4, textTransform: 'uppercase', color: '#1a1410' }}>
+              <section style={{ marginBottom: 56 }}>
+                <div style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                  marginBottom: 18, paddingBottom: 14,
+                  borderBottom: '1px solid rgba(30,55,32,0.06)',
+                }}>
+                  <h2 style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em', color: '#0d1f15', margin: 0 }}>
                     Coming up
-                  </p>
-                  <p style={{ fontSize: 11, color: '#c0b8a8' }}>
+                  </h2>
+                  <span style={{ fontSize: 12, color: 'rgba(13,31,21,0.42)' }}>
                     From your last debrief · {timeAgo(lastSession.created_at)}
-                  </p>
+                  </span>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {continuationTasks.slice(0, 5).map((task, i) => (
+                  {continuationTasks.slice(0, 5).map((task, i, arr) => (
                     <div key={i} style={{
-                      display: 'flex', alignItems: 'flex-start', gap: 12,
-                      padding: '10px 0', fontSize: 14, color: '#1a1410',
-                      borderBottom: i < Math.min(continuationTasks.length, 5) - 1 ? '1px solid #f3f1ee' : 'none',
+                      display: 'flex', alignItems: 'flex-start', gap: 14,
+                      padding: '13px 0', fontSize: 15, color: '#0d1f15',
+                      borderBottom: i < arr.length - 1 ? '1px solid rgba(30,55,32,0.06)' : 'none',
                     }}>
                       <div style={{
                         width: 18, height: 18, borderRadius: 5,
-                        border: '1.5px solid #d4cfc8', flexShrink: 0, marginTop: 1,
-                        cursor: 'pointer',
+                        border: '1.5px solid rgba(30,55,32,0.18)', flexShrink: 0, marginTop: 2,
+                        cursor: 'pointer', transition: 'all 0.15s',
                       }} />
-                      <span style={{ flex: 1, lineHeight: 1.45 }}>{task}</span>
+                      <span style={{ flex: 1, lineHeight: 1.5 }}>{task}</span>
                       <span style={{
-                        fontSize: 11, padding: '3px 9px', borderRadius: 100,
+                        fontSize: 11, padding: '3px 9px', borderRadius: 999,
                         background: '#d4ead8', color: '#1e5c30', fontWeight: 500,
                       }}>action</span>
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
 
-            {/* ── To-do list (v1 minimal) ── */}
-            <div style={{
-              background: '#fff', border: '1px solid #ede9e2', borderRadius: 14,
-              padding: '20px 22px',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.4, textTransform: 'uppercase', color: '#1a1410' }}>
+            {/* ── Your tasks (editorial — no box) ── */}
+            <section>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                marginBottom: 18, paddingBottom: 14,
+                borderBottom: '1px solid rgba(30,55,32,0.06)',
+              }}>
+                <h2 style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em', color: '#0d1f15', margin: 0 }}>
                   Your tasks
-                </p>
-                {todos.filter(t => t.completed).length > 0 && (
-                  <span style={{ fontSize: 11, color: '#c0b8a8' }}>
-                    {todos.filter(t => t.completed).length}/{todos.length} done
-                  </span>
-                )}
+                </h2>
+                <span style={{ fontSize: 12, color: 'rgba(13,31,21,0.42)' }}>
+                  {todos.filter(t => t.completed).length > 0
+                    ? `${todos.filter(t => t.completed).length}/${todos.length} done`
+                    : 'Add manually'}
+                </span>
               </div>
 
-              {/* Add todo input */}
+              {/* Add todo input — underline style, no box */}
               <div style={{
-                display: 'flex', gap: 8, padding: '10px 0',
-                borderBottom: '1px solid #f3f1ee',
+                display: 'flex', gap: 10, alignItems: 'center',
+                padding: '14px 0',
+                borderBottom: '1px solid rgba(30,55,32,0.06)',
               }}>
+                <span style={{ color: 'rgba(13,31,21,0.42)', fontSize: 18, lineHeight: 1, width: 18, textAlign: 'center', flexShrink: 0 }}>+</span>
                 <input
                   value={newTodo}
                   onChange={e => setNewTodo(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addTodo(newTodo)}
                   placeholder="Add a task..."
                   style={{
-                    flex: 1, fontSize: 14, border: 'none', outline: 'none',
-                    background: 'transparent', color: '#1a1410', fontFamily: 'inherit',
+                    flex: 1, fontSize: 15, border: 'none', outline: 'none',
+                    background: 'transparent', color: '#0d1f15', fontFamily: 'inherit',
                   }}
                 />
                 {newTodo.trim() && (
                   <button onClick={() => addTodo(newTodo)} style={{
-                    fontSize: 13, fontWeight: 500, color: '#1e5c30',
+                    fontSize: 13, fontWeight: 600, color: '#1e5c30',
                     border: 'none', background: 'transparent', cursor: 'pointer',
                     padding: '0 6px',
                   }}>Add</button>
                 )}
               </div>
 
-              {/* Todo items */}
-              <div style={{ paddingTop: 4, maxHeight: 320, overflowY: 'auto' }}>
+              {/* Todo items — flow on cream, no card */}
+              <div style={{ paddingTop: 0 }}>
                 {todos.length === 0 ? (
-                  <p style={{ fontSize: 13, color: '#c0b8a8', padding: '20px 0', textAlign: 'center' }}>
+                  <p style={{ fontSize: 13, color: 'rgba(13,31,21,0.42)', padding: '20px 0', textAlign: 'center' }}>
                     Add tasks or finish a session to get started
                   </p>
                 ) : (
                   <>
                     {todos.filter(t => !t.completed).map((todo, i, arr) => (
                       <div key={todo.id} style={{
-                        display: 'flex', alignItems: 'flex-start', gap: 12,
-                        padding: '10px 0',
-                        borderBottom: i < arr.length - 1 ? '1px solid #f3f1ee' : 'none',
+                        display: 'flex', alignItems: 'flex-start', gap: 14,
+                        padding: '13px 0',
+                        borderBottom: i < arr.length - 1 || todos.filter(t => t.completed).length > 0 ? '1px solid rgba(30,55,32,0.06)' : 'none',
                       }}>
                         <button onClick={() => toggleTodo(todo.id, true)} style={{
-                          width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
-                          border: '1.5px solid #d4cfc8', background: 'transparent',
+                          width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 2,
+                          border: '1.5px solid rgba(30,55,32,0.18)', background: 'transparent',
                           cursor: 'pointer',
                         }} />
-                        <span style={{ fontSize: 14, color: '#1a1410', lineHeight: 1.45, flex: 1 }}>{todo.text}</span>
+                        <span style={{ fontSize: 15, color: '#0d1f15', lineHeight: 1.5, flex: 1 }}>{todo.text}</span>
                         <button onClick={() => deleteTodo(todo.id)} style={{
-                          fontSize: 14, color: '#d4cfc8', border: 'none', background: 'transparent',
+                          fontSize: 16, color: 'rgba(13,31,21,0.42)', border: 'none', background: 'transparent',
                           cursor: 'pointer', opacity: 0, transition: 'opacity 0.15s', lineHeight: 1,
                         }}
                           onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
@@ -897,20 +896,21 @@ export default function DashboardPage() {
                       </div>
                     ))}
 
-                    {todos.filter(t => t.completed).map(todo => (
+                    {todos.filter(t => t.completed).map((todo, i, arr) => (
                       <div key={todo.id} style={{
-                        display: 'flex', alignItems: 'flex-start', gap: 12,
-                        padding: '8px 0', opacity: 0.45,
+                        display: 'flex', alignItems: 'flex-start', gap: 14,
+                        padding: '11px 0', opacity: 0.45,
+                        borderBottom: i < arr.length - 1 ? '1px solid rgba(30,55,32,0.06)' : 'none',
                       }}>
                         <button onClick={() => toggleTodo(todo.id, false)} style={{
-                          width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 1,
+                          width: 18, height: 18, borderRadius: 5, flexShrink: 0, marginTop: 2,
                           border: '1.5px solid #1e5c30', background: '#1e5c30',
                           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                           color: '#fff', fontSize: 10, fontWeight: 700,
                         }}>✓</button>
-                        <span style={{ fontSize: 14, color: '#a09888', lineHeight: 1.45, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
+                        <span style={{ fontSize: 15, color: 'rgba(13,31,21,0.42)', lineHeight: 1.5, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
                         <button onClick={() => deleteTodo(todo.id)} style={{
-                          fontSize: 14, color: '#d4cfc8', border: 'none', background: 'transparent',
+                          fontSize: 16, color: 'rgba(13,31,21,0.42)', border: 'none', background: 'transparent',
                           cursor: 'pointer', lineHeight: 1,
                         }}>×</button>
                       </div>
@@ -918,7 +918,7 @@ export default function DashboardPage() {
                   </>
                 )}
               </div>
-            </div>
+            </section>
           </div>
         )}
 
