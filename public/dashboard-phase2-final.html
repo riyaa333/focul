@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focul — Dashboard phase 2 (final)</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --bg-2: #f3f1ec;
+    --surface: #ffffff;
+    --border: rgba(30,55,32,0.10);
+    --border-strong: rgba(30,55,32,0.18);
+    --text: #0d1f15;
+    --text-muted: rgba(13,31,21,0.62);
+    --text-faint: rgba(13,31,21,0.42);
+    --green-deep: #1e5c30;
+    --green-mid: #8dcc9e;
+    --green-light: #d4ead8;
+    --shadow-sm: 0 1px 3px rgba(13,31,21,0.04);
+    --shadow-md: 0 4px 12px rgba(13,31,21,0.05), 0 24px 64px rgba(13,31,21,0.08);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Top nav (replaces sidebar entirely) ── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(250,249,247,0.85);
+    backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 700; letter-spacing: -0.02em;
+  }
+  .brand-mark { width: 22px; height: 22px; }
+  .brand-mark svg { display: block; width: 100%; height: 100%; }
+
+  .nav-tabs {
+    display: flex; gap: 2px;
+    background: var(--bg-2);
+    padding: 4px; border-radius: 999px;
+  }
+  .nav-tab {
+    padding: 7px 18px; border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer; border: none; background: transparent;
+    transition: all 0.18s var(--ease);
+  }
+  .nav-tab.active {
+    background: var(--surface); color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .streak-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500;
+    color: var(--green-deep);
+    background: var(--green-light);
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .signout-btn {
+    font-size: 13px; color: var(--text-faint);
+    background: transparent; border: none; cursor: pointer;
+    transition: color 0.15s;
+  }
+  .signout-btn:hover { color: var(--text); }
+  .nav-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+  }
+
+  /* ── Main ── */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 32px 96px;
+  }
+
+  /* Greeting */
+  .date-label {
+    font-size: 12px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 36px;
+  }
+
+  /* Focus Coach chip — small + dismissible, sits ABOVE timer */
+  .coach-chip {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--green-light);
+    border: 1px solid rgba(30,92,48,0.12);
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+  .coach-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--green-deep);
+    color: white;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .coach-icon svg { width: 14px; height: 14px; }
+  .coach-text { flex: 1; font-size: 13px; color: var(--text); line-height: 1.45; }
+  .coach-text strong { font-weight: 600; }
+  .coach-text span { color: var(--text-muted); }
+  .coach-dismiss {
+    background: transparent; border: none; cursor: pointer;
+    color: var(--text-muted); font-size: 18px; line-height: 1;
+    padding: 4px 6px; border-radius: 6px;
+  }
+  .coach-dismiss:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+
+  /* Hero timer card — singular focal point */
+  .timer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 56px 48px 48px;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .timer-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--green-deep);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .timer-display {
+    font-size: 128px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 12px;
+  }
+  .timer-display .colon { color: var(--green-mid); }
+  .timer-sub {
+    font-size: 14px; color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+
+  .duration-pills {
+    display: inline-flex;
+    background: var(--bg-2);
+    padding: 4px;
+    border-radius: 999px;
+    margin-bottom: 24px;
+  }
+  .pill {
+    padding: 9px 22px;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer; border: none; background: transparent;
+  }
+  .pill.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mode-row {
+    display: flex; justify-content: center;
+    margin-bottom: 22px;
+  }
+  .mode-toggle {
+    display: flex; background: #f7f5f2; padding: 3px; border-radius: 999px;
+  }
+  .mode-btn {
+    padding: 6px 18px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; border: none;
+    color: var(--text-faint);
+    background: transparent;
+    transition: all 0.18s;
+  }
+  .mode-btn.active { background: var(--text); color: var(--bg); }
+
+  .start-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 36px;
+    border-radius: 16px;
+    background: var(--green-deep);
+    color: var(--bg);
+    font-size: 16px; font-weight: 600;
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(30,92,48,0.24);
+    transition: all 0.2s var(--ease);
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,92,48,0.32); }
+
+  /* Today strip — 3-up below the timer */
+  .today-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .today-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: all 0.2s var(--ease);
+  }
+  .today-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+  .today-label {
+    font-size: 11px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 10px; font-weight: 600;
+  }
+  .today-value {
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .today-sub { font-size: 12px; color: var(--text-faint); }
+
+  /* Coming up + Tasks card */
+  .stack {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .card-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 11px; font-weight: 600;
+    color: var(--text); letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .card-meta { font-size: 11px; color: var(--text-faint); }
+
+  .task {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0;
+    font-size: 14px; color: var(--text);
+    border-bottom: 1px solid var(--bg-2);
+  }
+  .task:last-child { border-bottom: none; }
+  .task-check {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border-strong);
+    margin-top: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .task-check:hover { border-color: var(--green-deep); background: var(--green-light); }
+  .task-text { flex: 1; line-height: 1.45; }
+  .task-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .task-tag.action { background: var(--green-light); color: var(--green-deep); }
+  .task-tag.blocker { background: #fdeae0; color: #b85a3c; }
+  .task-tag.calendar { background: #e8edff; color: #2563eb; }
+
+  .add-task-row {
+    display: flex; gap: 10px; padding: 10px 0;
+    border-bottom: 1px solid var(--bg-2);
+  }
+  .add-task-row input {
+    flex: 1; border: none; outline: none;
+    background: transparent; font-size: 14px;
+    color: var(--text); font-family: inherit;
+  }
+  .add-task-row input::placeholder { color: var(--text-faint); }
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV ── -->
+<nav>
+  <div class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 160 160">
+        <rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+        <rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+        <rect x="74" y="33" width="12" height="94" rx="6" fill="#1e5c30"/>
+        <rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+        <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+      </svg>
+    </span>
+    <span>Focul</span>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active">Today</button>
+    <button class="nav-tab">Streak</button>
+    <button class="nav-tab">History</button>
+    <button class="nav-tab">Settings</button>
+  </div>
+
+  <div class="nav-right">
+    <span class="streak-pill">🔥 4-day streak</span>
+    <button class="signout-btn">Sign out</button>
+    <div class="nav-avatar"></div>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+  <div class="date-label">Friday · 8 May</div>
+  <h1>Good evening, Riya.</h1>
+
+  <!-- Focus Coach as a slim, dismissible chip — only when there's something to say -->
+  <div class="coach-chip">
+    <div class="coach-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L9.91 8.26 3 9l5.46 4.45L7 21l5-3 5 3-1.46-7.55L21 9l-6.91-.74z"/>
+      </svg>
+    </div>
+    <div class="coach-text">
+      <strong>Focus Coach is warming up.</strong> <span>I'll start suggesting what to focus on after a couple of sessions.</span>
+    </div>
+    <button class="coach-dismiss" title="Dismiss">×</button>
+  </div>
+
+  <!-- Hero timer card -->
+  <div class="timer-card">
+    <div class="timer-label">Ready when you are</div>
+    <div class="timer-display">15<span class="colon">:</span>00</div>
+    <div class="timer-sub">Bell rings, then 60s voice debrief</div>
+
+    <div class="duration-pills">
+      <button class="pill active">15 min</button>
+      <button class="pill">30 min</button>
+      <button class="pill">Custom</button>
+    </div>
+
+    <div class="mode-row">
+      <div class="mode-toggle">
+        <button class="mode-btn active">Focus</button>
+        <button class="mode-btn">Accountability</button>
+      </div>
+    </div>
+
+    <button class="start-btn">
+      Start 15-min session
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- Today strip -->
+  <div class="today-strip">
+    <div class="today-card">
+      <div class="today-label">Sessions today</div>
+      <div class="today-value">3</div>
+      <div class="today-sub">45 min focused</div>
+    </div>
+    <div class="today-card">
+      <div class="today-label">Tasks captured</div>
+      <div class="today-value">11</div>
+      <div class="today-sub">From today's debriefs</div>
+    </div>
+    <div class="today-card">
+      <div class="today-label">Streak</div>
+      <div class="today-value">4 🔥</div>
+      <div class="today-sub">Best so far: 12</div>
+    </div>
+  </div>
+
+  <!-- Coming up + Your tasks stacked -->
+  <div class="stack">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Coming up</div>
+        <div class="card-meta">From your last debrief · 2h ago</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Email Stripe re: webhook retry behavior</div>
+        <div class="task-tag action">action</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Review Sarah's PR on the auth flow</div>
+        <div class="task-tag action">action</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Block Friday morning for investor calls</div>
+        <div class="task-tag calendar">calendar</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Waiting on legal feedback on terms v3</div>
+        <div class="task-tag blocker">blocker</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">Your tasks</div>
+        <div class="card-meta">Add manually</div>
+      </div>
+      <div class="add-task-row">
+        <input placeholder="Add a task..." />
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Review Q2 board deck before Tuesday</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Reach out to Alex about pricing experiments</div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

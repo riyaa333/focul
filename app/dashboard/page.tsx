@@ -460,182 +460,167 @@ export default function DashboardPage() {
     )
   }
 
+  // Streak calculation (used in top nav pill + today strip)
+  const todayDateStr = new Date().toDateString()
+  const yesterdayStr = new Date(Date.now() - 86400000).toDateString()
+  const days84: { date: string; count: number }[] = []
+  for (let i = 83; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i)
+    const ds = d.toDateString()
+    days84.push({ date: ds, count: sessions.filter(s => new Date(s.created_at).toDateString() === ds).length })
+  }
+  let computedStreak = 0
+  const revDays = [...days84].reverse()
+  const sIdx = revDays.findIndex(d => d.date === todayDateStr || d.date === yesterdayStr)
+  if (sIdx !== -1 && revDays[sIdx].count > 0) {
+    for (let i = sIdx; i < revDays.length; i++) { if (revDays[i].count > 0) computedStreak++; else break }
+  }
+  const todayTaskCount = sessions
+    .filter(s => new Date(s.created_at).toDateString() === todayDateStr)
+    .reduce((sum, s) => sum + (s.tasks?.length || 0), 0)
+  const dateLabel = new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }).replace(',', ' ·')
+
   return (
     <div style={{
-      display: 'flex',
-      height: '100vh',
-      overflow: 'hidden',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      minHeight: '100vh',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif',
       background: '#faf9f7',
+      color: '#0d1f15',
       opacity: isLeaving ? 0 : 1,
-      transform: isLeaving ? 'scale(1.05)' : 'scale(1)',
+      transform: isLeaving ? 'scale(1.02)' : 'scale(1)',
       transition: 'opacity 0.38s cubic-bezier(0.4,0,0.2,1), transform 0.38s cubic-bezier(0.4,0,0.2,1)',
-      willChange: 'opacity, transform',
+      WebkitFontSmoothing: 'antialiased',
     }}>
       {showOnboarding && <OnboardingModal onDismiss={() => setShowOnboarding(false)} />}
 
-      {/* ── Sidebar ── */}
-      <aside style={{
-        width: 248,
-        flexShrink: 0,
-        background: '#f3f1ee',
-        borderRight: '1px solid #e8e4de',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '56px 14px',
-        overflowY: 'auto',
+      {/* ── Top nav ── */}
+      <nav style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '18px 32px',
+        borderBottom: '1px solid rgba(30,55,32,0.08)',
+        background: 'rgba(250,249,247,0.88)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        position: 'sticky', top: 0, zIndex: 10,
       }}>
-
-        {/* Logo */}
-        <div style={{ padding: '0 8px', marginBottom: 32, display: 'flex', alignItems: 'center', gap: 8 }}>
-          <svg width="24" height="24" viewBox="0 0 160 160">
-            <rect x="18" y="58" width="18" height="52" rx="9" fill="#d4ead8"/>
-            <rect x="42" y="36" width="18" height="96" rx="9" fill="#8dcc9e"/>
-            <rect x="66" y="18" width="18" height="132" rx="9" fill="#1e5c30"/>
-            <rect x="90" y="36" width="18" height="96" rx="9" fill="#3a9e52"/>
-            <rect x="114" y="58" width="18" height="52" rx="9" fill="#8dcc9e"/>
-          </svg>
-          <span style={{ fontSize: 18, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5 }}>Foc<span style={{ color: '#3a9e52' }}>ul</span></span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 16, fontWeight: 700, letterSpacing: -0.3 }}>
+          <span style={{ width: 22, height: 22, display: 'inline-block' }}>
+            <svg viewBox="0 0 160 160" style={{ display: 'block', width: '100%', height: '100%' }}>
+              <rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+              <rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+              <rect x="74" y="33" width="12" height="94" rx="6" fill="#1e5c30"/>
+              <rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+              <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+            </svg>
+          </span>
+          <span>Focul</span>
         </div>
 
-        {/* Nav */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 20 }}>
-          {[
-            { key: 'dashboard', label: 'Dashboard' },
+        <div style={{ display: 'flex', gap: 2, background: '#f3f1ec', padding: 4, borderRadius: 999 }}>
+          {([
+            { key: 'dashboard', label: 'Today' },
             { key: 'streak', label: 'Streak' },
             { key: 'history', label: 'History' },
-          ].map(({ key, label }) => (
+          ] as const).map(({ key, label }) => (
             <button key={key}
-              onClick={() => setActiveNav(key as 'dashboard' | 'streak' | 'history')}
+              onClick={() => setActiveNav(key)}
               style={{
-                display: 'flex', alignItems: 'center',
-                padding: '9px 10px', borderRadius: 8,
-                fontSize: 13, fontWeight: 500, cursor: 'pointer',
-                border: 'none', textAlign: 'left', width: '100%',
-                background: activeNav === key ? 'rgba(255,255,255,0.9)' : 'transparent',
-                color: activeNav === key ? '#1a1410' : '#a09888',
-                boxShadow: activeNav === key ? '0 1px 4px rgba(0,0,0,0.06)' : 'none',
+                padding: '7px 18px', borderRadius: 999,
+                fontSize: 13, fontWeight: 500,
+                border: 'none', cursor: 'pointer',
+                background: activeNav === key ? '#fff' : 'transparent',
+                color: activeNav === key ? '#0d1f15' : 'rgba(13,31,21,0.62)',
+                boxShadow: activeNav === key ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
                 transition: 'all 0.15s',
               }}>
               {label}
             </button>
           ))}
-          <button
-            onClick={() => router.push('/settings')}
+          <button onClick={() => router.push('/settings')}
             style={{
-              display: 'flex', alignItems: 'center',
-              padding: '9px 10px', borderRadius: 8,
-              fontSize: 13, fontWeight: 500, cursor: 'pointer',
-              border: 'none', textAlign: 'left', width: '100%',
-              background: 'transparent', color: '#a09888',
+              padding: '7px 18px', borderRadius: 999,
+              fontSize: 13, fontWeight: 500,
+              border: 'none', cursor: 'pointer',
+              background: 'transparent', color: 'rgba(13,31,21,0.62)',
               transition: 'all 0.15s',
             }}>
             Settings
           </button>
-        </nav>
+        </div>
 
-        {/* Streak widget */}
-        {(() => {
-          const today = new Date().toDateString()
-          const yesterday = new Date(Date.now() - 86400000).toDateString()
-          const days84: { date: string; count: number }[] = []
-          for (let i = 83; i >= 0; i--) {
-            const d = new Date(); d.setDate(d.getDate() - i)
-            const dateStr = d.toDateString()
-            days84.push({ date: dateStr, count: sessions.filter(s => new Date(s.created_at).toDateString() === dateStr).length })
-          }
-          let streak = 0
-          const rev = [...days84].reverse()
-          const si = rev.findIndex(d => d.date === today || d.date === yesterday)
-          if (si !== -1 && rev[si].count > 0) { for (let i = si; i < rev.length; i++) { if (rev[i].count > 0) streak++; else break } }
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          {computedStreak > 0 && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              fontSize: 12, fontWeight: 500,
+              color: '#1e5c30', background: '#d4ead8',
+              padding: '6px 12px', borderRadius: 999,
+            }}>
+              🔥 {computedStreak}-day streak
+            </span>
+          )}
+          <button onClick={signOut} style={{
+            fontSize: 13, color: 'rgba(13,31,21,0.42)',
+            background: 'transparent', border: 'none', cursor: 'pointer',
+          }}>
+            Sign out
+          </button>
+          <div style={{
+            width: 30, height: 30, borderRadius: '50%',
+            background: 'linear-gradient(135deg, #8dcc9e, #1e5c30)',
+          }} />
+        </div>
+      </nav>
 
-          return (
-            <div
-              onClick={() => setActiveNav('streak')} role="button" title="View streak details"
-              onMouseEnter={e => (e.currentTarget.style.background = '#faf9f7')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
-              style={{ background: '#fff', borderRadius: 14, padding: '16px 14px', marginBottom: 14, border: '1px solid #ede9e2', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'background 0.15s' }}>
-              <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 10 }}>Streak</p>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                  <span style={{ fontSize: 48, fontWeight: 900, color: '#1a1410', letterSpacing: -3, lineHeight: 1 }}>{streak}</span>
-                  <span style={{ fontSize: 13, color: '#b0a898', marginLeft: 4 }}>days</span>
-                </div>
-                <span style={{ fontSize: 32 }}>🔥</span>
-              </div>
-              {todayCount > 0 && (
-                <p style={{ fontSize: 11, color: '#3a9e52', marginTop: 8, fontWeight: 600 }}>
-                  {todayCount} session{todayCount > 1 ? 's' : ''} today · {todayMins}m
-                </p>
-              )}
-              {todayCount === 0 && (
-                <p style={{ fontSize: 11, color: '#c0b8a8', marginTop: 8 }}>No session yet today</p>
-              )}
-            </div>
-          )
-        })()}
-
-        {/* Sign out — pinned to bottom */}
-        <button onClick={signOut} style={{
-          fontSize: 12, color: '#c0b8a8', padding: '8px 10px',
-          cursor: 'pointer', border: 'none', background: 'transparent',
-          textAlign: 'left', borderRadius: 8, marginTop: 'auto',
-        }}>
-          ↗ Sign out
-        </button>
-      </aside>
 
       {/* ── Main ── */}
-      <main style={{ flex: 1, overflowY: 'auto', display: 'flex', alignItems: activeNav === 'dashboard' ? 'flex-start' : 'center', justifyContent: 'center', padding: activeNav === 'dashboard' ? '64px 48px 96px' : 48 }}>
+      <main style={{ maxWidth: 720, margin: '0 auto', padding: activeNav === 'dashboard' ? '56px 32px 96px' : '48px 32px' }}>
 
         {activeNav === 'dashboard' && (
-          <div style={{ width: '100%', maxWidth: 720 }}>
+          <div style={{ width: '100%' }}>
 
             {/* Greeting */}
-            <div style={{ marginBottom: 36 }}>
-              <p style={{ fontSize: 13, color: '#b0a898', fontWeight: 400, marginBottom: 4 }}>{greeting}</p>
+            <div style={{ marginBottom: 24 }}>
+              <p style={{ fontSize: 12, color: 'rgba(13,31,21,0.62)', fontWeight: 500, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{dateLabel}</p>
 
               {editingName ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 32, fontWeight: 600, color: '#0d1f15', letterSpacing: '-0.025em' }}>{greeting},</span>
                   <input
                     ref={nameInputRef}
                     value={nameInput}
                     onChange={e => setNameInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') setEditingName(false) }}
                     onBlur={saveName}
-                    placeholder="Your first name"
+                    placeholder="your name"
                     autoFocus
                     style={{
-                      fontSize: 32, fontWeight: 800, color: '#1a1410', letterSpacing: -1.5,
-                      border: 'none', borderBottom: '2px solid #3a9e52', outline: 'none',
-                      background: 'transparent', fontFamily: 'inherit', width: 220,
+                      fontSize: 32, fontWeight: 600, color: '#0d1f15', letterSpacing: '-0.025em',
+                      border: 'none', borderBottom: '2px solid #1e5c30', outline: 'none',
+                      background: 'transparent', fontFamily: 'inherit', width: 200,
                       padding: '0 0 2px 0',
                     }}
                   />
-                  <span style={{ fontSize: 12, color: '#b0a898' }}>↵ to save</span>
+                  <span style={{ fontSize: 12, color: 'rgba(13,31,21,0.42)' }}>↵</span>
                 </div>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                  <p style={{ fontSize: 32, fontWeight: 800, color: '#1a1410', letterSpacing: -1.5 }}>{firstName}</p>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
+                  <h1 style={{ fontSize: 32, fontWeight: 600, color: '#0d1f15', letterSpacing: '-0.025em', lineHeight: 1.15, margin: 0 }}>
+                    {greeting}, {firstName}.
+                  </h1>
                   {!hasCustomName && (
                     <button
                       onClick={() => { setNameInput(''); setEditingName(true) }}
                       style={{
-                        fontSize: 11, color: '#c0b8a8', background: 'transparent',
-                        border: '1px solid #e8e2d8', borderRadius: 6, padding: '3px 8px',
+                        fontSize: 11, color: 'rgba(13,31,21,0.42)', background: 'transparent',
+                        border: '1px solid rgba(30,55,32,0.18)', borderRadius: 6, padding: '3px 8px',
                         cursor: 'pointer', fontFamily: 'inherit',
                       }}
                     >
-                      set your name
+                      set name
                     </button>
                   )}
                 </div>
-              )}
-
-              {todayCount > 0 && (
-                <p style={{ fontSize: 12, color: '#b0a898', marginTop: 6, fontWeight: 400 }}>
-                  {todayCount} session{todayCount > 1 ? 's' : ''} · {todayMins} min focused today
-                </p>
               )}
             </div>
 

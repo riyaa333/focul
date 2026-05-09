@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focul — Dashboard phase 2 (contrast)</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --bg-2: #f3f1ec;
+    --surface: #ffffff;
+    --ink: #0a120d;
+    --ink-2: #14201a;
+    --on-dark: #f0ebe2;
+    --on-dark-soft: #b6c0b9;
+    --on-dark-muted: #6c7770;
+    --border: rgba(30,55,32,0.10);
+    --border-soft: rgba(30,55,32,0.06);
+    --border-strong: rgba(30,55,32,0.18);
+    --border-dark: rgba(255,255,255,0.08);
+    --text: #0d1f15;
+    --text-muted: rgba(13,31,21,0.62);
+    --text-faint: rgba(13,31,21,0.42);
+    --green-deep: #1e5c30;
+    --green-mid: #8dcc9e;
+    --green-light: #d4ead8;
+    --green-glow: #a8e0b9;
+    --orange: #b85a3c;
+    --orange-light: #fdeae0;
+    --blue: #2563eb;
+    --blue-light: #e8edff;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Nav */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border-soft);
+    background: rgba(250,249,247,0.85);
+    backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .brand-mark { width: 22px; height: 22px; }
+  .brand-mark svg { display: block; width: 100%; height: 100%; }
+
+  .nav-tabs { display: flex; gap: 28px; }
+  .nav-tab {
+    font-size: 13px; font-weight: 500; color: var(--text-muted);
+    cursor: pointer; border: none; background: transparent;
+    padding: 6px 0; position: relative;
+    transition: color 0.15s var(--ease);
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--text); }
+  .nav-tab.active::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -19px;
+    height: 2px; background: var(--text); border-radius: 1px;
+  }
+
+  .nav-right { display: flex; align-items: center; gap: 14px; }
+  .streak-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500;
+    color: var(--green-deep);
+    background: var(--green-light);
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .signout-btn { font-size: 13px; color: var(--text-faint); background: transparent; border: none; cursor: pointer; }
+  .signout-btn:hover { color: var(--text); }
+  .nav-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+  }
+
+  /* Main */
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 56px 32px 96px;
+  }
+
+  .date-label {
+    font-size: 12px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-size: 36px; font-weight: 600;
+    letter-spacing: -0.025em; line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  h1 em { font-style: normal; color: var(--green-deep); }
+
+  .coach-line {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text-muted);
+    margin-bottom: 56px;
+  }
+  .coach-line::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green-mid);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  .coach-line strong { color: var(--text); font-weight: 600; margin-right: 4px; }
+  .coach-line button {
+    margin-left: auto; background: transparent; border: none; cursor: pointer;
+    color: var(--text-faint); font-size: 16px; line-height: 1;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.85)} }
+
+  /* ── DARK TIMER CARD — the contrasting moment ── */
+  .timer-card {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 24px;
+    padding: 56px 48px 44px;
+    text-align: center;
+    margin-bottom: 64px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(10,18,13,0.18), 0 32px 80px rgba(10,18,13,0.12);
+  }
+  .timer-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(700px circle at 50% 0%, rgba(141,204,158,0.10), transparent 60%),
+      radial-gradient(500px circle at 100% 100%, rgba(141,204,158,0.06), transparent 60%);
+    pointer-events: none;
+  }
+  .timer-card > * { position: relative; z-index: 1; }
+
+  .timer-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600;
+    color: var(--green-glow);
+    background: rgba(141,204,158,0.10);
+    border: 1px solid rgba(141,204,158,0.18);
+    padding: 5px 12px; border-radius: 999px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .timer-label::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green-mid);
+    box-shadow: 0 0 10px var(--green-mid);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .timer-display {
+    font-size: 128px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: white;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 12px;
+  }
+  .timer-display .colon {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-glow));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .timer-sub {
+    font-size: 14px; color: var(--on-dark-muted);
+    margin-bottom: 30px;
+  }
+
+  .duration-pills {
+    display: inline-flex;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-dark);
+    padding: 4px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+  }
+  .pill {
+    padding: 9px 22px;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 500;
+    color: var(--on-dark-muted);
+    cursor: pointer; border: none; background: transparent;
+    transition: all 0.18s;
+  }
+  .pill.active {
+    background: var(--on-dark); color: var(--ink);
+  }
+  .pill:hover:not(.active) { color: var(--on-dark-soft); }
+
+  .mode-row { display: flex; justify-content: center; margin-bottom: 22px; }
+  .mode-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-dark);
+    padding: 3px; border-radius: 999px;
+  }
+  .mode-btn {
+    padding: 6px 18px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer; border: none;
+    color: var(--on-dark-muted);
+    background: transparent;
+  }
+  .mode-btn.active {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: white;
+  }
+
+  .start-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 36px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: white;
+    font-size: 16px; font-weight: 600;
+    border: none; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(141,204,158,0.24);
+    transition: all 0.2s var(--ease);
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(141,204,158,0.36); }
+
+  /* Editorial sections — same structure as flowing variant */
+  section { margin-bottom: 56px; }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .section-title {
+    font-size: 18px; font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .section-meta { font-size: 12px; color: var(--text-faint); }
+
+  /* Today: HUGE numbers for typographic contrast */
+  .today-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .today-stat {
+    position: relative;
+  }
+  .today-stat-value {
+    font-size: 48px; font-weight: 600;
+    letter-spacing: -0.035em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1; margin-bottom: 8px;
+  }
+  .today-stat-value.streak {
+    background: linear-gradient(135deg, #ff8a3c, #b85a3c);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .today-stat-label {
+    font-size: 12px; color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .today-stat-label strong { color: var(--text); font-weight: 600; }
+
+  /* Task list */
+  .task-list { display: flex; flex-direction: column; }
+  .task {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 13px 0;
+    font-size: 15px; color: var(--text);
+    border-bottom: 1px solid var(--border-soft);
+    transition: padding 0.15s var(--ease);
+  }
+  .task:last-child { border-bottom: none; }
+  .task:hover { padding-left: 4px; }
+  .task-check {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border-strong);
+    margin-top: 2px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .task-check:hover { border-color: var(--green-deep); background: var(--green-light); }
+  .task-text { flex: 1; line-height: 1.5; }
+  .task-tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--bg-2);
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .task-tag.action { background: var(--green-light); color: var(--green-deep); }
+  .task-tag.blocker { background: var(--orange-light); color: var(--orange); }
+  .task-tag.calendar { background: var(--blue-light); color: var(--blue); }
+
+  /* Add task — underline only */
+  .add-task-row {
+    display: flex; gap: 10px; align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .add-task-row::before {
+    content: "+";
+    color: var(--text-faint);
+    font-size: 18px; line-height: 1;
+    width: 18px; text-align: center;
+    flex-shrink: 0;
+  }
+  .add-task-row input {
+    flex: 1; border: none; outline: none;
+    background: transparent; font-size: 15px;
+    color: var(--text); font-family: inherit;
+  }
+  .add-task-row input::placeholder { color: var(--text-faint); }
+
+  /* "Last debrief" callout — short dark moment to balance the dark timer above */
+  .debrief-callout {
+    background: var(--ink);
+    color: var(--on-dark);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .debrief-callout::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(400px circle at 90% 50%, rgba(141,204,158,0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .debrief-callout > * { position: relative; z-index: 1; }
+  .debrief-eyebrow {
+    font-size: 11px;
+    color: var(--green-glow);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .debrief-quote {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--on-dark);
+    font-style: italic;
+  }
+  .debrief-meta {
+    font-size: 11px;
+    color: var(--on-dark-muted);
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 160 160">
+        <rect x="38" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+        <rect x="56" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+        <rect x="74" y="33" width="12" height="94" rx="6" fill="#1e5c30"/>
+        <rect x="92" y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+        <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+      </svg>
+    </span>
+    <span>Focul</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active">Today</button>
+    <button class="nav-tab">Streak</button>
+    <button class="nav-tab">History</button>
+    <button class="nav-tab">Settings</button>
+  </div>
+  <div class="nav-right">
+    <span class="streak-pill">🔥 4-day streak</span>
+    <button class="signout-btn">Sign out</button>
+    <div class="nav-avatar"></div>
+  </div>
+</nav>
+
+<main>
+  <div class="date-label">Friday · 8 May</div>
+  <h1>Good evening, <em>Riya</em>.</h1>
+
+  <div class="coach-line">
+    <span><strong>Focus Coach is warming up.</strong> I'll start suggesting what to focus on after a couple of sessions.</span>
+    <button title="Dismiss">×</button>
+  </div>
+
+  <!-- THE dark contrasting moment -->
+  <div class="timer-card">
+    <div class="timer-label">Ready when you are</div>
+    <div class="timer-display">15<span class="colon">:</span>00</div>
+    <div class="timer-sub">Bell rings, then 60s voice debrief</div>
+
+    <div class="duration-pills">
+      <button class="pill active">15 min</button>
+      <button class="pill">30 min</button>
+      <button class="pill">Custom</button>
+    </div>
+
+    <div class="mode-row">
+      <div class="mode-toggle">
+        <button class="mode-btn active">Focus</button>
+        <button class="mode-btn">Accountability</button>
+      </div>
+    </div>
+
+    <button class="start-btn">
+      Start 15-min session
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- Today (no boxes — big numbers as the contrast device) -->
+  <section>
+    <div class="section-head">
+      <h2 class="section-title">Today</h2>
+      <span class="section-meta">Friday · 8 May</span>
+    </div>
+    <div class="today-stats">
+      <div class="today-stat">
+        <div class="today-stat-value">3</div>
+        <div class="today-stat-label"><strong>sessions</strong> · 45 min focused</div>
+      </div>
+      <div class="today-stat">
+        <div class="today-stat-value">11</div>
+        <div class="today-stat-label"><strong>tasks</strong> captured from debriefs</div>
+      </div>
+      <div class="today-stat">
+        <div class="today-stat-value streak">4 🔥</div>
+        <div class="today-stat-label"><strong>day streak</strong> · best so far 12</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming up — preceded by a short dark debrief callout for contrast -->
+  <section>
+    <div class="section-head">
+      <h2 class="section-title">Coming up</h2>
+      <span class="section-meta">From your last debrief · 2h ago</span>
+    </div>
+
+    <div class="debrief-callout">
+      <div class="debrief-eyebrow">Last debrief · 0:54</div>
+      <div class="debrief-quote">"Just finished the Stripe webhook investigation. Looks like the retry logic isn't backing off correctly. Sarah's PR for auth is mostly clean — just needs the session-token tweak…"</div>
+      <div class="debrief-meta">5 tasks captured · 2 blockers · listen back ↗</div>
+    </div>
+
+    <div class="task-list">
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Email Stripe re: webhook retry behavior</div>
+        <div class="task-tag action">action</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Review Sarah's PR on the auth flow</div>
+        <div class="task-tag action">action</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Block Friday morning for investor calls</div>
+        <div class="task-tag calendar">calendar</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Waiting on legal feedback on terms v3</div>
+        <div class="task-tag blocker">blocker</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Your tasks -->
+  <section>
+    <div class="section-head">
+      <h2 class="section-title">Your tasks</h2>
+      <span class="section-meta">Add manually</span>
+    </div>
+    <div class="add-task-row">
+      <input placeholder="Add a task..." />
+    </div>
+    <div class="task-list">
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Review Q2 board deck before Tuesday</div>
+      </div>
+      <div class="task">
+        <div class="task-check"></div>
+        <div class="task-text">Reach out to Alex about pricing experiments</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
