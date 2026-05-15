@@ -6,9 +6,9 @@ import Link from 'next/link'
 import s from './waitlist.module.css'
 
 const ROLES = [
-  'Founder, solo',
-  'Founder + small team',
-  'Operator / Chief of Staff',
+  'Student',
+  'Founder / entrepreneur',
+  'Working professional',
   'Other',
 ]
 
@@ -109,8 +109,8 @@ function WaitlistInner() {
 
         {step === 1 && (
           <div className={s.step}>
-            <label className={s.qlabel}>Which best describes you?</label>
-            <p className={s.hint}>So we can prioritise the right people first.</p>
+            <label className={s.qlabel}>What brings you to Focul?</label>
+            <p className={s.hint}>Pick whichever fits best — we use this to build for the people actually using it. No wrong answer.</p>
             <div className={s.chips}>
               {ROLES.map(r => (
                 <button
@@ -134,7 +134,7 @@ function WaitlistInner() {
             <p className={s.hint}>One sentence. Optional, but it helps us build for you.</p>
             <textarea
               className={s.textarea}
-              placeholder="Switching context between Slack, calls, and writing code…"
+              placeholder="My phone, social media, getting distracted easily…"
               value={problem}
               onChange={e => setProblem(e.target.value)}
               onKeyDown={handleEnter}
