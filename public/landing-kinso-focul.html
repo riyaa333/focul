@@ -620,14 +620,231 @@
       background:
         radial-gradient(60% 50% at 50% 0%, rgba(45,138,74,0.16) 0%, transparent 70%),
         radial-gradient(40% 30% at 80% 80%, rgba(111,168,61,0.12) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .aside-mock-content {
-      position: absolute; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 18px;
-      font-family: "Fragment Mono", monospace; color: var(--text-muted);
-      font-size: 14px;
+
+    /* ─── LOOP DEMO (auto-cycling 4-step walkthrough) ─── */
+    .loop-demo {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      padding: 0;
     }
-    .aside-mock-content strong { color: var(--text); font-size: 22px; font-weight: 700; font-family: "Geist", sans-serif; letter-spacing: -0.02em; }
+    .loop-titlebar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(10px);
+      position: relative; z-index: 2;
+    }
+    .loop-traffic { display: flex; gap: 6px; }
+    .loop-traffic span {
+      width: 11px; height: 11px; border-radius: 50%;
+      background: rgba(13,31,21,0.18);
+    }
+    .loop-titlebar-label {
+      font-family: "Fragment Mono", monospace;
+      font-size: 11px; color: var(--text-faint);
+      margin: 0 auto;
+    }
+    .loop-titlebar-label strong { color: var(--text-muted); font-weight: 500; }
+
+    .loop-stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .loop-view {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      padding: 24px;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.55s var(--ease), transform 0.65s var(--ease);
+      pointer-events: none;
+    }
+    .loop-view.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    /* — Step 1: Focus — */
+    .loop-focus-label {
+      font-family: "Fragment Mono", monospace;
+      font-size: 11px; letter-spacing: 0.18em;
+      color: var(--accent-green); text-transform: uppercase;
+    }
+    .loop-focus-time {
+      font-size: clamp(64px, 11vw, 128px);
+      font-weight: 500; letter-spacing: -0.045em; line-height: 1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+    .loop-focus-sub { font-size: 14px; color: var(--text-muted); }
+    .loop-focus-bar {
+      width: min(280px, 70%); height: 4px;
+      background: rgba(0,0,0,0.06); border-radius: 2px;
+      overflow: hidden; margin-top: 8px;
+    }
+    .loop-focus-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--accent-lime), var(--accent-green));
+      border-radius: 2px;
+      transition: width 4s linear;
+    }
+    .loop-view.active .loop-focus-bar-fill { width: 100%; }
+
+    /* — Step 2: Bell — */
+    .loop-bell {
+      position: relative;
+      width: 96px; height: 96px; border-radius: 50%;
+      background: var(--accent-green);
+      display: grid; place-items: center;
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(45,138,74,0.30);
+    }
+    .loop-bell svg { width: 44px; height: 44px; animation: bellWiggle 0.8s ease-in-out infinite; }
+    @keyframes bellWiggle {
+      0%, 100% { transform: rotate(-12deg); }
+      50%      { transform: rotate( 12deg); }
+    }
+    .loop-bell::before, .loop-bell::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 50%; border: 2px solid var(--accent-green);
+      opacity: 0;
+    }
+    .loop-view.active .loop-bell::before { animation: bellRipple 1.4s ease-out infinite; }
+    .loop-view.active .loop-bell::after  { animation: bellRipple 1.4s ease-out 0.7s infinite; }
+    @keyframes bellRipple {
+      0%   { transform: scale(1);   opacity: 0.65; }
+      100% { transform: scale(2.2); opacity: 0;    }
+    }
+    .loop-bell-title {
+      font-size: clamp(24px, 3vw, 32px); font-weight: 600;
+      letter-spacing: -0.02em; color: var(--text);
+    }
+    .loop-bell-sub { font-size: 14px; color: var(--text-muted); font-family: "Fragment Mono", monospace; }
+
+    /* — Step 3: Speak — */
+    .loop-speak-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: "Fragment Mono", monospace;
+      font-size: 12px; color: var(--accent-salmon);
+    }
+    .loop-eq { display: inline-flex; gap: 3px; align-items: center; height: 18px; }
+    .loop-eq span {
+      display: block; width: 3px; border-radius: 2px;
+      background: var(--accent-green);
+    }
+    .loop-view.active .loop-eq span { animation: vtBounce 0.9s ease-in-out infinite; }
+    .loop-eq span:nth-child(1) { height: 6px;  animation-delay: 0.00s; }
+    .loop-eq span:nth-child(2) { height: 14px; animation-delay: 0.08s; }
+    .loop-eq span:nth-child(3) { height: 9px;  animation-delay: 0.16s; }
+    .loop-eq span:nth-child(4) { height: 16px; animation-delay: 0.24s; }
+    .loop-eq span:nth-child(5) { height: 7px;  animation-delay: 0.32s; }
+    .loop-eq span:nth-child(6) { height: 12px; animation-delay: 0.40s; }
+    .loop-eq span:nth-child(7) { height: 5px;  animation-delay: 0.48s; }
+    .loop-speak-quote {
+      max-width: 560px;
+      font-size: clamp(18px, 2.2vw, 24px);
+      font-weight: 500; letter-spacing: -0.02em; line-height: 1.45;
+      color: var(--text);
+    }
+    .loop-speak-quote .filler { color: var(--text-faint); }
+    .loop-speak-quote .underline {
+      background: linear-gradient(180deg, transparent 65%, rgba(141,204,158,0.55) 65%);
+      padding: 0 2px;
+    }
+
+    /* — Step 4: Briefing — */
+    .loop-brief-head {
+      display: flex; align-items: center; gap: 10px;
+      font-family: "Fragment Mono", monospace;
+      font-size: 12px; color: var(--accent-green);
+    }
+    .loop-brief-list {
+      display: flex; flex-direction: column; gap: 10px;
+      width: min(560px, 88%);
+    }
+    .loop-brief-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14.5px; color: var(--text);
+      text-align: left;
+      opacity: 0; transform: translateX(-12px);
+      transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+      box-shadow: 0 2px 8px rgba(13,31,21,0.04);
+    }
+    .loop-view.active .loop-brief-item { opacity: 1; transform: translateX(0); }
+    .loop-view.active .loop-brief-item:nth-child(1) { transition-delay: 0.10s; }
+    .loop-view.active .loop-brief-item:nth-child(2) { transition-delay: 0.28s; }
+    .loop-view.active .loop-brief-item:nth-child(3) { transition-delay: 0.46s; }
+    .loop-view.active .loop-brief-item:nth-child(4) { transition-delay: 0.64s; }
+    .loop-brief-check {
+      width: 18px; height: 18px; border-radius: 6px;
+      background: var(--accent-green);
+      display: grid; place-items: center;
+      color: #fff; flex-shrink: 0;
+    }
+    .loop-brief-check svg { width: 11px; height: 11px; }
+    .loop-brief-tag {
+      margin-left: auto; flex-shrink: 0;
+      font-family: "Fragment Mono", monospace; font-size: 10.5px;
+      padding: 2px 8px; border-radius: 999px;
+      background: var(--bg-2); color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .loop-brief-tag.blocker { color: var(--accent-salmon); }
+    .loop-brief-tag.calendar { color: var(--accent-teal); }
+
+    /* Step indicator at the bottom */
+    .loop-steps {
+      display: flex; align-items: center; justify-content: center;
+      gap: 18px;
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(10px);
+      position: relative; z-index: 2;
+    }
+    .loop-step {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: "Fragment Mono", monospace;
+      font-size: 12px; color: var(--text-faint);
+      cursor: pointer;
+      transition: color 0.3s var(--ease);
+      background: none; border: none; font-family: inherit;
+    }
+    .loop-step .num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: grid; place-items: center;
+      font-size: 11px; font-weight: 500; color: var(--text-faint);
+      font-family: "Fragment Mono", monospace;
+      transition: all 0.3s var(--ease);
+    }
+    .loop-step.active { color: var(--text); }
+    .loop-step.active .num {
+      background: var(--text); color: #fff; border-color: var(--text);
+      transform: scale(1.08);
+    }
+    .loop-step.done .num {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: #fff;
+    }
+    .loop-step.done .num::after {
+      content: '✓'; font-size: 11px;
+    }
+    .loop-step.done .num span { display: none; }
+    .loop-step:hover:not(.active) { color: var(--text-muted); }
+    @media (max-width: 600px) {
+      .loop-step { gap: 6px; font-size: 11px; }
+      .loop-step .num { width: 20px; height: 20px; }
+      .loop-steps { gap: 10px; padding: 12px; }
+      .loop-titlebar-label { display: none; }
+    }
 
     /* ─── FAQ ─── */
     section.faq {
@@ -1634,10 +1851,80 @@
     A 15-minute focus loop that captures itself, organises itself, and hands
     your work forward to the next session.
   </p>
-  <div class="aside-mock">
-    <div class="aside-mock-content">
-      <strong>Focus → Bell → Speak → Briefing</strong>
-      <div>The four steps that close the loop.</div>
+  <div class="aside-mock" id="loop-mock">
+    <div class="loop-demo">
+      <div class="loop-titlebar">
+        <div class="loop-traffic"><span></span><span></span><span></span></div>
+        <div class="loop-titlebar-label"><strong>Focul</strong> · live loop</div>
+      </div>
+
+      <div class="loop-stage">
+        <!-- Step 1: Focus -->
+        <div class="loop-view active" data-step="focus">
+          <div class="loop-focus-label">● Focusing</div>
+          <div class="loop-focus-time" id="loop-time">14:32</div>
+          <div class="loop-focus-sub">Heads-down. No notifications until the bell.</div>
+          <div class="loop-focus-bar"><div class="loop-focus-bar-fill"></div></div>
+        </div>
+
+        <!-- Step 2: Bell -->
+        <div class="loop-view" data-step="bell">
+          <div class="loop-bell">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 2a1 1 0 0 1 1 1v.6a7 7 0 0 1 6 6.9V14l1.6 3.2A1 1 0 0 1 19.7 19H4.3a1 1 0 0 1-.9-1.5L5 14.5v-4a7 7 0 0 1 6-6.9V3a1 1 0 0 1 1-1zM9.5 21a2.5 2.5 0 0 0 5 0h-5z"/>
+            </svg>
+          </div>
+          <div class="loop-bell-title">The bell rings.</div>
+          <div class="loop-bell-sub">— time to debrief —</div>
+        </div>
+
+        <!-- Step 3: Speak -->
+        <div class="loop-view" data-step="speak">
+          <div class="loop-speak-status">
+            <span class="rec-dot"></span>
+            <span class="loop-eq"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
+            Recording · 0:42
+          </div>
+          <div class="loop-speak-quote">"Shipped the <span class="underline">webhook retry</span>, <span class="filler">um,</span> need to email Stripe. Sarah's <span class="underline">auth PR</span> — review before EOD. Friday morning, <span class="underline">block for investors</span>."</div>
+        </div>
+
+        <!-- Step 4: Briefing -->
+        <div class="loop-view" data-step="briefing">
+          <div class="loop-brief-head">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            4 tasks extracted · saved to today
+          </div>
+          <div class="loop-brief-list">
+            <div class="loop-brief-item">
+              <div class="loop-brief-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span>Email Stripe about webhook retry behavior</span>
+              <span class="loop-brief-tag">action</span>
+            </div>
+            <div class="loop-brief-item">
+              <div class="loop-brief-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span>Review Sarah's PR on the auth refactor</span>
+              <span class="loop-brief-tag">action</span>
+            </div>
+            <div class="loop-brief-item">
+              <div class="loop-brief-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span>Block Friday morning for investor calls</span>
+              <span class="loop-brief-tag calendar">calendar</span>
+            </div>
+            <div class="loop-brief-item">
+              <div class="loop-brief-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <span>Waiting on legal feedback for terms v3</span>
+              <span class="loop-brief-tag blocker">blocker</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="loop-steps" role="tablist">
+        <button class="loop-step active" data-step="0"><span class="num"><span>1</span></span>Focus</button>
+        <button class="loop-step"       data-step="1"><span class="num"><span>2</span></span>Bell</button>
+        <button class="loop-step"       data-step="2"><span class="num"><span>3</span></span>Speak</button>
+        <button class="loop-step"       data-step="3"><span class="num"><span>4</span></span>Briefing</button>
+      </div>
     </div>
   </div>
 </section>
@@ -1763,6 +2050,84 @@ function toggleFaq(btn) {
     else els.forEach(el => el.textContent = target);
   }
   requestAnimationFrame(step);
+})();
+
+// ── Loop demo (auto-cycling 4-step walkthrough) ──
+(function() {
+  const views = document.querySelectorAll('.loop-view');
+  const steps = document.querySelectorAll('.loop-step');
+  const timeEl = document.getElementById('loop-time');
+  if (!views.length) return;
+
+  const DURATIONS = [4200, 2200, 4200, 4800]; // ms per step: focus, bell, speak, briefing
+  let i = 0;
+  let timer = null;
+  let countdownTimer = null;
+  let countdownSec = 14 * 60 + 32;
+
+  function paintCountdown() {
+    if (!timeEl) return;
+    const m = Math.floor(countdownSec / 60);
+    const s = countdownSec % 60;
+    timeEl.textContent = m + ':' + String(s).padStart(2, '0');
+  }
+
+  function setStep(n) {
+    i = n;
+    views.forEach((v, k) => v.classList.toggle('active', k === i));
+    steps.forEach((s, k) => {
+      s.classList.toggle('active', k === i);
+      s.classList.toggle('done',   k <  i);
+    });
+
+    // Start/stop the focus countdown only while step 0 is active
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+    if (i === 0) {
+      // Fast-forward feel for the demo: drop ~5s every 250ms
+      countdownTimer = setInterval(() => {
+        countdownSec = countdownSec > 5 ? countdownSec - 5 : 0;
+        paintCountdown();
+        if (countdownSec === 0) clearInterval(countdownTimer);
+      }, 250);
+    } else if (i === steps.length - 1) {
+      // Reset countdown at end of cycle so the next focus step starts fresh
+      countdownSec = 14 * 60 + 32;
+      paintCountdown();
+    }
+  }
+
+  function tick() {
+    setStep((i + 1) % views.length);
+    timer = setTimeout(tick, DURATIONS[i]);
+  }
+
+  function start() {
+    if (timer) return;
+    setStep(0);
+    timer = setTimeout(tick, DURATIONS[0]);
+  }
+  function stop() {
+    if (timer) { clearTimeout(timer); timer = null; }
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  }
+
+  // Click-to-jump on a step
+  steps.forEach((btn, k) => btn.addEventListener('click', () => {
+    stop();
+    setStep(k);
+    timer = setTimeout(tick, DURATIONS[k]);
+  }));
+
+  // Only run while the demo is on-screen
+  const mock = document.getElementById('loop-mock');
+  if ('IntersectionObserver' in window && mock) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => e.isIntersecting ? start() : stop());
+    }, { threshold: 0.25 });
+    io.observe(mock);
+  } else {
+    start();
+  }
 })();
 
 // ── Orbit device timer ──
