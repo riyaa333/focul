@@ -564,6 +564,198 @@
       color: var(--text); font-variant-numeric: tabular-nums;
     }
 
+    /* ─── FEATURE 1: macOS menu-bar scene (no big timer, just the strip) ─── */
+    .menubar-scene {
+      position: absolute; inset: 0;
+      padding: 28px;
+      display: flex; flex-direction: column;
+      gap: 16px;
+    }
+    .menubar-strip {
+      display: flex; align-items: center; gap: 14px;
+      height: 32px;
+      padding: 0 12px;
+      background: linear-gradient(180deg, #2c2c2e 0%, #1c1c1e 100%);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.88);
+      font-size: 12px;
+      box-shadow: 0 6px 20px rgba(13,31,21,0.18);
+      position: relative; z-index: 2;
+    }
+    .mb-apple { width: 13px; height: 13px; margin-top: -1px; }
+    .mb-apple svg { width: 100%; height: 100%; fill: rgba(255,255,255,0.92); }
+    .mb-app { font-weight: 600; font-size: 13px; }
+    .mb-menus { display: flex; gap: 12px; opacity: 0.72; font-size: 12px; }
+    .mb-spacer { flex: 1; }
+    .mb-focul {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(141,204,158,0.18);
+      padding: 4px 10px 4px 7px;
+      border-radius: 6px;
+      border: 1px solid rgba(141,204,158,0.30);
+      position: relative;
+      animation: mbHighlight 4s ease-in-out infinite;
+    }
+    @keyframes mbHighlight {
+      0%,100% { box-shadow: 0 0 0 0 rgba(141,204,158,0); }
+      50%     { box-shadow: 0 0 0 4px rgba(141,204,158,0.22); }
+    }
+    .mb-wave { display: inline-flex; align-items: center; gap: 1.5px; height: 14px; }
+    .mb-wave span { display: block; width: 2px; border-radius: 1px; background: #8dcc9e; }
+    .mb-wave span:nth-child(1) { height: 4px;  opacity: 0.55; }
+    .mb-wave span:nth-child(2) { height: 8px;  opacity: 0.80; }
+    .mb-wave span:nth-child(3) { height: 12px; opacity: 1; }
+    .mb-wave span:nth-child(4) { height: 8px;  opacity: 0.80; }
+    .mb-wave span:nth-child(5) { height: 4px;  opacity: 0.55; }
+    .mb-focul-time {
+      font-variant-numeric: tabular-nums;
+      color: #fff; font-weight: 500; font-size: 12px;
+    }
+    .mb-clock { color: rgba(255,255,255,0.70); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+    .menubar-arrow {
+      position: absolute;
+      top: 56px; right: 80px;
+      display: flex; align-items: flex-start; gap: 6px;
+      z-index: 2;
+    }
+    .menubar-arrow svg { width: 56px; height: 42px; flex-shrink: 0; }
+    .menubar-arrow-label {
+      font-family: "Inter Tight", sans-serif; font-style: italic;
+      font-weight: 800; font-size: 13px; color: var(--text);
+      line-height: 1.3; margin-top: 14px;
+    }
+    .menubar-bg {
+      position: absolute;
+      left: 28px; right: 28px;
+      top: 100px; bottom: 28px;
+      pointer-events: none;
+    }
+    .mb-bg-card {
+      position: absolute;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(13,31,21,0.06);
+      box-shadow: 0 8px 24px rgba(13,31,21,0.05);
+    }
+    .mb-bg-card-1 { top: 0;   left: 0;   width: 58%; height: 64%; }
+    .mb-bg-card-2 { bottom: 0; right: 0; width: 50%; height: 56%; }
+    .mb-bg-card-3 { top: 30%; left: 36%; width: 42%; height: 50%; background: rgba(236,247,224,0.7); }
+
+    /* ─── FEATURE 2: speech → tasks transformation scene ─── */
+    .transform-scene {
+      position: absolute; inset: 0;
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .transform-side {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 16px 14px;
+      display: flex; flex-direction: column; gap: 10px;
+      box-shadow: 0 6px 18px rgba(13,31,21,0.04);
+      min-height: 0;
+    }
+    .transform-label {
+      font-family: "Fragment Mono", monospace;
+      font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text-faint);
+    }
+    .transform-quote {
+      font-size: 13.5px; line-height: 1.5;
+      color: var(--text); font-weight: 400;
+    }
+    .transform-quote .dim { color: var(--text-faint); }
+    .transform-wave {
+      display: flex; align-items: flex-end; gap: 2px;
+      height: 18px; margin-top: auto;
+    }
+    .transform-wave span {
+      display: block; width: 3px; border-radius: 2px;
+      background: var(--accent-green); opacity: 0.7;
+      animation: tWaveBounce 1.2s ease-in-out infinite;
+    }
+    .transform-wave span:nth-child(1)  { height: 30%;  animation-delay: 0.00s; }
+    .transform-wave span:nth-child(2)  { height: 60%;  animation-delay: 0.08s; }
+    .transform-wave span:nth-child(3)  { height: 90%;  animation-delay: 0.16s; }
+    .transform-wave span:nth-child(4)  { height: 50%;  animation-delay: 0.24s; }
+    .transform-wave span:nth-child(5)  { height: 75%;  animation-delay: 0.32s; }
+    .transform-wave span:nth-child(6)  { height: 100%; animation-delay: 0.40s; }
+    .transform-wave span:nth-child(7)  { height: 45%;  animation-delay: 0.48s; }
+    .transform-wave span:nth-child(8)  { height: 70%;  animation-delay: 0.56s; }
+    .transform-wave span:nth-child(9)  { height: 25%;  animation-delay: 0.64s; }
+    .transform-wave span:nth-child(10) { height: 55%;  animation-delay: 0.72s; }
+    .transform-wave span:nth-child(11) { height: 40%;  animation-delay: 0.80s; }
+    .transform-wave span:nth-child(12) { height: 65%;  animation-delay: 0.88s; }
+    @keyframes tWaveBounce { 0%,100%{transform:scaleY(0.5)} 50%{transform:scaleY(1)} }
+
+    .transform-arrow {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: var(--accent-green);
+    }
+    .transform-arrow svg { width: 70px; height: 22px; }
+    .transform-arrow svg path { stroke-dasharray: 80; stroke-dashoffset: 80; animation: tArrowDraw 2.4s ease-in-out infinite; }
+    .transform-arrow svg path:nth-child(2) { animation-delay: 0.4s; }
+    @keyframes tArrowDraw {
+      0%   { stroke-dashoffset: 80; }
+      50%  { stroke-dashoffset: 0;  }
+      100% { stroke-dashoffset: -80; }
+    }
+    .transform-arrow-label {
+      font-family: "Fragment Mono", monospace;
+      font-size: 10.5px; color: var(--accent-green);
+      letter-spacing: 0.06em;
+    }
+    .transform-task {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg-2);
+      border-radius: 8px;
+      font-size: 12.5px; line-height: 1.35;
+      color: var(--text);
+    }
+    .t-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-green); flex-shrink: 0;
+    }
+    .t-dot.calendar { background: var(--accent-teal); }
+    .t-tag {
+      margin-left: auto;
+      font-family: "Fragment Mono", monospace; font-size: 9.5px;
+      padding: 2px 7px; border-radius: 999px;
+      background: var(--surface); color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .t-tag.calendar { color: var(--accent-teal); }
+
+    /* ─── ORBIT screen — branded mark instead of a giant timer ─── */
+    .orbit-screen-mark {
+      width: 56px; height: 56px;
+      margin: 0 auto 12px;
+      animation: markPulse 3.5s ease-in-out infinite;
+    }
+    .orbit-screen-mark svg { width: 100%; height: 100%; display: block; }
+    @keyframes markPulse {
+      0%,100% { transform: scale(1);    opacity: 1;   }
+      50%     { transform: scale(1.06); opacity: 0.92;}
+    }
+    .orbit-screen-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      align-self: center;
+      font-family: "Fragment Mono", monospace;
+      font-size: 11px; color: var(--accent-green);
+      margin-bottom: 16px;
+    }
+    .orbit-pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent-green);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
     /* Live recording dot — pulses red */
     .rec-dot {
       display: inline-block; width: 8px; height: 8px; border-radius: 50%;
@@ -1686,9 +1878,18 @@
     <div class="orbit-device" aria-hidden="true">
       <div class="orbit-device-notch"></div>
       <div class="orbit-screen">
-        <div class="orbit-screen-label">Focused</div>
-        <div class="orbit-screen-time" id="orbit-time">12:47</div>
-        <div class="orbit-screen-sub">2:13 until the bell</div>
+        <div class="orbit-screen-mark" aria-hidden="true">
+          <svg viewBox="0 0 160 160">
+            <rect x="38"  y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+            <rect x="56"  y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+            <rect x="74"  y="33" width="12" height="94" rx="6" fill="#1e5c30"/>
+            <rect x="92"  y="46" width="12" height="69" rx="6" fill="#8dcc9e"/>
+            <rect x="110" y="61" width="12" height="38" rx="6" fill="#d4ead8"/>
+          </svg>
+        </div>
+        <div class="orbit-screen-status">
+          <span class="orbit-pulse"></span>Extracting from your debrief
+        </div>
         <div class="orbit-progress"></div>
         <div class="orbit-mini-tasks">
           <div class="orbit-mini-task done"><span class="dot"></span>Webhook retry shipped</div>
@@ -1772,13 +1973,35 @@
     </p>
   </div>
   <div class="feature-mock blue">
-    <div class="mock-window">
-      <div class="mock-tabs"><span></span><span></span><span></span></div>
-      <div class="mock-pill mono">⏱ Focus session</div>
-      <div class="mock-big-num" id="live-timer">14:32</div>
-      <div class="mock-line accent"></div>
-      <div class="mock-line short"></div>
-      <div class="mock-line shorter"></div>
+    <!-- Stylized macOS desktop showing Focul tucked into the menu bar -->
+    <div class="menubar-scene">
+      <div class="menubar-strip">
+        <span class="mb-apple">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 12.5c0-3 2.4-4.4 2.5-4.4-1.4-2-3.5-2.3-4.3-2.3-1.8-.2-3.5 1.1-4.4 1.1-.9 0-2.4-1.1-3.9-1-2 0-3.9 1.2-4.9 3-2.1 3.6-.5 9 1.5 11.9 1 1.5 2.2 3 3.7 3 1.5 0 2-1 3.8-1 1.7 0 2.2 1 3.7 1 1.5 0 2.5-1.5 3.5-3 1.1-1.7 1.5-3.4 1.5-3.5-.1 0-2.7-1-2.7-4zM14.6 4c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.6.8-3.5 1.8-.7.9-1.4 2.3-1.2 3.6 1.4.1 2.7-.7 3.5-1.6z"/></svg>
+        </span>
+        <span class="mb-app">Cursor</span>
+        <span class="mb-menus"><span>File</span><span>Edit</span><span>View</span><span>Run</span></span>
+        <span class="mb-spacer"></span>
+        <span class="mb-focul">
+          <span class="mb-wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </span>
+          <span class="mb-focul-time">14:32</span>
+        </span>
+        <span class="mb-clock">9:41</span>
+      </div>
+      <div class="menubar-arrow">
+        <svg viewBox="0 0 80 60" aria-hidden="true">
+          <path d="M40 50 Q 42 30 52 18" fill="none" stroke="rgba(13,31,21,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 5"/>
+          <path d="M48 14 L 52 18 L 50 23" fill="none" stroke="rgba(13,31,21,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="menubar-arrow-label">that's it.<br/>that's the whole UI.</span>
+      </div>
+      <div class="menubar-bg">
+        <div class="mb-bg-card mb-bg-card-1"></div>
+        <div class="mb-bg-card mb-bg-card-2"></div>
+        <div class="mb-bg-card mb-bg-card-3"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1798,15 +2021,29 @@
     </p>
   </div>
   <div class="feature-mock purple">
-    <div class="mock-window">
-      <div class="mock-tabs"><span></span><span></span><span></span></div>
-      <div class="mock-pill mono" style="color:var(--accent-salmon);"><span class="rec-dot"></span>Recording · <span id="rec-timer">0:47</span></div>
-      <div class="mock-line accent"></div>
-      <div class="mock-block">
-        <div class="mock-pill mono" style="background:rgba(45,138,74,0.12);color:var(--accent-green);">AI · Transcript</div>
-        <div class="mock-line"></div>
-        <div class="mock-line short"></div>
-        <div class="mock-line shorter"></div>
+    <!-- Transformation visual: rambling speech → clean structured tasks -->
+    <div class="transform-scene">
+      <div class="transform-side speech">
+        <div class="transform-label">You say</div>
+        <div class="transform-quote">
+          "Shipped the retry, <span class="dim">um,</span> need to email Stripe. Sarah's PR — <span class="dim">like,</span> review before EOD. Friday: investors."
+        </div>
+        <div class="transform-wave" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="transform-arrow" aria-hidden="true">
+        <svg viewBox="0 0 80 24" fill="none">
+          <path d="M4 12 H 68" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="0" />
+          <path d="M62 6 L 70 12 L 62 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="transform-arrow-label">~5 sec</span>
+      </div>
+      <div class="transform-side tasks">
+        <div class="transform-label">Focul saves</div>
+        <div class="transform-task"><span class="t-dot"></span>Email Stripe re: webhook retry<span class="t-tag">action</span></div>
+        <div class="transform-task"><span class="t-dot"></span>Review Sarah's auth PR<span class="t-tag">action</span></div>
+        <div class="transform-task"><span class="t-dot calendar"></span>Block Friday AM<span class="t-tag calendar">calendar</span></div>
       </div>
     </div>
   </div>
@@ -2130,32 +2367,9 @@ function toggleFaq(btn) {
   }
 })();
 
-// ── Orbit device timer ──
-(function() {
-  const el = document.getElementById('orbit-time');
-  if (!el) return;
-  let s = 12 * 60 + 47;
-  setInterval(() => {
-    s = s > 0 ? s - 1 : 15 * 60;
-    el.textContent = Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
-  }, 1000);
-})();
-
-// ── Hero menu-bar timer countdown ──
-(function() {
-  const big = document.getElementById('big-time');
-  const bar = document.getElementById('bar-time');
-  if (!big || !bar) return;
-  let seconds = 14 * 60 + 32;
-  setInterval(() => {
-    seconds = seconds <= 0 ? 14 * 60 + 32 : seconds - 1;
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    const t = m + ':' + String(s).padStart(2, '0');
-    big.textContent = t;
-    bar.textContent = t;
-  }, 1000);
-})();
+// (Removed: orbit-time, big-time, bar-time tickers — those displays
+//  no longer show a counting timer. The single live timer is in the
+//  Loop Demo "Focus" step.)
 
 // ── Mouse spotlight on hero (radial follows cursor) ──
 (function() {
@@ -2188,28 +2402,10 @@ function toggleFaq(btn) {
   });
 }());
 
-// ── Live ticking timer in the focus-mode mock ──
-(function() {
-  const t = document.getElementById('live-timer');
-  if (!t) return;
-  let total = 14 * 60 + 32; // 14:32
-  function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-  setInterval(() => {
-    total = total > 0 ? total - 1 : 14 * 60 + 32;
-    t.textContent = fmt(total);
-  }, 1000);
-}());
-
-// ── Recording timer in voice-debrief mock (ticks down, loops) ──
-(function() {
-  const r = document.getElementById('rec-timer');
-  if (!r) return;
-  let s = 47;
-  setInterval(() => {
-    s = s > 0 ? s - 1 : 60;
-    r.textContent = '0:' + String(s).padStart(2, '0');
-  }, 1000);
-}());
+// (Removed: live-timer + rec-timer tickers — the Focus Mode mock is
+//  now a static menu-bar scene, and the Voice Debrief mock is a
+//  speech→tasks transformation diagram. The single live timer is
+//  in the Loop Demo "Focus" step.)
 
 // ── Word-by-word stagger on hero title ──
 (function() {
