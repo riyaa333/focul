@@ -525,10 +525,23 @@ export default function DashboardPage() {
           }}>
             Sign out
           </button>
-          <div style={{
-            width: 30, height: 30, borderRadius: '50%',
-            background: 'linear-gradient(135deg, #8dcc9e, #1e5c30)',
-          }} />
+          {/* Initials avatar — single letter on soft tinted background, paper-warm */}
+          <div
+            title={user?.email || firstName}
+            style={{
+              width: 32, height: 32, borderRadius: '50%',
+              background: '#eef3e7',
+              border: '1px solid rgba(30,55,32,0.10)',
+              display: 'grid', placeItems: 'center',
+              fontSize: 13, fontWeight: 600,
+              color: '#1e5c30',
+              letterSpacing: '-0.01em',
+              fontFamily: 'inherit',
+              boxShadow: '0 1px 2px rgba(13,31,21,0.04)',
+              userSelect: 'none',
+            }}>
+            {firstName.charAt(0).toUpperCase()}
+          </div>
         </div>
       </nav>
 
