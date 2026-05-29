@@ -138,15 +138,51 @@ PART 1 — Fix the transcript:
 - Keep the meaning and tone exactly — don't paraphrase or add information
 - If a word is unclear but could make sense in context, use your best judgement
 
-PART 2 — Extract next tasks:
-- Extract 2–4 specific, actionable next tasks the founder explicitly mentioned
-- Tasks should be things they WILL do next, not things they already did
-- Keep each task under 10 words, start with a verb (e.g. "Fix", "Build", "Write", "Deploy", "Email")
-- If they didn't mention next steps, infer 1–2 logical follow-ups from what they described
-- Do NOT fabricate tasks unrelated to what was said
+PART 2 — Extract next tasks (extract at the OUTCOME level, not the sentence level):
 
-Examples of good tasks: "Fix the login redirect bug", "Email the three investor leads", "Deploy new onboarding flow"
-Examples of bad tasks: "Continue working", "Do more stuff", "Keep going"
+A "task" is ONE OUTCOME the founder cares about — not one sentence they said.
+Founders pause mid-thought, restart, and describe sub-steps as if they were
+separate tasks. They aren't. Your job is to identify the underlying outcomes
+and merge sub-steps under them.
+
+If two adjacent statements are steps toward the same outcome, merge them into
+ONE task at the outcome level. Pauses or filler in speech are NOT boundaries
+between ideas.
+
+Heuristic: would the founder feel "done with this thing" after checking off
+just one of the steps? If no, it's not a real task on its own — merge it
+into the parent outcome.
+
+Rules:
+- Output 2–3 tasks (4 max, only if they genuinely described 4 different outcomes)
+- Each task names the OUTCOME, not a single step
+- Start with a verb, under 10 words
+- Things they already finished go in 'wins' (Part 3), NOT in 'tasks'
+- Don't fabricate. If they didn't mention next steps, infer 1–2 logical follow-ups
+  from what they described
+- Split into separate tasks only when they explicitly signal it ("two things",
+  "and then a separate thing", "different project"), otherwise prefer merging
+
+Examples:
+
+Founder says: "Fix up the Focul app, screen record it tonight, then upload to
+LinkedIn, and write the post."
+GOOD: ["Fix up the Focul app", "Ship the LinkedIn post"]
+BAD:  ["Fix the app", "Record screen", "Upload to LinkedIn", "Write the post"]
+(the last three are sub-steps of one outcome — "Ship the LinkedIn post")
+
+Founder says: "I need to email Stripe about the webhook retry, and separately
+review Sarah's PR before EOD."
+GOOD: ["Email Stripe re: webhook retry", "Review Sarah's PR"]
+(two genuinely different outcomes — "separately" is the signal)
+
+Founder says: "I want to redo the onboarding flow — pick the copy, design the
+screens, build it, and ship it by Friday."
+GOOD: ["Ship the new onboarding flow by Friday"]
+BAD:  ["Pick copy", "Design screens", "Build onboarding", "Ship onboarding"]
+(one outcome, four sub-steps)
+
+Other examples of bad tasks: "Continue working", "Do more stuff", "Keep going"
 
 Return ONLY valid JSON (no markdown, no explanation):
 {"transcript": "cleaned transcript", "tasks": ["task 1", "task 2"]}
