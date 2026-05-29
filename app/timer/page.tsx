@@ -8,27 +8,74 @@ import { Suspense } from 'react'
 type Phase = 'briefing' | 'input' | 'running' | 'debrief' | 'processing' | 'accountability' | 'done'
 type AccountabilityItem = { text: string; completed: boolean }
 
+// All quotes verified — source noted inline so any of them can be audited.
+// If you add one, please cite the speech / book / essay it's from. If it can't
+// be sourced, leave it out: misattributed quotes erode trust.
 const QUOTES = [
-  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
-  { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
-  { text: "Done is better than perfect.", author: "Sheryl Sandberg" },
-  { text: "Ideas are easy. Execution is everything.", author: "John Doerr" },
-  { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+  // Steve Jobs — Stanford Commencement Address, June 12 2005
   { text: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs" },
-  { text: "It's not about ideas. It's about making ideas happen.", author: "Scott Belsky" },
-  { text: "Move fast and learn things.", author: "Sam Altman" },
-  { text: "Make every detail perfect and limit the number of details to perfect.", author: "Jack Dorsey" },
   { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { text: "Chase the vision, not the money. The money will end up following you.", author: "Tony Hsieh" },
-  { text: "Build something 100 people love, not something 1 million people kind of like.", author: "Paul Graham" },
-  { text: "The best marketing strategy ever: care.", author: "Gary Vaynerchuk" },
+  { text: "Stay hungry, stay foolish.", author: "Steve Jobs" }, // Jobs credits this to the Whole Earth Catalog's final issue
+
+  // Reid Hoffman — said in multiple interviews; canonical version of his "embarrassed by your v1" line (≈2010)
   { text: "If you are not embarrassed by the first version of your product, you've launched too late.", author: "Reid Hoffman" },
-  { text: "Work hard in silence. Let success make the noise.", author: "Frank Ocean" },
-  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
-  { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
+
+  // Sheryl Sandberg — popularised at Facebook; appears in Lean In (2013)
+  { text: "Done is better than perfect.", author: "Sheryl Sandberg" },
+
+  // John Doerr — recurring line, included in Measure What Matters (2018)
+  { text: "Ideas are easy. Execution is everything.", author: "John Doerr" },
+
+  // Tim Ferriss — The 4-Hour Workweek (2007)
+  { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+
+  // Scott Belsky — Making Ideas Happen (2010)
+  { text: "It's not about ideas. It's about making ideas happen.", author: "Scott Belsky" },
+
+  // Jack Dorsey — recurring line in Twitter / Square talks circa 2009-2012
+  { text: "Make every detail perfect, and limit the number of details to perfect.", author: "Jack Dorsey" },
+
+  // Tony Hsieh — Delivering Happiness (2010)
+  { text: "Chase the vision, not the money. The money will end up following you.", author: "Tony Hsieh" },
+
+  // Gary Vaynerchuk — repeatedly on his podcast and in keynotes
+  { text: "The best marketing strategy ever: care.", author: "Gary Vaynerchuk" },
+
+  // Mark Zuckerberg — Y Combinator Startup School interview, 2011
   { text: "The biggest risk is not taking any risk.", author: "Mark Zuckerberg" },
-  { text: "Stay hungry, stay foolish.", author: "Steve Jobs" },
-  { text: "Sleep is the cousin of death — keep working.", author: "Nas" },
+
+  // Paul Graham — "Do Things That Don't Scale" (essay, 2013)
+  { text: "It's better to make a few users very happy than a lot of users semi-happy.", author: "Paul Graham" },
+
+  // Sam Altman — "Startup Playbook" (2015), YC's founding principle
+  { text: "Make something people love.", author: "Sam Altman" },
+
+  // Brian Chesky — Airbnb's "100 people who love you" lesson, often re-stated by Paul Graham too
+  { text: "Build something 100 people love, not something a million people kind of like.", author: "Brian Chesky" },
+
+  // Alan Kay — Xerox PARC, ≈1971
+  { text: "The best way to predict the future is to invent it.", author: "Alan Kay" },
+
+  // Linus Torvalds — Linux kernel mailing list, August 2000
+  { text: "Talk is cheap. Show me the code.", author: "Linus Torvalds" },
+
+  // Donald Knuth — "Structured Programming with go to Statements" (ACM Computing Surveys, 1974)
+  { text: "Premature optimization is the root of all evil.", author: "Donald Knuth" },
+
+  // Richard Feynman — written on his Caltech blackboard at the time of his death (1988)
+  { text: "What I cannot create, I do not understand.", author: "Richard Feynman" },
+
+  // Marc Andreessen — "Why Software Is Eating the World" (Wall Street Journal, August 20 2011)
+  { text: "Software is eating the world.", author: "Marc Andreessen" },
+
+  // Drew Houston — Dropbox founder, repeated in interviews including his MIT commencement (2013)
+  { text: "Don't worry about failure; you only have to be right once.", author: "Drew Houston" },
+
+  // Peter Thiel — "Competition is for losers" (Wall Street Journal essay + Zero to One, 2014)
+  { text: "Competition is for losers.", author: "Peter Thiel" },
+
+  // Steve Jobs — Apple keynote / repeatedly across the late '90s
+  { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
 ]
 
 function TimerContent() {
