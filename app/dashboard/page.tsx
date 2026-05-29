@@ -41,7 +41,7 @@ export default function DashboardPage() {
   const [selected, setSelected] = useState(15)
   const [customMins, setCustomMins] = useState('')
   const [showCustom, setShowCustom] = useState(false)
-  const [activeNav, setActiveNav] = useState<'dashboard' | 'streak' | 'history'>('dashboard')
+  const [activeNav, setActiveNav] = useState<'dashboard' | 'history'>('dashboard')
   const [isLeaving, setIsLeaving] = useState(false)
   const [newTodo, setNewTodo] = useState('')
   const [mode, setMode] = useState<'focus' | 'accountability'>('focus')
@@ -371,44 +371,6 @@ export default function DashboardPage() {
             </>
           )}
 
-          {/* Streak tab */}
-          {activeNav === 'streak' && (() => {
-            const days: { date: string; count: number; mins: number }[] = []
-            for (let i = 83; i >= 0; i--) {
-              const d = new Date(); d.setDate(d.getDate() - i)
-              const dateStr = d.toDateString()
-              const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === dateStr)
-              days.push({ date: dateStr, count: daySessions.length, mins: daySessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0) })
-            }
-            let streak = 0
-            const today2 = new Date().toDateString()
-            const yesterday2 = new Date(Date.now() - 86400000).toDateString()
-            const rev = [...days].reverse()
-            const si = rev.findIndex(d => d.date === today2 || d.date === yesterday2)
-            if (si !== -1 && rev[si].count > 0) { for (let i = si; i < rev.length; i++) { if (rev[i].count > 0) streak++; else break } }
-            const totalMins = sessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
-            let bestStreak = 0, run = 0
-            for (const d of days) { if (d.count > 0) { run++; if (run > bestStreak) bestStreak = run } else run = 0 }
-
-            return (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #ede9e2', padding: '24px 20px', textAlign: 'center' }}>
-                  <p style={{ fontSize: 10, color: '#c0b8a8', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Current streak</p>
-                  <p style={{ fontSize: 64, fontWeight: 900, color: '#1a1410', letterSpacing: -4, lineHeight: 1 }}>{streak}</p>
-                  <p style={{ fontSize: 14, color: '#b0a898' }}>days 🔥</p>
-                </div>
-                <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #ede9e2', display: 'flex', overflow: 'hidden' }}>
-                  {[{ val: sessions.length, label: 'sessions' }, { val: `${Math.round(totalMins / 60)}h`, label: 'focused' }, { val: bestStreak, label: 'best' }].map(({ val, label }, i) => (
-                    <div key={label} style={{ flex: 1, padding: '16px 10px', textAlign: 'center', borderRight: i < 2 ? '1px solid #f3f1ee' : 'none' }}>
-                      <div style={{ fontSize: 20, fontWeight: 800, color: '#1a1410' }}>{val}</div>
-                      <div style={{ fontSize: 10, color: '#b0a898', marginTop: 2 }}>{label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          })()}
-
           {/* History tab */}
           {activeNav === 'history' && (
             <div>
@@ -443,10 +405,9 @@ export default function DashboardPage() {
         }}>
           {[
             { key: 'dashboard', label: 'Home', icon: '⌂' },
-            { key: 'streak', label: 'Streak', icon: '🔥' },
             { key: 'history', label: 'History', icon: '◷' },
           ].map(({ key, label, icon }) => (
-            <button key={key} onClick={() => setActiveNav(key as 'dashboard' | 'streak' | 'history')} style={{
+            <button key={key} onClick={() => setActiveNav(key as 'dashboard' | 'history')} style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
               border: 'none', background: 'transparent', cursor: 'pointer', padding: '6px 0',
             }}>
@@ -519,7 +480,6 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', gap: 2, background: '#f3f1ec', padding: 4, borderRadius: 999 }}>
           {([
             { key: 'dashboard', label: 'Today' },
-            { key: 'streak', label: 'Streak' },
             { key: 'history', label: 'History' },
           ] as const).map(({ key, label }) => (
             <button key={key}
@@ -783,6 +743,64 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
+
+              {/* This week — slim 7-day strip, lives inside Today */}
+              {(() => {
+                const week7 = Array.from({ length: 7 }, (_, i) => {
+                  const d = new Date(); d.setDate(d.getDate() - (6 - i))
+                  const dateStr = d.toDateString()
+                  const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === dateStr)
+                  const mins = daySessions.reduce((s, x) => s + (x.duration_minutes || 0), 0)
+                  const isToday = i === 6
+                  const dayLabel = ['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()]
+                  return { mins, isToday, dayLabel }
+                })
+                const maxMins = 90
+                const r = 16, circ = 2 * Math.PI * r
+                return (
+                  <div style={{ marginTop: 36, paddingTop: 24, borderTop: '1px solid rgba(30,55,32,0.06)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 18 }}>
+                      <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(13,31,21,0.42)', margin: 0 }}>This week</p>
+                      <span style={{ fontSize: 11, color: 'rgba(13,31,21,0.42)' }}>
+                        {week7.filter(d => d.mins > 0).length} of 7 days
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between' }}>
+                      {week7.map((d, i) => {
+                        const pct = d.mins > 0 ? Math.min(d.mins / maxMins, 1) : 0
+                        const strokeLen = circ * pct
+                        const offset = circ * 0.25
+                        return (
+                          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                            <svg width="44" height="44" viewBox="0 0 44 44" style={{ overflow: 'visible' }}>
+                              <circle cx="22" cy="22" r={r} fill="none" stroke="rgba(30,55,32,0.08)" strokeWidth="3" />
+                              {d.mins > 0 && (
+                                <circle cx="22" cy="22" r={r} fill="none"
+                                  stroke={d.isToday ? '#0d1f15' : '#3a9e52'}
+                                  strokeWidth="3"
+                                  strokeDasharray={`${strokeLen} ${circ}`}
+                                  strokeDashoffset={offset}
+                                  strokeLinecap="round"
+                                  style={{ transition: 'stroke-dasharray 0.8s cubic-bezier(0.4,0,0.2,1)' }} />
+                              )}
+                              <text x="22" y="26" textAnchor="middle"
+                                style={{ fontFamily: 'inherit', fontSize: 9, fontWeight: 600, fill: d.mins > 0 ? (d.isToday ? '#0d1f15' : '#3a9e52') : 'rgba(13,31,21,0.32)' }}>
+                                {d.mins > 0 ? `${d.mins}m` : '—'}
+                              </text>
+                            </svg>
+                            <span style={{
+                              fontSize: 11,
+                              fontWeight: d.isToday ? 600 : 500,
+                              color: d.isToday ? '#0d1f15' : 'rgba(13,31,21,0.42)',
+                              letterSpacing: '0.04em',
+                            }}>{d.dayLabel}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })()}
             </section>
 
             {/* ── Coming up (editorial — no box) ── */}
@@ -921,133 +939,6 @@ export default function DashboardPage() {
             </section>
           </div>
         )}
-
-        {activeNav === 'streak' && (() => {
-          // Build last 84 days (12 weeks) of activity
-          const days: { date: string; count: number; mins: number }[] = []
-          for (let i = 83; i >= 0; i--) {
-            const d = new Date()
-            d.setDate(d.getDate() - i)
-            const dateStr = d.toDateString()
-            const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === dateStr)
-            days.push({
-              date: dateStr,
-              count: daySessions.length,
-              mins: daySessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0),
-            })
-          }
-
-          // Calculate streak
-          let streak = 0
-          const today = new Date().toDateString()
-          const yesterday = new Date(Date.now() - 86400000).toDateString()
-          const reversedDays = [...days].reverse()
-          // start from today or yesterday
-          const startIdx = reversedDays.findIndex(d => d.date === today || d.date === yesterday)
-          if (startIdx !== -1 && reversedDays[startIdx].count > 0) {
-            for (let i = startIdx; i < reversedDays.length; i++) {
-              if (reversedDays[i].count > 0) streak++
-              else break
-            }
-          }
-
-          const totalMins = sessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
-          const weeks = []
-          for (let w = 0; w < 12; w++) weeks.push(days.slice(w * 7, w * 7 + 7))
-          const dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
-
-          // Best streak calc (longest ever run)
-          let bestStreak = 0, run = 0
-          for (const d of days) { if (d.count > 0) { run++; if (run > bestStreak) bestStreak = run } else run = 0 }
-          const circumference = 2 * Math.PI * 62
-          const streakGoal = 30
-          const pct = Math.min(streak / streakGoal, 1)
-          const offset = circumference * (1 - pct)
-
-          return (
-            <div style={{ width: '100%', maxWidth: 420, alignSelf: 'flex-start', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-
-              {/* Ring hero */}
-              <div style={{ position: 'relative', width: 180, height: 180 }}>
-                <svg width="180" height="180" viewBox="0 0 180 180" style={{ transform: 'rotate(-90deg)' }}>
-                  <circle cx="90" cy="90" r="62" fill="none" stroke="#f0ede8" strokeWidth="12" />
-                  <circle cx="90" cy="90" r="62" fill="none" stroke="#3a9e52" strokeWidth="12"
-                    strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round"
-                    style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1)' }} />
-                </svg>
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
-                  <span style={{ fontSize: 10, color: '#c0b8a8', letterSpacing: 2, textTransform: 'uppercase' }}>streak</span>
-                  <span style={{ fontSize: 56, fontWeight: 900, color: '#1a1410', letterSpacing: -4, lineHeight: 1 }}>{streak}</span>
-                  <span style={{ fontSize: 12, color: '#b0a898' }}>days 🔥</span>
-                </div>
-              </div>
-
-              {/* Stats row */}
-              <div style={{ width: '100%', background: '#fff', borderRadius: 20, border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.04)', display: 'flex', overflow: 'hidden' }}>
-                {[
-                  { val: sessions.length, label: 'sessions' },
-                  { val: `${Math.round(totalMins / 60)}h`, label: 'focused' },
-                  { val: bestStreak, label: 'best streak' },
-                ].map(({ val, label }, i) => (
-                  <div key={label} style={{
-                    flex: 1, padding: '18px 14px', textAlign: 'center',
-                    borderRight: i < 2 ? '1px solid #f3f1ee' : 'none',
-                  }}>
-                    <div style={{ fontSize: 22, fontWeight: 800, color: '#1a1410', letterSpacing: -1 }}>{val}</div>
-                    <div style={{ fontSize: 10, color: '#b0a898', marginTop: 3 }}>{label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* 7-day rings */}
-              {(() => {
-                const week7 = Array.from({ length: 7 }, (_, i) => {
-                  const d = new Date(); d.setDate(d.getDate() - (6 - i))
-                  const dateStr = d.toDateString()
-                  const daySessions = sessions.filter(s => new Date(s.created_at).toDateString() === dateStr)
-                  const mins = daySessions.reduce((s, x) => s + x.duration_minutes, 0)
-                  const isToday = i === 6
-                  const dayLabel = ['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()]
-                  return { mins, isToday, dayLabel, dateStr }
-                })
-                const maxMins = 90
-                const r = 22, circ = 2 * Math.PI * r
-                return (
-                  <div style={{ width: '100%', background: '#fff', borderRadius: 20, padding: '20px 22px', border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.04)' }}>
-                    <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 16 }}>This week</p>
-                    <div style={{ display: 'flex', gap: 6, justifyContent: 'space-between' }}>
-                      {week7.map((d, i) => {
-                        const pct = d.mins > 0 ? Math.min(d.mins / maxMins, 1) : 0
-                        const strokeLen = circ * pct
-                        const offset = circ * 0.25
-                        return (
-                          <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                            <svg width="100%" viewBox="0 0 52 52" style={{ overflow: 'visible' }}>
-                              <circle cx="26" cy="26" r={r} fill="none" stroke="#f0ede8" strokeWidth="5" />
-                              {d.mins > 0 && (
-                                <circle cx="26" cy="26" r={r} fill="none"
-                                  stroke={d.isToday ? '#1a1410' : '#3a9e52'}
-                                  strokeWidth="5"
-                                  strokeDasharray={`${strokeLen} ${circ}`}
-                                  strokeDashoffset={offset}
-                                  strokeLinecap="round" />
-                              )}
-                              <text x="26" y="30" textAnchor="middle"
-                                style={{ fontFamily: 'inherit', fontSize: 10, fontWeight: 700, fill: d.mins > 0 ? (d.isToday ? '#1a1410' : '#3a9e52') : '#d4cfc8' }}>
-                                {d.mins > 0 ? `${d.mins}m` : '—'}
-                              </text>
-                            </svg>
-                            <span style={{ fontSize: 10, fontWeight: d.isToday ? 700 : 500, color: d.isToday ? '#1a1410' : '#c0b8a8' }}>{d.dayLabel}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )
-              })()}
-            </div>
-          )
-        })()}
 
         {activeNav === 'history' && (() => {
           const totalMins = sessions.reduce((s, x) => s + x.duration_minutes, 0)
