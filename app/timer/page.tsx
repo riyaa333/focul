@@ -39,6 +39,7 @@ function TimerContent() {
     ? parseInt(searchParams.get('seconds')!)
     : durationMinutes * 60
   const mode = (searchParams.get('mode') || 'focus') as 'focus' | 'accountability'
+  const variant = (searchParams.get('v') || '').toLowerCase() as '' | 'a' | 'b' | 'c'
 
   const [phase, setPhase] = useState<Phase>(mode === 'accountability' ? 'input' : 'running')
   const [secondsLeft, setSecondsLeft] = useState(totalSeconds)
@@ -407,11 +408,14 @@ function TimerContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9fdf6] flex flex-col" style={{
+    <div className="min-h-screen flex flex-col" style={{
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      background: phase === 'running'
+        ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'  /* warm cream-paper for focus state */
+        : '#f9fdf6',
       opacity: entered ? 1 : 0,
       transform: entered ? 'scale(1)' : 'scale(0.96)',
-      transition: 'opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1)',
+      transition: 'opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1), background 0.6s ease',
       willChange: 'opacity, transform',
     }}>
 
@@ -420,7 +424,8 @@ function TimerContent() {
         <button onClick={() => {
           setEntered(false)
           setTimeout(() => router.push('/dashboard'), 380)
-        }} className="text-xs font-medium text-[#b0c8b4] hover:text-[#1a3020] transition-colors tracking-wide">
+        }} className="text-xs font-medium hover:opacity-100 transition-opacity tracking-wide"
+          style={{ color: phase === 'running' ? '#a39d8e' : '#b0c8b4', opacity: phase === 'running' ? 0.65 : 1 }}>
           ← Dashboard
         </button>
       </nav>
@@ -580,60 +585,61 @@ function TimerContent() {
           </div>
         )}
 
-        {/* RUNNING */}
-        {phase === 'running' && (
-          <div className="text-center select-none w-full max-w-sm">
-            {/* Split glow timer */}
-            <div className="relative flex items-center justify-center mb-8" style={{ height: 160 }}>
-              {/* Elliptical glow */}
-              <div style={{
-                position: 'absolute', width: 340, height: 160, borderRadius: '50%',
-                background: 'radial-gradient(ellipse, rgba(58,158,82,0.11) 0%, transparent 70%)',
-                pointerEvents: 'none',
-              }} />
-              {/* Minutes */}
-              <span className="font-black tabular-nums leading-none"
-                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', color: '#1a3020', position: 'relative', zIndex: 1 }}>
-                {String(minutes).padStart(2, '0')}
-              </span>
-              {/* Colon dots */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, margin: '0 4px 12px', position: 'relative', zIndex: 1 }}>
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#1a3020', opacity: 0.3 }} />
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#1a3020', opacity: 0.3 }} />
-              </div>
-              {/* Seconds */}
-              <span className="font-black tabular-nums leading-none"
-                style={{ fontSize: 'clamp(80px, 20vw, 120px)', letterSpacing: '-5px', color: '#1a3020', position: 'relative', zIndex: 1 }}>
-                {String(seconds).padStart(2, '0')}
-              </span>
+        {/* RUNNING — editorial: timer + quote, warm and considered */}
+        {phase === 'running' && variant === '' && (
+          <div className="text-center select-none" style={{ width: '100%', maxWidth: 560, paddingBottom: 40 }}>
+
+            {/* Timer — medium weight, warm muted green, never screaming */}
+            <div style={{
+              fontVariantNumeric: 'tabular-nums',
+              fontSize: 'clamp(104px, 14vw, 176px)',
+              fontWeight: 500,
+              letterSpacing: '-0.045em',
+              lineHeight: 1,
+              color: '#2a3a2c',
+              display: 'inline-flex', alignItems: 'baseline', gap: 6,
+            }}>
+              <span>{String(minutes).padStart(2, '0')}</span>
+              <span style={{ opacity: 0.28, fontWeight: 300 }}>:</span>
+              <span>{String(seconds).padStart(2, '0')}</span>
             </div>
 
-            <div className="mb-8 px-4 text-center">
-              <p className="text-sm text-[#6a9070] italic">&ldquo;{quote.text}&rdquo;</p>
-              <p className="text-xs text-[#a0b8a0] mt-1 not-italic">— {quote.author}</p>
-            </div>
+            {/* Faint hairline separator — anchors the eye without shouting */}
+            <div aria-hidden="true" style={{
+              margin: '52px auto 36px',
+              width: 36, height: 1,
+              background: 'rgba(94,111,94,0.28)',
+            }} />
 
-            {(mode === 'accountability' ? accountabilityItems.length > 0 : briefingTasks.length > 0) && (
-              <div className="border-t border-[#eaf5e4] pt-6">
-                <p className="text-xs text-[#c8dcc0] uppercase tracking-widest mb-4">Focus list</p>
-                <div className="space-y-2.5 text-left">
-                  {mode === 'accountability'
-                    ? accountabilityItems.map((item, i) => (
-                        <p key={i} className="text-sm text-[#5a8060] flex items-start gap-2.5">
-                          <span className="text-[#3a9e52] shrink-0 mt-0.5 font-bold">{i + 1}.</span>{item.text}
-                        </p>
-                      ))
-                    : briefingTasks.map((task, i) => (
-                        <p key={i} className="text-sm text-[#5a8060] flex items-start gap-2.5">
-                          <span className="text-[#3a9e52] shrink-0 mt-0.5">→</span>{task}
-                        </p>
-                      ))
-                  }
-                </div>
-              </div>
-            )}
+            {/* Quote — treated like a book epigraph */}
+            <p style={{
+              fontFamily: '"Inter Tight", Georgia, "Times New Roman", serif',
+              fontStyle: 'italic',
+              fontWeight: 500,
+              fontSize: 'clamp(15px, 1.4vw, 18px)',
+              lineHeight: 1.55,
+              color: '#5e6f5e',
+              maxWidth: 420,
+              margin: '0 auto',
+              letterSpacing: '0',
+            }}>
+              &ldquo;{quote.text}&rdquo;
+            </p>
+
+            {/* Attribution — small, tracked, quiet */}
+            <p style={{
+              marginTop: 18,
+              fontSize: 11,
+              fontWeight: 500,
+              textTransform: 'uppercase',
+              letterSpacing: '0.18em',
+              color: '#a39d8e',
+            }}>
+              — {quote.author}
+            </p>
           </div>
         )}
+
 
         {/* DEBRIEF */}
         {phase === 'debrief' && (
