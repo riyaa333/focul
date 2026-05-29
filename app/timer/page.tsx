@@ -589,14 +589,14 @@ function TimerContent() {
         {phase === 'running' && variant === '' && (
           <div className="text-center select-none" style={{ width: '100%', maxWidth: 560, paddingBottom: 40 }}>
 
-            {/* Timer — medium weight, warm muted green, never screaming */}
+            {/* Timer — medium weight, warm muted ink; tone shifts in accountability mode */}
             <div style={{
               fontVariantNumeric: 'tabular-nums',
               fontSize: 'clamp(104px, 14vw, 176px)',
               fontWeight: 500,
               letterSpacing: '-0.045em',
               lineHeight: 1,
-              color: '#2a3a2c',
+              color: mode === 'accountability' ? '#2a3a52' : '#2a3a2c',
               display: 'inline-flex', alignItems: 'baseline', gap: 6,
             }}>
               <span>{String(minutes).padStart(2, '0')}</span>
@@ -608,7 +608,7 @@ function TimerContent() {
             <div aria-hidden="true" style={{
               margin: '52px auto 36px',
               width: 36, height: 1,
-              background: 'rgba(94,111,94,0.28)',
+              background: mode === 'accountability' ? 'rgba(94,111,140,0.30)' : 'rgba(94,111,94,0.28)',
             }} />
 
             {/* Quote — treated like a book epigraph */}
@@ -618,7 +618,7 @@ function TimerContent() {
               fontWeight: 500,
               fontSize: 'clamp(15px, 1.4vw, 18px)',
               lineHeight: 1.55,
-              color: '#5e6f5e',
+              color: mode === 'accountability' ? '#5e6f8a' : '#5e6f5e',
               maxWidth: 420,
               margin: '0 auto',
               letterSpacing: '0',

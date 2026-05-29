@@ -728,7 +728,7 @@ export default function DashboardPage() {
             }}>
               <p style={{
                 fontSize: 11, fontWeight: 600, letterSpacing: 1.6, textTransform: 'uppercase',
-                color: '#1e5c30', marginBottom: 22,
+                color: mode === 'accountability' ? '#2d6aaa' : '#1e5c30', marginBottom: 22,
               }}>
                 Ready when you are
               </p>
@@ -737,7 +737,7 @@ export default function DashboardPage() {
                 fontSize: 128, fontWeight: 500, letterSpacing: -7, lineHeight: 1,
                 color: '#1a1410', fontVariantNumeric: 'tabular-nums', marginBottom: 12,
               }}>
-                {timerDisplay}<span style={{ color: '#8dcc9e' }}>{timerSuffix}</span>
+                {timerDisplay}<span style={{ color: mode === 'accountability' ? '#a8c8e8' : '#8dcc9e' }}>{timerSuffix}</span>
               </div>
 
               <p style={{ fontSize: 14, color: '#b0a898', marginBottom: 32 }}>
