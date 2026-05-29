@@ -38,6 +38,8 @@ export default function DashboardPage() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<{ email?: string; user_metadata?: { display_name?: string } } | null>(null)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
   const [selected, setSelected] = useState(15)
   const [customMins, setCustomMins] = useState('')
   const [showCustom, setShowCustom] = useState(false)
@@ -62,6 +64,21 @@ export default function DashboardPage() {
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // Close user menu on outside-click or Esc
+  useEffect(() => {
+    if (!userMenuOpen) return
+    const onClick = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setUserMenuOpen(false) }
+    document.addEventListener('mousedown', onClick)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onClick)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [userMenuOpen])
 
   useEffect(() => {
     async function load() {
@@ -519,29 +536,128 @@ export default function DashboardPage() {
               🔥 {computedStreak}-day streak
             </span>
           )}
-          <button onClick={signOut} style={{
-            fontSize: 13, color: 'rgba(13,31,21,0.42)',
-            background: 'transparent', border: 'none', cursor: 'pointer',
-          }}>
-            Sign out
-          </button>
-          {/* Initials avatar — single letter on soft tinted background, paper-warm */}
-          <div
-            title={user?.email || firstName}
-            style={{
-              width: 32, height: 32, borderRadius: '50%',
-              background: '#eef3e7',
-              border: '1px solid rgba(30,55,32,0.10)',
-              display: 'grid', placeItems: 'center',
-              fontSize: 13, fontWeight: 600,
-              color: '#1e5c30',
-              letterSpacing: '-0.01em',
-              fontFamily: 'inherit',
-              boxShadow: '0 1px 2px rgba(13,31,21,0.04)',
-              userSelect: 'none',
-            }}>
-            {firstName.charAt(0).toUpperCase()}
+          {/* User menu: clickable initials avatar opens a popover with email + sign out */}
+          <div ref={userMenuRef} style={{ position: 'relative' }}>
+            <button
+              onClick={() => setUserMenuOpen(o => !o)}
+              aria-label="Account menu"
+              aria-expanded={userMenuOpen}
+              style={{
+                width: 34, height: 34, borderRadius: '50%',
+                background: userMenuOpen ? '#e3ecdb' : '#eef3e7',
+                border: userMenuOpen ? '1px solid rgba(30,55,32,0.22)' : '1px solid rgba(30,55,32,0.10)',
+                display: 'grid', placeItems: 'center',
+                fontSize: 13, fontWeight: 600, color: '#1e5c30',
+                letterSpacing: '-0.01em', fontFamily: 'inherit',
+                boxShadow: userMenuOpen ? '0 2px 6px rgba(13,31,21,0.10)' : '0 1px 2px rgba(13,31,21,0.04)',
+                cursor: 'pointer',
+                transition: 'all 0.18s cubic-bezier(0.4,0,0.2,1)',
+              }}>
+              {firstName.charAt(0).toUpperCase()}
+            </button>
+
+            {userMenuOpen && (
+              <div
+                role="menu"
+                style={{
+                  position: 'absolute', top: 'calc(100% + 10px)', right: 0,
+                  minWidth: 240, zIndex: 50,
+                  background: '#fffdf8',
+                  border: '1px solid rgba(30,55,32,0.10)',
+                  borderRadius: 14,
+                  boxShadow:
+                    '0 1px 2px rgba(13,31,21,0.04), 0 12px 32px rgba(13,31,21,0.10)',
+                  overflow: 'hidden',
+                  animation: 'menuIn 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+                  transformOrigin: 'top right',
+                }}>
+                {/* Identity block */}
+                <div style={{ padding: '14px 16px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: '50%',
+                    background: '#eef3e7',
+                    border: '1px solid rgba(30,55,32,0.10)',
+                    display: 'grid', placeItems: 'center',
+                    fontSize: 14, fontWeight: 600, color: '#1e5c30',
+                    flexShrink: 0,
+                  }}>
+                    {firstName.charAt(0).toUpperCase()}
+                  </div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0d1f15', letterSpacing: '-0.01em', lineHeight: 1.2 }}>
+                      {firstName}
+                    </div>
+                    <div style={{
+                      fontSize: 11, color: 'rgba(13,31,21,0.55)', marginTop: 3,
+                      lineHeight: 1.3,
+                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    }}>
+                      {user?.email || 'signed in'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div style={{ height: 1, background: 'rgba(30,55,32,0.08)' }} />
+
+                {/* Settings link */}
+                <button
+                  role="menuitem"
+                  onClick={() => { setUserMenuOpen(false); router.push('/settings') }}
+                  style={{
+                    width: '100%', textAlign: 'left',
+                    padding: '11px 16px',
+                    fontSize: 13, color: '#0d1f15',
+                    background: 'transparent', border: 'none', cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(30,55,32,0.04)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <span style={{ width: 14, height: 14, display: 'inline-grid', placeItems: 'center', color: 'rgba(13,31,21,0.55)' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                  </span>
+                  Settings
+                </button>
+
+                {/* Sign out */}
+                <button
+                  role="menuitem"
+                  onClick={() => { setUserMenuOpen(false); signOut() }}
+                  style={{
+                    width: '100%', textAlign: 'left',
+                    padding: '11px 16px',
+                    fontSize: 13, color: '#0d1f15',
+                    background: 'transparent', border: 'none', cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(30,55,32,0.04)'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <span style={{ width: 14, height: 14, display: 'inline-grid', placeItems: 'center', color: 'rgba(13,31,21,0.55)' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                      <polyline points="16 17 21 12 16 7"/>
+                      <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                  </span>
+                  Sign out
+                </button>
+              </div>
+            )}
           </div>
+
+          <style jsx>{`
+            @keyframes menuIn {
+              from { opacity: 0; transform: scale(0.94) translateY(-4px); }
+              to   { opacity: 1; transform: scale(1)    translateY(0); }
+            }
+          `}</style>
         </div>
       </nav>
 
