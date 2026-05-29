@@ -91,6 +91,7 @@ function TimerContent() {
   const [phase, setPhase] = useState<Phase>(mode === 'accountability' ? 'input' : 'running')
   const [secondsLeft, setSecondsLeft] = useState(totalSeconds)
   const [tasks, setTasks] = useState<string[]>([])
+  const [wins, setWins]   = useState<string[]>([])
   const [briefingTasks, setBriefingTasks] = useState<string[]>([])
   const [transcript, setTranscript] = useState('')
   const [recording, setRecording] = useState(false)
@@ -345,6 +346,7 @@ function TimerContent() {
       if (!res.ok) throw new Error(data.error || `Error ${res.status}`)
       setTranscript(data.transcript || '')
       setTasks(data.tasks || [])
+      setWins(data.wins || [])
       await saveSession(data.transcript || '', data.tasks || [])
       setPhase('done')
     } catch (err) {
@@ -452,6 +454,7 @@ function TimerContent() {
     setSecondsLeft(totalSeconds)
     setBriefingTasks(tasks)
     setTasks([])
+    setWins([])
     setTranscript('')
     setRecordingSeconds(0)
     setError('')
@@ -462,8 +465,8 @@ function TimerContent() {
   return (
     <div className="min-h-screen flex flex-col" style={{
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      background: (phase === 'running' || phase === 'debrief')
-        ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'  /* warm cream-paper for focus + debrief */
+      background: (phase === 'running' || phase === 'debrief' || phase === 'done')
+        ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'  /* warm cream-paper for the whole focus loop */
         : '#f9fdf6',
       opacity: entered ? 1 : 0,
       transform: entered ? 'scale(1)' : 'scale(0.96)',
@@ -897,36 +900,146 @@ function TimerContent() {
           </div>
         )}
 
-        {/* DONE */}
+        {/* DONE — editorial recap: what you did + what's next */}
         {phase === 'done' && (
-          <div className="w-full max-w-sm text-center">
-            {tasks.length > 0 ? (
-              <>
-                <p className="text-xs text-[#b0c8b4] uppercase tracking-widest mb-6">Saved for next session</p>
-                <div className="text-left space-y-2.5 mb-10 bg-white rounded-2xl border border-[#eaf5e4] p-5">
-                  {tasks.map((task, i) => (
-                    <p key={i} className="text-sm text-[#4a7055] flex items-start gap-3">
-                      <span className="text-[#3a9e52] shrink-0 font-bold mt-0.5">✓</span>{task}
-                    </p>
-                  ))}
-                </div>
-              </>
+          <div className="select-none" style={{ width: '100%', maxWidth: 560, paddingBottom: 40 }}>
+
+            {/* Eyebrow */}
+            <p style={{
+              fontFamily: 'ui-monospace, "Fragment Mono", monospace',
+              fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: '#a39d8e', marginBottom: 14, textAlign: 'center',
+            }}>
+              Session closed
+            </p>
+
+            {/* Heading */}
+            <h2 style={{
+              fontSize: 'clamp(28px, 3.4vw, 38px)',
+              fontWeight: 500,
+              letterSpacing: '-0.025em',
+              lineHeight: 1.15,
+              color: '#2a3a2c',
+              marginBottom: 44,
+              textAlign: 'center',
+            }}>
+              Here&rsquo;s what Focul heard.
+            </h2>
+
+            {wins.length === 0 && tasks.length === 0 ? (
+              <p style={{
+                fontFamily: '"Inter Tight", Georgia, "Times New Roman", serif',
+                fontStyle: 'italic', fontWeight: 500, fontSize: 16,
+                color: '#5e6f5e', textAlign: 'center', lineHeight: 1.5,
+                maxWidth: 420, margin: '0 auto 44px',
+              }}>
+                Quiet session. Next time, speak for a few more seconds so Focul can capture what you did.
+              </p>
             ) : (
-              <p className="text-sm text-[#b0c8b4] mb-10">Great session. Try speaking a little longer next time for task extraction.</p>
+              <>
+                {/* What you did */}
+                {wins.length > 0 && (
+                  <section style={{ marginBottom: 36 }}>
+                    <h3 style={{
+                      fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+                      color: '#5e6f5e', fontWeight: 600, marginBottom: 18,
+                      textAlign: 'center', fontFamily: 'ui-monospace, "Fragment Mono", monospace',
+                    }}>
+                      What you did
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {wins.map((w, i) => (
+                        <div key={i} style={{
+                          display: 'flex', alignItems: 'flex-start', gap: 14,
+                          padding: '14px 0',
+                          borderBottom: i < wins.length - 1 ? '1px solid rgba(94,111,94,0.12)' : 'none',
+                        }}>
+                          <span aria-hidden="true" style={{
+                            width: 22, height: 22, borderRadius: '50%',
+                            background: '#3a9e52', flexShrink: 0,
+                            display: 'grid', placeItems: 'center', color: '#fff',
+                            marginTop: 2,
+                          }}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          </span>
+                          <span style={{ fontSize: 16, color: '#2a3a2c', lineHeight: 1.5, flex: 1 }}>{w}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* What's next */}
+                {tasks.length > 0 && (
+                  <section style={{ marginBottom: 44 }}>
+                    <h3 style={{
+                      fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase',
+                      color: '#5e6f5e', fontWeight: 600, marginBottom: 18,
+                      textAlign: 'center', fontFamily: 'ui-monospace, "Fragment Mono", monospace',
+                    }}>
+                      What&rsquo;s next
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {tasks.map((t, i) => (
+                        <div key={i} style={{
+                          display: 'flex', alignItems: 'flex-start', gap: 14,
+                          padding: '14px 0',
+                          borderBottom: i < tasks.length - 1 ? '1px solid rgba(94,111,94,0.12)' : 'none',
+                        }}>
+                          <span aria-hidden="true" style={{
+                            width: 22, height: 22, borderRadius: '50%',
+                            background: 'transparent', border: '1.5px solid rgba(94,111,94,0.40)',
+                            flexShrink: 0, display: 'grid', placeItems: 'center',
+                            color: '#5e6f5e', fontSize: 13, fontWeight: 600,
+                            marginTop: 2,
+                          }}>
+                            →
+                          </span>
+                          <span style={{ fontSize: 16, color: '#2a3a2c', lineHeight: 1.5, flex: 1 }}>{t}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </>
             )}
-            <button
-              onClick={resetTimer}
-              className="w-full py-4 rounded-full text-sm font-semibold text-white mb-3 transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 4px 16px rgba(58,158,82,0.25)' }}
-            >
-              Start next session →
-            </button>
-            <button
-              onClick={() => { setEntered(false); setTimeout(() => router.push('/dashboard'), 380) }}
-              className="text-xs text-[#c0d4c0] hover:text-[#1a3020] transition-colors"
-            >
-              ← back to dashboard
-            </button>
+
+            {/* Buttons */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, marginTop: 12 }}>
+              <button
+                onClick={resetTimer}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  padding: '14px 32px', borderRadius: 999,
+                  background: '#2a3a2c', color: '#fff',
+                  fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
+                  border: 'none', cursor: 'pointer',
+                  boxShadow: '0 6px 18px rgba(42,58,44,0.18)',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 22px rgba(42,58,44,0.22)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 18px rgba(42,58,44,0.18)' }}
+              >
+                Start next session
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </button>
+              <button
+                onClick={() => { setEntered(false); setTimeout(() => router.push('/dashboard'), 380) }}
+                style={{
+                  fontSize: 12, color: '#a39d8e', background: 'transparent', border: 'none', cursor: 'pointer',
+                  padding: '6px 14px', fontFamily: 'inherit',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#2a3a2c' }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#a39d8e' }}
+              >
+                ← Back to dashboard
+              </button>
+            </div>
           </div>
         )}
       </div>

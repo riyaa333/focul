@@ -184,8 +184,39 @@ BAD:  ["Pick copy", "Design screens", "Build onboarding", "Ship onboarding"]
 
 Other examples of bad tasks: "Continue working", "Do more stuff", "Keep going"
 
+PART 3 — Extract wins (what they actually finished this session):
+
+A "win" is ONE thing the founder explicitly said they FINISHED during this
+session. Past-tense, concrete, under 8 words.
+
+Rules:
+- Past-tense verb: "Shipped X", "Fixed Y", "Emailed Z", "Reviewed W", "Drafted V"
+- Must be a concrete outcome, not vague effort. "Fixed the auth bug" is a win;
+  "worked on auth" is NOT — that's effort without an outcome
+- Don't fabricate. If they said "I worked on" without describing what got
+  done, that's not a win, return []
+- Wins are NOT the same as tasks. Wins = past (what got done). Tasks = future
+  (what's next)
+- Output 0–4 wins. Empty array is fine if they only talked about future work
+
+Examples:
+
+Founder says: "I shipped the webhook retry and emailed Stripe. Still need to
+review Sarah's PR before EOD."
+GOOD wins:  ["Shipped the webhook retry", "Emailed Stripe"]
+GOOD tasks: ["Review Sarah's PR"]
+
+Founder says: "I just worked on the onboarding flow."
+GOOD wins:  []  (no outcome described — "worked on" is effort, not a win)
+GOOD tasks: ["Ship the onboarding flow"]  (logical inferred next step)
+
+Founder says: "Fixed the Focul timer, redesigned the debrief screen, and need
+to record the LinkedIn demo tonight."
+GOOD wins:  ["Fixed the Focul timer", "Redesigned the debrief screen"]
+GOOD tasks: ["Ship the LinkedIn demo"]
+
 Return ONLY valid JSON (no markdown, no explanation):
-{"transcript": "cleaned transcript", "tasks": ["task 1", "task 2"]}
+{"transcript": "cleaned transcript", "wins": ["win 1", "win 2"], "tasks": ["task 1", "task 2"]}
 
 Raw Whisper transcript:
 "${transcript}"`,
@@ -194,7 +225,7 @@ Raw Whisper transcript:
     })
 
     const content = message.content[0]
-    let result: { transcript: string; tasks: string[] } = { transcript, tasks: [] }
+    let result: { transcript: string; tasks: string[]; wins: string[] } = { transcript, tasks: [], wins: [] }
 
     if (content.type === 'text') {
       // Strip any accidental markdown fences
@@ -209,15 +240,17 @@ Raw Whisper transcript:
             result = JSON.parse(jsonMatch[0])
           } catch {
             // All parsing failed — return raw transcript, no tasks lost
-            result = { transcript, tasks: [] }
+            result = { transcript, tasks: [], wins: [] }
           }
         }
       }
     }
 
-    // Sanitise: ensure tasks is always an array of strings
+    // Sanitise: every array field is always an array of non-empty strings
     if (!Array.isArray(result.tasks)) result.tasks = []
+    if (!Array.isArray(result.wins))  result.wins  = []
     result.tasks = result.tasks.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
+    result.wins  = result.wins .filter((w): w is string => typeof w === 'string' && w.trim().length > 0)
 
     return NextResponse.json(result)
   } catch (err) {
