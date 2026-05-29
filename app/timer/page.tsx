@@ -118,11 +118,16 @@ function TimerContent() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Keyboard shortcut: Space to start/stop recording ─────────────────────
-  // Mirrors Wispr Flow's push-to-talk pattern — no clicking required.
-  // Guards: only fires when not typing in an input/textarea.
+  // Tap to start, tap to stop. Guards:
+  //   1. `e.repeat` — browsers fire keydown ~30Hz while a key is held. Without
+  //      this guard, a normal 100ms Space tap fires 2-3 keydowns, the second
+  //      flips recording right back off, audio is empty, processing sees
+  //      nothing. This was the auto-skip-to-extracting bug.
+  //   2. tag check — don't hijack Space while user is typing in a field.
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.code !== 'Space') return
+      if (e.repeat) return
       const tag = (e.target as HTMLElement).tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA') return
       e.preventDefault() // stop page scroll
@@ -410,8 +415,8 @@ function TimerContent() {
   return (
     <div className="min-h-screen flex flex-col" style={{
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      background: phase === 'running'
-        ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'  /* warm cream-paper for focus state */
+      background: (phase === 'running' || phase === 'debrief')
+        ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'  /* warm cream-paper for focus + debrief */
         : '#f9fdf6',
       opacity: entered ? 1 : 0,
       transform: entered ? 'scale(1)' : 'scale(0.96)',
@@ -641,75 +646,150 @@ function TimerContent() {
         )}
 
 
-        {/* DEBRIEF */}
+        {/* DEBRIEF — editorial calm, matching the timer page */}
         {phase === 'debrief' && (
-          <div className="w-full max-w-xs text-center">
+          <div className="text-center select-none" style={{ width: '100%', maxWidth: 480, paddingBottom: 40 }}>
             {!recording ? (
               <>
-                <h2 className="text-2xl font-bold text-[#1a3020] mb-2 tracking-tight">What did you get done?</h2>
-                <p className="text-sm text-[#a8c4a8] mb-10">Speak for ~30 seconds. AI handles the rest.</p>
-                {error && <p className="text-red-400 text-xs mb-6">{error}</p>}
-                <div className="flex flex-col items-center gap-4">
+                <h2 style={{
+                  fontSize: 'clamp(28px, 3.4vw, 38px)',
+                  fontWeight: 500,
+                  letterSpacing: '-0.025em',
+                  lineHeight: 1.15,
+                  color: '#2a3a2c',
+                  marginBottom: 14,
+                }}>
+                  What did you get done?
+                </h2>
+                <p style={{
+                  fontFamily: '"Inter Tight", Georgia, "Times New Roman", serif',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                  fontSize: 15,
+                  color: '#5e6f5e',
+                  marginBottom: 56,
+                  lineHeight: 1.5,
+                }}>
+                  Speak for about thirty seconds. The rest takes care of itself.
+                </p>
+
+                {error && (
+                  <p style={{ fontSize: 13, color: '#b85a3c', marginBottom: 24 }}>{error}</p>
+                )}
+
+                {/* Mic — calmer, no aggressive halo */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22 }}>
                   <button
                     onClick={startRecording}
-                    className="relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
-                    style={{ width: 80, height: 80 }}
+                    aria-label="Start recording"
+                    style={{
+                      position: 'relative',
+                      width: 84, height: 84, borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #4a9b5d, #6fb87f)',
+                      border: 'none', cursor: 'pointer',
+                      boxShadow: '0 8px 28px rgba(74,155,93,0.22), 0 2px 6px rgba(74,155,93,0.10)',
+                      display: 'grid', placeItems: 'center',
+                      transition: 'transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(74,155,93,0.28), 0 2px 6px rgba(74,155,93,0.12)' }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 8px 28px rgba(74,155,93,0.22), 0 2px 6px rgba(74,155,93,0.10)' }}
                   >
-                    <span className="absolute inset-0 rounded-full bg-[#3a9e52] opacity-15" style={{ transform: 'scale(1.35)' }} />
-                    <span className="relative flex items-center justify-center w-20 h-20 rounded-full"
-                      style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 6px 24px rgba(58,158,82,0.35)' }}>
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-                        <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
-                        <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                        <line x1="8" y1="23" x2="16" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                    </span>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                      <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                      <line x1="12" y1="19" x2="12" y2="23" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                      <line x1="8" y1="23" x2="16" y2="23" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
                   </button>
-                  <p className="text-xs text-[#c0d4c0]">
-                    Tap or press <kbd style={{ background: '#e8f5e8', border: '1px solid #c8dcc8', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontFamily: 'inherit', color: '#5a8060' }}>Space</kbd>
+
+                  <p style={{ fontSize: 12, color: '#a39d8e', letterSpacing: '0.02em' }}>
+                    Tap or press{' '}
+                    <kbd style={{
+                      fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
+                      background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(94,111,94,0.20)',
+                      borderRadius: 5, padding: '2px 8px', color: '#5e6f5e',
+                      boxShadow: '0 1px 0 rgba(94,111,94,0.10)',
+                    }}>Space</kbd>
                   </p>
                 </div>
               </>
             ) : (
               <>
-                <div className="rounded-2xl bg-white border border-[#e8f5e8] p-6 mb-5 shadow-sm">
-                  <div className="flex items-center justify-center gap-2 mb-5">
-                    <span className="w-2 h-2 bg-[#3a9e52] rounded-full animate-pulse" />
-                    <span className="text-xs font-semibold tracking-widest uppercase text-[#3a9e52]">
-                      {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
-                    </span>
-                  </div>
-                  <div className="flex justify-center mb-5">
-                    <div className="relative flex items-center justify-center" style={{ width: 72, height: 72 }}>
-                      <span className="absolute inset-0 rounded-full bg-[#3a9e52] opacity-10 animate-ping" style={{ animationDuration: '1.5s' }} />
-                      <span className="relative flex items-center justify-center w-[72px] h-[72px] rounded-full"
-                        style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 6px 24px rgba(58,158,82,0.35)' }}>
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
-                          <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
-                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
-                          <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                          <line x1="8" y1="23" x2="16" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                        </svg>
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center gap-1" style={{ height: 32 }}>
-                    {waveHeights.map((h, i) => (
-                      <span key={i} className="rounded-full bg-[#3a9e52]"
-                        style={{ width: 3, height: `${h * 100}%`, opacity: 0.5 + h * 0.5, transition: 'height 0.08s ease-out' }} />
-                    ))}
-                  </div>
+                {/* Recording status — quiet pill, no harsh card */}
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 10,
+                  marginBottom: 44,
+                }}>
+                  <span style={{
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: '#b85a3c',
+                    animation: 'recPulse 1.4s ease-in-out infinite',
+                  }} />
+                  <span style={{
+                    fontFamily: 'ui-monospace, "Fragment Mono", monospace',
+                    fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase',
+                    color: '#5e6f5e', fontVariantNumeric: 'tabular-nums',
+                  }}>
+                    Recording · {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
+                  </span>
                 </div>
-                {error && <p className="text-red-400 text-xs mb-4">{error}</p>}
-                <button onClick={stopRecording}
-                  className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                  style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 4px 16px rgba(58,158,82,0.28)' }}>
-                  Done talking →
+
+                {/* Equalizer — calmer green */}
+                <div style={{
+                  display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4,
+                  height: 56, marginBottom: 56,
+                }}>
+                  {waveHeights.map((h, i) => (
+                    <span key={i} style={{
+                      display: 'block', width: 4, borderRadius: 3,
+                      background: '#4a9b5d',
+                      height: `${Math.max(h * 100, 8)}%`,
+                      opacity: 0.5 + h * 0.45,
+                      transition: 'height 0.08s ease-out',
+                    }} />
+                  ))}
+                </div>
+
+                {error && (
+                  <p style={{ fontSize: 13, color: '#b85a3c', marginBottom: 20 }}>{error}</p>
+                )}
+
+                {/* Done button — calmer green */}
+                <button
+                  onClick={stopRecording}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                    padding: '12px 28px', borderRadius: 999,
+                    background: '#2a3a2c', color: '#fff',
+                    fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
+                    border: 'none', cursor: 'pointer',
+                    boxShadow: '0 6px 18px rgba(42,58,44,0.18)',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 22px rgba(42,58,44,0.22)' }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 18px rgba(42,58,44,0.18)' }}
+                >
+                  Done talking
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                 </button>
-                <p className="text-xs text-[#c0d4c0] mt-3">
-                  or press <kbd style={{ background: '#e8f5e8', border: '1px solid #c8dcc8', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontFamily: 'inherit', color: '#5a8060' }}>Space</kbd> to stop
+
+                <p style={{ fontSize: 12, color: '#a39d8e', marginTop: 18 }}>
+                  or press{' '}
+                  <kbd style={{
+                    fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
+                    background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(94,111,94,0.20)',
+                    borderRadius: 5, padding: '2px 8px', color: '#5e6f5e',
+                    boxShadow: '0 1px 0 rgba(94,111,94,0.10)',
+                  }}>Space</kbd>{' '}
+                  to stop
                 </p>
+
+                <style jsx>{`
+                  @keyframes recPulse {
+                    0%, 100% { opacity: 1;    transform: scale(1); }
+                    50%      { opacity: 0.45; transform: scale(0.85); }
+                  }
+                `}</style>
               </>
             )}
           </div>
