@@ -25,6 +25,13 @@ function formatShortcut(shortcut: string) {
     })
 }
 
+// Function keys (F1–F19) are safe to use as global shortcuts WITHOUT a modifier
+// because they don't normally type characters — taking them globally won't steal
+// "the letter R" from every text field on the user's Mac.
+function isFunctionKey(k: string): boolean {
+  return /^F([1-9]|1[0-9])$/.test(k)
+}
+
 function capturedKeysToElectron(keys: Set<string>): string | null {
   const parts: string[] = []
   if (keys.has('Meta')) parts.push('CommandOrControl')
@@ -33,10 +40,12 @@ function capturedKeysToElectron(keys: Set<string>): string | null {
   if (keys.has('Alt')) parts.push('Alt')
   const modifiers = new Set(['Meta', 'Control', 'Shift', 'Alt'])
   const mainKeys = [...keys].filter(k => !modifiers.has(k))
-  if (mainKeys.length === 0 || parts.length === 0) return null
+  if (mainKeys.length === 0) return null
   let key = mainKeys[0]
   if (key === ' ') key = 'Space'
   else if (key.length === 1) key = key.toUpperCase()
+  // Allow a function key on its own (F1–F19). For anything else, require a modifier.
+  if (parts.length === 0 && !isFunctionKey(key)) return null
   parts.push(key)
   return parts.join('+')
 }
@@ -125,7 +134,10 @@ export default function SettingsPage() {
         const modifiers = new Set(['Meta', 'Control', 'Shift', 'Alt'])
         const pressedNonModifier = [...heldKeys.current].some(k => !modifiers.has(k))
         if (pressedNonModifier) {
-          setShortcutError('Hold a modifier (⌘, ⌃, ⌥, or ⇧) together with a key.')
+          setShortcutError(
+            "Plain letters can't be a global shortcut — they'd steal that key from every app on your Mac. " +
+            "Hold Cmd, Ctrl, Option, or Shift with another key, or use a function key (F1–F19) on its own."
+          )
         }
         heldKeys.current.clear()
         setCapturedKeys([])
@@ -294,8 +306,8 @@ export default function SettingsPage() {
                           cursor: 'pointer', fontFamily: 'inherit',
                         }}>Cancel</button>
                       </div>
-                      <p style={{ fontSize: 11, color: '#a09888', margin: 0, lineHeight: 1.45 }}>
-                        Hold a modifier (⌘, ⌃, ⌥, or ⇧) together with a key. Press <b style={{ color: '#1a1410' }}>Esc</b> to cancel.
+                      <p style={{ fontSize: 11, color: '#a09888', margin: 0, lineHeight: 1.5 }}>
+                        Hold <b style={{ color: '#1a1410' }}>Cmd</b>, <b style={{ color: '#1a1410' }}>Ctrl</b>, <b style={{ color: '#1a1410' }}>Option</b>, or <b style={{ color: '#1a1410' }}>Shift</b> with another key &mdash; or press a function key (<b style={{ color: '#1a1410' }}>F1&ndash;F19</b>) on its own. Press <b style={{ color: '#1a1410' }}>Esc</b> to cancel.
                       </p>
                     </div>
                   ) : (
