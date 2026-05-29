@@ -16,10 +16,10 @@ function formatShortcut(shortcut: string) {
   return shortcut
     .split('+')
     .map(k => {
-      if (k === 'CommandOrControl' || k === 'Command') return '⌘'
-      if (k === 'Shift') return '⇧'
-      if (k === 'Alt') return '⌥'
-      if (k === 'Control') return '⌃'
+      if (k === 'CommandOrControl' || k === 'Command') return 'Cmd'
+      if (k === 'Shift') return 'Shift'
+      if (k === 'Alt') return 'Option'
+      if (k === 'Control') return 'Ctrl'
       if (k === 'Space') return 'Space'
       return k
     })
@@ -121,7 +121,16 @@ export default function SettingsPage() {
     const onUp = async (e: KeyboardEvent) => {
       e.preventDefault()
       const electron = capturedKeysToElectron(heldKeys.current)
-      if (!electron) { heldKeys.current.clear(); setCapturedKeys([]); return }
+      if (!electron) {
+        const modifiers = new Set(['Meta', 'Control', 'Shift', 'Alt'])
+        const pressedNonModifier = [...heldKeys.current].some(k => !modifiers.has(k))
+        if (pressedNonModifier) {
+          setShortcutError('Hold a modifier (⌘, ⌃, ⌥, or ⇧) together with a key.')
+        }
+        heldKeys.current.clear()
+        setCapturedKeys([])
+        return
+      }
       setCapturingShortcut(false)
       setShortcutError('')
       const w = window as unknown as FoculWindow
@@ -242,50 +251,97 @@ export default function SettingsPage() {
             <>
               <p style={sectionLabel}>Shortcuts</p>
               <div style={card}>
-                <div style={rowLast}>
+                <div style={{ ...rowLast, flexDirection: 'column', alignItems: 'stretch', gap: 14, padding: '18px 24px' }}>
+                  {/* Title + description */}
                   <div>
-                    <span style={label}>Start recording</span>
-                    <p style={{ fontSize: 11, color: '#b0a898', marginTop: 3 }}>
-                      Opens Focul and starts voice capture from anywhere
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={label}>Quick voice debrief</span>
+                      {shortcutSaved && (
+                        <span style={{ fontSize: 11, color: '#3a9e52', fontWeight: 600 }}>Saved</span>
+                      )}
+                    </div>
+                    <p style={{ fontSize: 12, color: '#b0a898', marginTop: 4, lineHeight: 1.45 }}>
+                      Press these keys anywhere on your Mac to open Focul and start a 60-second voice debrief.
                     </p>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-                    {capturingShortcut ? (
-                      <div style={{
-                        display: 'flex', alignItems: 'center', gap: 6,
-                        background: '#f3f1ee', borderRadius: 10, padding: '6px 12px',
-                        border: '1.5px dashed #3a9e52',
-                      }}>
-                        <span style={{ fontSize: 11, color: '#3a9e52', fontWeight: 600 }}>
-                          {capturedKeys.length > 0 ? capturedKeys.join(' ') : 'Press keys…'}
-                        </span>
-                        <button onClick={() => { setCapturingShortcut(false); setCapturedKeys([]) }} style={{
-                          fontSize: 11, color: '#c0b8a8', border: 'none', background: 'transparent',
-                          cursor: 'pointer', marginLeft: 4,
+
+                  {/* Keys row */}
+                  {capturingShortcut ? (
+                    <div style={{
+                      background: '#f7f5f2', borderRadius: 12,
+                      border: '1.5px dashed #3a9e52', padding: '14px 16px',
+                      display: 'flex', flexDirection: 'column', gap: 10,
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, minHeight: 26 }}>
+                          {capturedKeys.length > 0 ? (
+                            capturedKeys.map((k, i) => (
+                              <span key={i} style={{
+                                fontSize: 12, fontWeight: 700, color: '#1a1410',
+                                background: '#fff', border: '1px solid #ddd8d0',
+                                borderRadius: 6, padding: '3px 9px', fontFamily: 'monospace',
+                              }}>{k}</span>
+                            ))
+                          ) : (
+                            <span style={{ fontSize: 12, color: '#3a9e52', fontWeight: 600 }}>
+                              Listening — press your shortcut…
+                            </span>
+                          )}
+                        </div>
+                        <button onClick={() => { setCapturingShortcut(false); setCapturedKeys([]); setShortcutError('') }} style={{
+                          fontSize: 11, color: '#8a7e72', border: '1px solid #e8e2d8',
+                          borderRadius: 6, padding: '4px 10px', background: '#fff',
+                          cursor: 'pointer', fontFamily: 'inherit',
                         }}>Cancel</button>
                       </div>
-                    ) : (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        {shortcutSaved && <span style={{ fontSize: 11, color: '#3a9e52' }}>Saved</span>}
-                        <div style={{ display: 'flex', gap: 4 }}>
-                          {formatShortcut(shortcut).map((k, i) => (
-                            <span key={i} style={{
-                              fontSize: 12, fontWeight: 700, color: '#1a1410',
-                              background: '#f0ede8', border: '1px solid #ddd8d0',
-                              borderRadius: 6, padding: '3px 8px', fontFamily: 'monospace',
-                            }}>{k}</span>
-                          ))}
-                        </div>
-                        <button onClick={() => { setCapturingShortcut(true); setShortcutError('') }} style={{
-                          fontSize: 11, color: '#b0a898', cursor: 'pointer', border: '1px solid #e8e2d8',
-                          borderRadius: 6, padding: '3px 8px', background: 'transparent', fontFamily: 'inherit',
-                        }}>Change</button>
+                      <p style={{ fontSize: 11, color: '#a09888', margin: 0, lineHeight: 1.45 }}>
+                        Hold a modifier (⌘, ⌃, ⌥, or ⇧) together with a key. Press <b style={{ color: '#1a1410' }}>Esc</b> to cancel.
+                      </p>
+                    </div>
+                  ) : (
+                    <div style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      gap: 16, background: '#faf9f7', borderRadius: 12,
+                      border: '1px solid #ede9e2', padding: '14px 16px',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                        {formatShortcut(shortcut).map((k, i, arr) => (
+                          <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                            <kbd style={{
+                              fontFamily: 'inherit',
+                              fontSize: 13, fontWeight: 600, color: '#1a1410',
+                              background: 'linear-gradient(180deg, #ffffff 0%, #f6f2eb 100%)',
+                              border: '1px solid #d8d2c6',
+                              borderRadius: 7,
+                              padding: '6px 12px',
+                              minWidth: 28, textAlign: 'center',
+                              boxShadow: '0 1px 0 #cfc8b9, 0 2px 4px rgba(13,31,21,0.05)',
+                              letterSpacing: '-0.01em',
+                            }}>{k}</kbd>
+                            {i < arr.length - 1 && (
+                              <span style={{ fontSize: 12, color: '#c8c0b0', fontWeight: 600 }}>+</span>
+                            )}
+                          </span>
+                        ))}
                       </div>
-                    )}
-                    {shortcutError && (
-                      <p style={{ fontSize: 11, color: '#e07070', margin: 0 }}>{shortcutError}</p>
-                    )}
-                  </div>
+                      <button onClick={() => { setCapturingShortcut(true); setShortcutError('') }} style={{
+                        fontSize: 12, fontWeight: 600, color: '#1a1410', cursor: 'pointer',
+                        border: '1px solid #1a1410', borderRadius: 8, padding: '7px 14px',
+                        background: 'transparent', fontFamily: 'inherit',
+                        transition: 'all 0.15s',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#1a1410'; e.currentTarget.style.color = '#fff' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#1a1410' }}>
+                        Change
+                      </button>
+                    </div>
+                  )}
+
+                  {shortcutError && (
+                    <p style={{ fontSize: 12, color: '#e07070', margin: 0, lineHeight: 1.4 }}>
+                      {shortcutError}
+                    </p>
+                  )}
                 </div>
               </div>
             </>
