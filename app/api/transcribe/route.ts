@@ -24,20 +24,43 @@ export async function POST(req: NextRequest) {
     // Priming prompt: Whisper uses this to bias its vocabulary predictions before
     // it even starts transcribing. Wispr Flow's personal dictionary works the same way —
     // user-specific vocabulary gets injected here so ASR picks the right words first time.
+    //
+    // IMPORTANT: Groq Whisper caps `prompt` at 224 tokens ≈ 896 characters. Keep the
+    // static base lean so there's room for the per-session context. We cap defensively
+    // at MAX_PROMPT_CHARS below and trim sessionContext (not the static base) if the
+    // total would overflow — the static vocab matters most for transcription quality.
+    const MAX_PROMPT_CHARS = 870
+
+    // Core domain vocabulary: brand names + acronyms that Whisper mishears most often.
+    // We dropped the long "common founder phrases" block — Whisper is already great at
+    // common English; biasing toward "I worked on" doesn't measurably improve quality
+    // and just eats prompt budget.
+    const STATIC_PROMPT =
+      'Founder work session voice debrief. Technical vocabulary: ' +
+      'Supabase, Vercel, GitHub, Next.js, TypeScript, React, Tailwind, Electron, ' +
+      'Stripe, Figma, Linear, Notion, Slack, ChatGPT, Claude, Cursor, Raycast. ' +
+      'Startup terms: PR, MVP, API, REST, endpoint, sprint, deployment, onboarding, ' +
+      'waitlist, dashboard, roadmap, backlog, churn, retention, conversion, A/B test. ' +
+      'Fundraising: MRR, ARR, CAC, LTV, runway, burn rate, seed round, Series A, ' +
+      'Y Combinator, pitch deck, product-market fit, PMF, go-to-market, GTM. ' +
+      'App name: Focul.'
+
+    const ctxPrefix = ' This session the founder was working on: '
+    const ctxSuffix = '.'
+    const ctxBudget = MAX_PROMPT_CHARS - STATIC_PROMPT.length - ctxPrefix.length - ctxSuffix.length
+
+    let trimmedContext = ''
+    if (sessionContext && ctxBudget > 20) {
+      trimmedContext = sessionContext.length <= ctxBudget
+        ? sessionContext
+        : sessionContext.slice(0, ctxBudget - 1).trimEnd() + '…'
+    }
+
     const whisperPrompt =
-      'Founder work session debrief. Speaker is a startup founder talking about what they got done. ' +
-      'Technical and startup vocabulary: sprint, MVP, API, REST, endpoint, deployment, Supabase, Vercel, ' +
-      'GitHub, pull request, PR, merge, branch, Next.js, TypeScript, React, Tailwind, Electron, ' +
-      'landing page, onboarding, churn, MRR, ARR, CAC, LTV, runway, burn rate, seed round, Series A, ' +
-      'YC, Y Combinator, pitch deck, investor, co-founder, product-market fit, PMF, go-to-market, GTM, ' +
-      'user research, A/B test, conversion rate, retention, waitlist, Figma, Linear, Notion, Slack, ' +
-      'Stripe, analytics, dashboard, metrics, KPI, OKR, roadmap, backlog, standup, focus session, ' +
-      'accountability, Focul. ' +
-      'Common founder phrases: "I need to", "I finished", "I worked on", "next step is", "I still need to", ' +
-      '"I shipped", "I pushed", "I deployed", "I reached out to", "I got done".' +
-      // Append this session's specific tasks/terms so Whisper prioritises those words
-      (sessionContext ? ` This session the founder was working on: ${sessionContext}.` : '')
-    groqForm.append('prompt', whisperPrompt)
+      STATIC_PROMPT + (trimmedContext ? ctxPrefix + trimmedContext + ctxSuffix : '')
+
+    // Belt-and-braces: defensive final cap even if the math above is ever off by one
+    groqForm.append('prompt', whisperPrompt.slice(0, MAX_PROMPT_CHARS))
 
     const groqRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
       method: 'POST',
