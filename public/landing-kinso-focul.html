@@ -1692,6 +1692,60 @@
       .cta-card { padding: 56px 24px; }
       footer { flex-direction: column; gap: 16px; padding: 32px 20px; }
     }
+
+    /* ─── PHONE / MOBILE TUNING (≤ 600px) ─── */
+    @media (max-width: 600px) {
+      /* Section rhythm — tighten the generous desktop padding */
+      section.feature, section.aside, section.faq, section.cta-band,
+      section.speed, section.personas, section.orbit {
+        padding-left: 20px; padding-right: 20px;
+        padding-top: 72px; padding-bottom: 72px;
+      }
+
+      /* Hero voice card — kill the tall empty gap, let it size to content */
+      .hero-mocks { height: auto; }
+      .vt-stage { max-width: 100%; margin: 0 auto; }
+      .vt-views { min-height: 0; }
+      .vt-view { position: relative; }            /* let the active view define height */
+      .vt-view:not(.active) { position: absolute; } /* keep inactive ones out of flow */
+      .vt-transcript { min-height: 132px; }        /* small floor so the swap doesn't jump */
+
+      /* Two-row marquee — calm the wave so rows don't leave big dead bands */
+      .integrations { padding: 36px 0; }
+      .marquee-rows { gap: 12px; }
+      .integrations-track { height: 96px; }
+      @keyframes chipBob {
+        0%, 100% { transform: translateY(-26px); }
+        50%      { transform: translateY( 26px); }
+      }
+
+      /* Speed comparison — single column already handled at 760px; tighten the vs badge */
+      .speed-title { margin-bottom: 36px; }
+      .speed-card { padding: 32px 24px; }
+
+      /* Orbit — shrink the stage so there's no empty void under the phone */
+      .orbit-stage { height: 460px; }
+      .orbit-device { width: 200px; height: 400px; }
+      .orbit-head { margin-bottom: 36px; }
+
+      /* Personas tabs — THE fix: 5 tabs no longer spill off-screen.
+         Wrap to centred rows instead of one overflowing line. */
+      .personas-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 18px;
+        max-width: 100%;
+      }
+      .personas-tab { padding: 9px 16px; font-size: 13px; }
+      .personas-panels { min-height: 280px; }
+      .personas-panel h3 { font-size: 22px; }
+      .personas-panel p { font-size: 15px; }
+      .personas-quote { font-size: 14px; padding: 14px 18px; }
+
+      /* FAQ heading — it was running 3 lines very large; ease it */
+      .faq-grid h2 { font-size: clamp(30px, 9vw, 40px); }
+    }
   </style>
 </head>
 <body>
