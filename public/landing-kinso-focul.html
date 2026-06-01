@@ -1874,7 +1874,7 @@
 
           <div class="vt-footer">
             <span>Hold <kbd>⌘ R</kbd> to debrief</span>
-            <span id="vt-meta">Whisper · Claude</span>
+            <span id="vt-meta">Private · secure</span>
           </div>
         </div>
       </div>
@@ -2062,7 +2062,7 @@
           <span>Where does my voice data go?</span>
           <span class="faq-toggle">+</span>
         </button>
-        <div class="faq-a">Your audio is transcribed via Whisper and immediately discarded. The transcript is processed by Claude to extract tasks, then saved to your account. We don't sell or share your data.</div>
+        <div class="faq-a">Your audio is transcribed and immediately discarded. The transcript is processed to extract your tasks, then saved to your account. We don't sell or share your data.</div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
@@ -2330,7 +2330,7 @@ function toggleFaq(btn) {
       // Recording phase
       setView('transcript');
       setStatus('recording', 'Recording debrief');
-      meta.textContent = 'Whisper · Claude';
+      meta.textContent = 'Private · secure';
       transcript.innerHTML = '';
       const caret = document.createElement('span');
       caret.className = 'vt-caret';
@@ -2343,7 +2343,7 @@ function toggleFaq(btn) {
 
       // Processing phase
       setStatus('processing', 'Extracting tasks…');
-      meta.textContent = 'Claude is thinking';
+      meta.textContent = 'Thinking…';
       await sleep(1300);
 
       // Tasks phase
