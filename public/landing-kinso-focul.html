@@ -393,9 +393,9 @@
 
     /* ─── SECTION SHELL ─── */
     section.feature, section.aside, section.faq, section.cta-band {
-      max-width: 1200px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 120px 32px;
+      padding: 150px 32px;
     }
     .section-label {
       display: inline-block;
@@ -405,10 +405,12 @@
       color: var(--text-faint);
       margin-bottom: 28px;
     }
-    .section-label.blue   { color: var(--accent-blue); }
-    .section-label.purple { color: var(--accent-purple); }
-    .section-label.orange { color: var(--accent-orange); }
-    .section-label.teal   { color: var(--accent-teal); }
+    /* One quiet, consistent label tone across every section — no rainbow. */
+    .section-label.blue,
+    .section-label.purple,
+    .section-label.orange,
+    .section-label.teal,
+    .section-label.salmon { color: var(--text-faint); }
     .section-label.salmon { color: var(--accent-salmon); }
 
     h2.section-title {
@@ -1116,11 +1118,8 @@
       letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 18px;
     }
     .cta-card h2 em {
-      font-style: italic; font-family: "Inter Tight", sans-serif; font-weight: 900;
-      background: linear-gradient(90deg, #2d8a4a, #6fa83d, #2f857f);
-      background-size: 200% 100%;
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-      animation: gradientMove 9s ease infinite;
+      font-style: normal;
+      color: #2d8a4a;
     }
     .cta-card p { color: var(--text-muted); max-width: 540px; margin: 0 auto 36px; font-size: 17px; }
 
@@ -1168,50 +1167,24 @@
     [data-stagger].visible > *:nth-child(5) { transition-delay: 0.32s; }
     [data-stagger].visible > *:nth-child(6) { transition-delay: 0.40s; }
 
-    /* ─── AURORA BACKGROUND (hero) — Kinso: faint warm wash, green only whispered ─── */
+    /* ─── HERO BACKDROP — one static, faint green wash. No animation, no glow chase.
+       Professional sites are confident enough to hold still. ─── */
     .aurora {
-      position: absolute; inset: -40% -10% auto -10%; height: 140%;
+      position: absolute; inset: 0; height: 100%;
       z-index: -1; pointer-events: none; overflow: hidden;
-      filter: blur(72px) saturate(118%);
-      opacity: 0.7;
-    }
-    .aurora::before, .aurora::after {
-      content: ''; position: absolute; border-radius: 50%;
-      animation: auroraDrift 22s ease-in-out infinite;
     }
     .aurora::before {
-      width: 60vw; height: 60vw; left: -10vw; top: 10%;
-      background: radial-gradient(circle, rgba(141,204,158,0.40) 0%, rgba(141,204,158,0) 62%);
-    }
-    .aurora::after {
-      width: 55vw; height: 55vw; right: -8vw; top: 28%;
-      background: radial-gradient(circle, rgba(111,168,61,0.30) 0%, rgba(111,168,61,0) 62%); /* lime green, not sand */
-      animation-delay: -7s;
-    }
-    .aurora-blob-3 {
-      position: absolute; width: 40vw; height: 40vw;
-      left: 32%; top: 50%;
-      background: radial-gradient(circle, rgba(47,133,127,0.22) 0%, rgba(47,133,127,0) 62%); /* teal hint */
+      content: ''; position: absolute;
+      width: 70vw; height: 70vw; right: -18vw; top: -22vh;
       border-radius: 50%;
-      animation: auroraDrift 28s ease-in-out -14s infinite;
+      background: radial-gradient(circle, rgba(141,204,158,0.18) 0%, rgba(141,204,158,0) 60%);
+      filter: blur(50px);
     }
-    @keyframes auroraDrift {
-      0%, 100% { transform: translate(0,0) scale(1); }
-      33%      { transform: translate(8vw, -4vh) scale(1.08); }
-      66%      { transform: translate(-6vw, 5vh) scale(0.94); }
-    }
+    .aurora::after { content: none; }
+    .aurora-blob-3 { display: none; }
 
-    /* ─── HERO CURSOR SPOTLIGHT ─── */
-    #hero-spotlight {
-      position: absolute; inset: 0;
-      pointer-events: none; z-index: -1;
-      background: radial-gradient(
-        600px circle at var(--mx, 50%) var(--my, 30%),
-        rgba(45,138,74,0.10) 0%,
-        rgba(45,138,74,0) 60%
-      );
-      transition: background 0.1s linear;
-    }
+    /* cursor spotlight removed — gimmick */
+    #hero-spotlight { display: none; }
 
     /* ─── HERO TITLE — word-stagger reveal ─── */
     h1.hero-title { animation: none; }
@@ -1356,7 +1329,7 @@
     /* ─── WPM / SPEED SECTION ─── */
     section.speed {
       max-width: 1200px; margin: 0 auto;
-      padding: 120px 32px;
+      padding: 150px 32px;
       text-align: center;
     }
     .speed-eyebrow { margin: 0 auto 28px; }
@@ -1421,7 +1394,7 @@
     /* ─── PERSONA TABS ─── */
     section.personas {
       max-width: 1200px; margin: 0 auto;
-      padding: 120px 32px;
+      padding: 150px 32px;
     }
     .personas-head { text-align: center; margin-bottom: 48px; }
     .personas-tabs {
@@ -1886,7 +1859,7 @@
 <!-- ═════ SPEED COMPARISON ═════ -->
 <section class="speed reveal">
   <div class="section-label mono speed-eyebrow">SPEED</div>
-  <h2 class="section-title speed-title">Speaking is <em style="font-style:italic;font-family:'Inter Tight',sans-serif;font-weight:900;background:linear-gradient(90deg,#2d8a4a,#6fa83d);-webkit-background-clip:text;background-clip:text;color:transparent;">3× faster</em><br/>than typing your tasks.</h2>
+  <h2 class="section-title speed-title">Speaking is <em style="font-style:normal;color:#2d8a4a;">3× faster</em><br/>than typing your tasks.</h2>
   <div class="speed-grid" data-stagger>
     <div class="speed-card old">
       <div class="speed-card-label">Typing it out</div>
