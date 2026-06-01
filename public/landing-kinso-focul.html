@@ -39,15 +39,16 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f8fff3;          /* Focul's existing pale-green wash */
-      --bg-2: #f2fae9;        /* one shade deeper */
-      --surface: #ffffff;     /* crisp white card surface — the "focus" plane */
-      --surface-2: #ecf7e0;   /* nested card / mock background */
-      --border: rgba(30,55,32,0.10);
-      --border-strong: rgba(30,55,32,0.18);
-      --text: #0d1f15;        /* near-black with green undertone — sharp */
-      --text-muted: rgba(13,31,21,0.62);
-      --text-faint: rgba(13,31,21,0.42);
+      /* Kinso palette — warm neutral canvas, near-black ink, green as ACCENT only */
+      --bg: #f6f4ef;          /* warm off-white / paper */
+      --bg-2: #efece5;        /* one shade deeper, still neutral */
+      --surface: #ffffff;     /* crisp white card surface */
+      --surface-2: #f1f4ec;   /* nested card — faintest green tint */
+      --border: rgba(28,25,20,0.10);
+      --border-strong: rgba(28,25,20,0.16);
+      --text: #1a1712;        /* warm near-black ink — neutral, not green */
+      --text-muted: rgba(26,23,18,0.60);
+      --text-faint: rgba(26,23,18,0.40);
 
       /* Section accent palette — green-family, sharp, focus-themed */
       --accent-blue:   #2563eb;   /* signal blue */
@@ -80,9 +81,9 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
       padding: 18px 32px;
-      background: rgba(248,255,243,0.82);
-      backdrop-filter: blur(20px) saturate(160%);
-      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      background: rgba(246,244,239,0.82);
+      backdrop-filter: blur(20px) saturate(120%);
+      -webkit-backdrop-filter: blur(20px) saturate(120%);
       border-bottom: 1px solid var(--border);
     }
     .brand {
@@ -173,7 +174,7 @@
     }
     .hero-title em {
       font-style: normal;
-      color: var(--accent-green);
+      color: var(--text);  /* Kinso: headline is pure near-black ink. Green lives in the small accents, not the title. */
     }
 
     .hero-sub {
@@ -507,7 +508,7 @@
       position: relative;
       aspect-ratio: 4 / 3;
       border-radius: 22px;
-      background: linear-gradient(180deg, #ffffff 0%, #ecf7e0 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f1efe8 100%);
       border: 1px solid var(--border-strong);
       overflow: hidden;
       box-shadow: 0 24px 60px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
@@ -811,7 +812,7 @@
     .aside-mock {
       max-width: 900px; margin: 56px auto 0;
       aspect-ratio: 16 / 9; border-radius: 24px;
-      background: linear-gradient(180deg, #ffffff 0%, #ecf7e0 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f1efe8 100%);
       border: 1px solid var(--border-strong);
       position: relative; overflow: hidden;
       box-shadow: 0 30px 80px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.04);
@@ -1094,8 +1095,8 @@
       padding: 80px 40px;
       border-radius: 32px;
       background:
-        radial-gradient(80% 100% at 50% 0%, rgba(45,138,74,0.14) 0%, transparent 65%),
-        linear-gradient(180deg, #ffffff 0%, #ecf7e0 100%);
+        radial-gradient(80% 100% at 50% 0%, rgba(45,138,74,0.07) 0%, transparent 65%),
+        linear-gradient(180deg, #ffffff 0%, #f1efe8 100%);
       border: 1px solid var(--border-strong);
       overflow: hidden;
     }
@@ -1137,12 +1138,12 @@
     .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); will-change: transform, opacity; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ─── AURORA BACKGROUND (hero) ─── */
+    /* ─── AURORA BACKGROUND (hero) — Kinso: faint warm wash, green only whispered ─── */
     .aurora {
       position: absolute; inset: -40% -10% auto -10%; height: 140%;
       z-index: -1; pointer-events: none; overflow: hidden;
-      filter: blur(60px) saturate(140%);
-      opacity: 0.85;
+      filter: blur(70px) saturate(105%);
+      opacity: 0.5;
     }
     .aurora::before, .aurora::after {
       content: ''; position: absolute; border-radius: 50%;
@@ -1150,17 +1151,17 @@
     }
     .aurora::before {
       width: 60vw; height: 60vw; left: -10vw; top: 10%;
-      background: radial-gradient(circle, rgba(141,204,158,0.55) 0%, rgba(141,204,158,0) 60%);
+      background: radial-gradient(circle, rgba(141,204,158,0.22) 0%, rgba(141,204,158,0) 62%);
     }
     .aurora::after {
-      width: 50vw; height: 50vw; right: -8vw; top: 30%;
-      background: radial-gradient(circle, rgba(111,168,61,0.40) 0%, rgba(111,168,61,0) 60%);
+      width: 55vw; height: 55vw; right: -8vw; top: 28%;
+      background: radial-gradient(circle, rgba(214,206,190,0.45) 0%, rgba(214,206,190,0) 62%); /* warm sand, not green */
       animation-delay: -7s;
     }
     .aurora-blob-3 {
       position: absolute; width: 40vw; height: 40vw;
-      left: 30%; top: 50%;
-      background: radial-gradient(circle, rgba(47,133,127,0.30) 0%, rgba(47,133,127,0) 60%);
+      left: 32%; top: 50%;
+      background: radial-gradient(circle, rgba(141,204,158,0.14) 0%, rgba(141,204,158,0) 62%);
       border-radius: 50%;
       animation: auroraDrift 28s ease-in-out -14s infinite;
     }
@@ -1348,7 +1349,7 @@
       color: var(--text-muted);
     }
     .speed-card.new {
-      background: linear-gradient(180deg, #ffffff 0%, #ecf7e0 100%);
+      background: linear-gradient(180deg, #ffffff 0%, #f1efe8 100%);
       border-color: rgba(45,138,74,0.20);
       box-shadow: 0 24px 60px rgba(45,138,74,0.10);
     }
@@ -1510,7 +1511,7 @@
     .orbit-screen {
       width: 100%; height: 100%;
       border-radius: 28px;
-      background: linear-gradient(180deg, #f8fff3 0%, #ecf7e0 100%);
+      background: linear-gradient(180deg, #faf9f5 0%, #f1efe8 100%);
       padding: 56px 22px 22px;
       display: flex; flex-direction: column;
       position: relative;
