@@ -1134,9 +1134,38 @@
     footer .links { display: flex; gap: 28px; }
     footer a:hover { color: var(--text); }
 
-    /* ─── REVEAL ─── */
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); will-change: transform, opacity; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    /* ─── REVEAL (Kinso-style: fade + rise + blur-to-sharp on enter) ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(34px);
+      filter: blur(6px);
+      transition:
+        opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity, filter;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+    /* Staggered children: when a section reveals, its direct flagged children
+       cascade in one after another instead of all at once. The premium feel. */
+    [data-stagger] > * {
+      opacity: 0;
+      transform: translateY(26px);
+      filter: blur(5px);
+      transition:
+        opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity, filter;
+    }
+    [data-stagger].visible > * { opacity: 1; transform: translateY(0); filter: blur(0); }
+    [data-stagger].visible > *:nth-child(1) { transition-delay: 0.00s; }
+    [data-stagger].visible > *:nth-child(2) { transition-delay: 0.08s; }
+    [data-stagger].visible > *:nth-child(3) { transition-delay: 0.16s; }
+    [data-stagger].visible > *:nth-child(4) { transition-delay: 0.24s; }
+    [data-stagger].visible > *:nth-child(5) { transition-delay: 0.32s; }
+    [data-stagger].visible > *:nth-child(6) { transition-delay: 0.40s; }
 
     /* ─── AURORA BACKGROUND (hero) — Kinso: faint warm wash, green only whispered ─── */
     .aurora {
@@ -1679,7 +1708,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .reveal { transition: none; transform: none; opacity: 1; }
+      .reveal,
+      [data-stagger] > * { transition: none; transform: none; opacity: 1; filter: none; }
       .hero-title .line-2, .cta-card h2 em { animation: none; background-position: 0 50%; }
     }
 
@@ -1856,7 +1886,7 @@
 <section class="speed reveal">
   <div class="section-label mono speed-eyebrow">SPEED</div>
   <h2 class="section-title speed-title">Speaking is <em style="font-style:italic;font-family:'Inter Tight',sans-serif;font-weight:900;background:linear-gradient(90deg,#2d8a4a,#6fa83d);-webkit-background-clip:text;background-clip:text;color:transparent;">3× faster</em><br/>than typing your tasks.</h2>
-  <div class="speed-grid">
+  <div class="speed-grid" data-stagger>
     <div class="speed-card old">
       <div class="speed-card-label">Typing it out</div>
       <div class="speed-num" data-count="45">45</div>
@@ -2012,7 +2042,7 @@
       <h2>Frequently<br/>Asked<br/>Questions</h2>
       <p>Everything you need to know about Focul, from setup to security. Still curious? Drop us a message and we'll get back to you.</p>
     </div>
-    <div class="faq-list">
+    <div class="faq-list" data-stagger>
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
           <span>Does it work on Windows?</span>
@@ -2393,24 +2423,42 @@ function toggleFaq(btn) {
   nums.forEach(n => io.observe(n));
 })();
 
-// ── Scroll reveal ──
+// ── Scroll reveal (IntersectionObserver — smoother than scroll-listener) ──
 (function() {
-  const els = document.querySelectorAll('.reveal');
-  function check() {
-    const trigger = window.innerHeight * 0.88;
-    els.forEach(el => {
-      if (el.classList.contains('visible')) return;
-      if (el.getBoundingClientRect().top < trigger) el.classList.add('visible');
-    });
+  const els = document.querySelectorAll('.reveal, [data-stagger]');
+  if (!els.length) return;
+
+  const prefersReduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!('IntersectionObserver' in window) || prefersReduced) {
+    els.forEach(el => el.classList.add('visible'));
+    return;
   }
-  requestAnimationFrame(() => requestAnimationFrame(check));
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { check(); ticking = false; });
-  }, { passive: true });
-  window.addEventListener('resize', check, { passive: true });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);   // reveal once, then stop watching
+      }
+    });
+  }, {
+    // Fire a touch before the element's top edge reaches the viewport bottom,
+    // so the animation reads as "rising into place" rather than popping in late.
+    rootMargin: '0px 0px -12% 0px',
+    threshold: 0.12,
+  });
+
+  els.forEach(el => io.observe(el));
+
+  // Failsafe: if anything is still hidden after 4s (IO edge cases, restored
+  // bfcache pages, odd viewports), force it visible. Content must never be
+  // permanently stuck behind the reveal animation.
+  setTimeout(() => {
+    document.querySelectorAll('.reveal:not(.visible), [data-stagger]:not(.visible)')
+      .forEach(el => el.classList.add('visible'));
+  }, 4000);
 })();
 </script>
 </body>
