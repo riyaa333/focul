@@ -173,9 +173,39 @@
       margin-bottom: 24px;
       animation: rise 0.9s var(--ease) 0.12s both;
     }
+    /* Shimmer text — a soft green highlight sweeps across the phrase on a slow
+       loop. Base color stays near-black so legibility never drops. Built with
+       the standard background-clip:text + animated background-position pattern. */
     .hero-title em {
       font-style: normal;
-      color: var(--text);  /* Kinso: headline is pure near-black ink. Green lives in the small accents, not the title. */
+      color: var(--text);
+      background: linear-gradient(
+        100deg,
+        var(--text) 0%,
+        var(--text) 38%,
+        #2d8a4a 50%,
+        var(--text) 62%,
+        var(--text) 100%
+      );
+      background-size: 220% 100%;
+      background-repeat: no-repeat;
+      background-position: 220% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: heroShimmer 4.2s linear 1.6s infinite;
+    }
+    @keyframes heroShimmer {
+      0%   { background-position: 220% 0; }
+      55%  { background-position: -120% 0; }
+      100% { background-position: -120% 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-title em {
+        animation: none;
+        background: none;
+        -webkit-text-fill-color: var(--text);
+      }
     }
 
     .hero-sub {
