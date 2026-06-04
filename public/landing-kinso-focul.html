@@ -175,14 +175,12 @@
     }
     /* Shimmer text — a soft green highlight sweeps across the phrase on a slow
        loop. Base color stays near-black so legibility never drops.
-       Applied to .word spans because the word-stagger JS wraps the em's
-       contents in inline-block spans, which breaks background-clip:text on
-       the parent. Per-word shimmer also gives a nicer cascading sweep. */
+       The word-stagger JS deliberately leaves em untouched (it does NOT wrap
+       the em's contents in .word spans), so the em holds its text directly
+       and background-clip:text resolves cleanly. */
     .hero-title em {
       font-style: normal;
       color: var(--text);
-    }
-    .hero-title em .word {
       background: linear-gradient(
         100deg,
         var(--text) 0%,
@@ -199,15 +197,13 @@
       -webkit-text-fill-color: transparent;
       animation: heroShimmer 4.2s linear 1.6s infinite;
     }
-    .hero-title em .word:nth-child(2) { animation-delay: 1.75s; }
-    .hero-title em .word:nth-child(3) { animation-delay: 1.90s; }
     @keyframes heroShimmer {
       0%   { background-position: 220% 0; }
       55%  { background-position: -120% 0; }
       100% { background-position: -120% 0; }
     }
     @media (prefers-reduced-motion: reduce) {
-      .hero-title em .word {
+      .hero-title em {
         animation: none;
         background: none;
         -webkit-text-fill-color: var(--text);
@@ -2297,8 +2293,10 @@ function toggleFaq(btn) {
       if (/^\s+$/.test(p)) return p;
       return p ? `<span class="word">${p}</span>` : '';
     }).join('');
+    // Wrap NON-em text only. Skipping em keeps its content as direct text
+    // children so background-clip:text on the em (the shimmer effect) works —
+    // wrapping em contents in inline-block .word spans would break that.
     el.innerHTML = html
-      .replace(/<em>([^<]+)<\/em>/g, (_, inner) => `<em>${wrap(inner)}</em>`)
       .replace(/(^|<br>|<\/em>)([^<]+?)(?=<|$)/g, (m, pre, text) => pre + wrap(text));
     const words = el.querySelectorAll('.word');
     words.forEach((w, i) => { w.style.animationDelay = (0.12 + i * 0.06) + 's'; });
