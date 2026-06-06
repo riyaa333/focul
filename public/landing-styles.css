@@ -407,4 +407,11 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .hero-cta .btn { flex: 1; justify-content: center; }
   .notif { display: none; }
   .hero-visual .appwin { transform: none !important; }
+  .hero-h { font-size: 36px; }
+  .h-sec { font-size: 28px; }
+  .step-h { font-size: 24px; }
+  .persona-h { font-size: 22px; }
+  .cmp-num { font-size: 52px; }
+  .lead { font-size: 15px; }
+  .cta .h-sec { font-size: 32px; }
 }
