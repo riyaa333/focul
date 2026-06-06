@@ -143,12 +143,7 @@ body {
 }
 .nav-brand { display: flex; align-items: center; gap: 9px; font-weight: 650; font-size: 17.5px; letter-spacing: -.02em; padding-right: 4px; color: #14181a; transition: color .4s var(--ease); white-space: nowrap; flex-shrink: 0; }
 .nav.on-dark .nav-brand { color: #f3f5f4; }
-.nav-logo {
-  width: 26px; height: 26px; border-radius: 8px; background: var(--accent-grad);
-  display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px -4px rgba(24,160,106,.5);
-}
-.nav-logo span { width: 9px; height: 9px; border-radius: 999px; border: 2.5px solid #fff; }
+.nav-logo { width: 26px; height: 20px; flex-shrink: 0; }
 .nav-sep { width: 1px; height: 20px; background: rgba(20,24,26,.1); margin: 0 8px; transition: background .4s var(--ease); }
 .nav.on-dark .nav-sep { background: rgba(255,255,255,.12); }
 .nav-links { display: flex; gap: 2px; }
