@@ -405,4 +405,6 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .wrap { padding: 0 20px; }
   .appwin, .statecard { width: 100%; max-width: 100%; }
   .hero-cta .btn { flex: 1; justify-content: center; }
+  .notif { display: none; }
+  .hero-visual .appwin { transform: none !important; }
 }
