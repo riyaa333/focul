@@ -127,12 +127,17 @@
     // reduced motion → flat, fully-visible fallback (no scroll-jacking)
     if (reduce) { scrolly.classList.add('is-flat'); return; }
 
+    var railWrap = scrolly.querySelector('.srail');
     var active = -1;
     function setActive(i) {
       if (i === active) return;
       active = i;
       panels.forEach(function (el, n) { el.classList.toggle('on', n === i); });
       rail.forEach(function (el, n) { el.classList.toggle('on', n === i); });
+      // carry the active beat colour onto the rail
+      if (railWrap && panels[i]) {
+        railWrap.style.setProperty('--ba', panels[i].style.getPropertyValue('--ba') || '');
+      }
     }
 
     var ticking = false;

@@ -316,32 +316,43 @@ html.js .scrolly-stage { position: sticky; top: 0; height: 100vh; }
 .scrolly-text { display: flex; gap: 26px; align-items: stretch; }
 .srail { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; }
 .srail i { width: 3px; height: 30px; border-radius: 99px; background: var(--border-2); transition: background .4s, height .4s; }
-.srail i.on { background: var(--accent); height: 42px; }
+.srail i.on { background: var(--ba, var(--accent)); height: 42px; }
 .spanels { position: relative; flex: 1; min-height: 230px; }
 .spanel { transition: opacity .5s ease, transform .5s cubic-bezier(.2,.7,.2,1); }
 html.js .spanel { position: absolute; inset: 0; opacity: 0; transform: translateY(16px); pointer-events: none; }
 html.js .spanel.on { opacity: 1; transform: none; pointer-events: auto; }
+/* heading accent phrase changes colour per beat */
+.spanel .step-index { color: var(--ba, var(--accent)); transition: color .4s; }
+.ln2 { color: var(--ba, var(--accent)); transition: color .4s; }
 
-/* right: pinned app window whose inner content scrolls through states */
+/* right: distinct visuals that wipe vertically through a frameless viewport */
 .scrolly-visual { display: flex; align-items: center; justify-content: center; }
-.appscreen {
-  width: 100%; max-width: 440px;
-  background: var(--card); border: 1px solid var(--border); border-radius: 22px;
-  overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0,0,0,.6);
-}
-.appscreen-bar { display: flex; align-items: center; gap: 9px; padding: 15px 20px; border-bottom: 1px solid var(--border); }
-.appscreen-view { position: relative; height: 360px; overflow: hidden; }
-/* soft fade at top & bottom edges so content scrolls in/out like a real screen */
+.appscreen-view { position: relative; width: 100%; max-width: 460px; height: 440px; overflow: hidden; }
+/* soft fade at top & bottom edges so each visual wipes in/out smoothly */
 .appscreen-view::before, .appscreen-view::after {
-  content: ""; position: absolute; left: 0; right: 0; height: 38px; z-index: 2; pointer-events: none;
+  content: ""; position: absolute; left: 0; right: 0; height: 64px; z-index: 2; pointer-events: none;
 }
-.appscreen-view::before { top: 0; background: linear-gradient(var(--card), transparent); }
-.appscreen-view::after { bottom: 0; background: linear-gradient(transparent, var(--card)); }
+.appscreen-view::before { top: 0; background: linear-gradient(var(--bg), transparent); }
+.appscreen-view::after { bottom: 0; background: linear-gradient(transparent, var(--bg)); }
 .appscreen-track { display: flex; flex-direction: column; will-change: transform; }
-.ascreen { height: 360px; display: flex; align-items: center; justify-content: center; padding: 24px; }
-.ascreen-inner { width: 100%; }
-.rec-head { margin-bottom: 4px; }
-.rec-head .rec { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.ascreen { height: 440px; display: flex; align-items: center; justify-content: center; padding: 8px; }
+/* each beat is its own floating card, tinted by the beat colour */
+.vcard {
+  width: 100%; background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 26px; position: relative; overflow: hidden;
+  box-shadow: 0 40px 80px -44px rgba(0,0,0,.65);
+}
+.vcard::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: var(--ba, var(--accent)); opacity: .9;
+}
+.vcard--center { display: flex; align-items: center; justify-content: center; min-height: 220px; }
+.rec-head .rec { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ba, var(--accent)); }
+.rec-head .rec i { background: var(--ba, var(--accent)) !important; }
+/* per-beat tinting inside the visuals */
+.ascreen .bell-emoji svg { color: var(--ba, var(--accent)); }
+.ascreen .focus-status .pulse { background: var(--ba, var(--accent)); }
+.ascreen .wave i.on { background: var(--ba, var(--accent)); }
 
 /* no-js / reduced-motion fallback: stack everything, readable */
 html:not(.js) .scrolly-text, .scrolly.is-flat .scrolly-text { flex-direction: column; }
