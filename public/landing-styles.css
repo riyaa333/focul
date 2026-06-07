@@ -322,11 +322,26 @@ html.js .scrolly-stage { position: sticky; top: 0; height: 100vh; }
 html.js .spanel { position: absolute; inset: 0; opacity: 0; transform: translateY(16px); pointer-events: none; }
 html.js .spanel.on { opacity: 1; transform: none; pointer-events: auto; }
 
-/* right: pinned visual stack */
-.scrolly-visual { position: relative; display: flex; align-items: center; justify-content: center; min-height: 300px; }
-.svisual { display: flex; justify-content: center; width: 100%; }
-html.js .svisual { position: absolute; inset: 0; align-items: center; opacity: 0; transform: scale(.96) translateY(14px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.7,.2,1); pointer-events: none; }
-html.js .svisual.on { opacity: 1; transform: none; pointer-events: auto; }
+/* right: pinned app window whose inner content scrolls through states */
+.scrolly-visual { display: flex; align-items: center; justify-content: center; }
+.appscreen {
+  width: 100%; max-width: 440px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 22px;
+  overflow: hidden; box-shadow: 0 40px 80px -40px rgba(0,0,0,.6);
+}
+.appscreen-bar { display: flex; align-items: center; gap: 9px; padding: 15px 20px; border-bottom: 1px solid var(--border); }
+.appscreen-view { position: relative; height: 360px; overflow: hidden; }
+/* soft fade at top & bottom edges so content scrolls in/out like a real screen */
+.appscreen-view::before, .appscreen-view::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 38px; z-index: 2; pointer-events: none;
+}
+.appscreen-view::before { top: 0; background: linear-gradient(var(--card), transparent); }
+.appscreen-view::after { bottom: 0; background: linear-gradient(transparent, var(--card)); }
+.appscreen-track { display: flex; flex-direction: column; will-change: transform; }
+.ascreen { height: 360px; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.ascreen-inner { width: 100%; }
+.rec-head { margin-bottom: 4px; }
+.rec-head .rec { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
 
 /* no-js / reduced-motion fallback: stack everything, readable */
 html:not(.js) .scrolly-text, .scrolly.is-flat .scrolly-text { flex-direction: column; }
@@ -334,7 +349,12 @@ html:not(.js) .srail, .scrolly.is-flat .srail { display: none; }
 html:not(.js) .scrolly-stage, .scrolly.is-flat .scrolly-stage { grid-template-columns: 1fr; gap: 40px; }
 .scrolly.is-flat { height: auto; }
 .scrolly.is-flat .scrolly-stage { position: static; height: auto; }
-.scrolly.is-flat .spanel, .scrolly.is-flat .svisual { position: relative; opacity: 1; transform: none; inset: auto; margin-bottom: 56px; }
+.scrolly.is-flat .spanel { position: relative; opacity: 1; transform: none; inset: auto; margin-bottom: 40px; }
+/* in flat mode let the screen grow to show all states stacked */
+.scrolly.is-flat .appscreen-view { height: auto; }
+.scrolly.is-flat .ascreen { height: auto; min-height: 200px; }
+html:not(.js) .appscreen-view { height: auto; }
+html:not(.js) .ascreen { height: auto; min-height: 200px; }
 
 /* mini state cards used inside steps */
 .statecard { width: 100%; max-width: 440px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px; position: relative; overflow: hidden; }

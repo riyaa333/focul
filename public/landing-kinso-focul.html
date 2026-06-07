@@ -247,51 +247,53 @@
           </div>
         </div>
 
-        <!-- RIGHT: pinned product window, states crossfade -->
+        <!-- RIGHT: pinned product window; inner content scrolls through the states -->
         <div class="scrolly-visual">
-          <div class="svisual on" data-beat="0">
-            <div class="statecard">
-              <div class="appwin-bar" style="border:0;padding:0 0 4px">
-                <div class="appwin-dots"><i></i><i></i><i></i></div>
-                <span class="appwin-title">Focul</span><span class="appwin-meta">· live loop</span>
-              </div>
-              <div class="focus-timer">
-                <span class="focus-status"><span class="pulse"></span>Focusing</span>
-                <div class="focus-time">14:32</div>
-                <span class="focus-hint">Heads-down. No notifications until the bell.</span>
-              </div>
+          <div class="appscreen">
+            <div class="appscreen-bar">
+              <div class="appwin-dots"><i></i><i></i><i></i></div>
+              <span class="appwin-title">Focul</span><span class="appwin-meta">· live loop</span>
             </div>
-          </div>
-          <div class="svisual" data-beat="1">
-            <div class="statecard">
-              <div class="bell-ring">
-                <div class="bell-emoji">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <div class="appscreen-view">
+              <div class="appscreen-track" id="appTrack">
+                <!-- state 0: focus -->
+                <div class="ascreen" data-beat="0">
+                  <div class="focus-timer">
+                    <span class="focus-status"><span class="pulse"></span>Focusing</span>
+                    <div class="focus-time">14:32</div>
+                    <span class="focus-hint">Heads-down. No notifications until the bell.</span>
+                  </div>
                 </div>
-                <div class="bell-txt">— time to debrief —</div>
-                <div class="bell-sub">Hold <span class="kbd">⌘ R</span> to start recording</div>
-              </div>
-            </div>
-          </div>
-          <div class="svisual" data-beat="2">
-            <div class="statecard">
-              <div class="appwin-bar" style="border:0;padding:0 0 14px">
-                <div class="appwin-dots"><i></i><i></i><i></i></div>
-                <span class="appwin-title">Recording</span>
-                <span class="rec"><i></i>0:42</span>
-              </div>
-              <div class="wave" id="stepWave" style="height:40px;margin-bottom:16px"></div>
-              <p class="transcript">"Shipped the webhook retry, um, need to email Stripe. Sarah's auth PR — review before EOD. Friday morning, block for investors."</p>
-            </div>
-          </div>
-          <div class="svisual" data-beat="3">
-            <div class="statecard">
-              <div class="extract-label">4 TASKS EXTRACTED · SAVED TO TODAY</div>
-              <div class="task-rows">
-                <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Email Stripe about webhook retry behavior</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-                <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Review Sarah's PR on the auth refactor</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-                <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Friday morning for investor calls</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
-                <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Waiting on legal feedback for terms v3</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
+                <!-- state 1: bell -->
+                <div class="ascreen" data-beat="1">
+                  <div class="bell-ring">
+                    <div class="bell-emoji">
+                      <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="bell-txt">— time to debrief —</div>
+                    <div class="bell-sub">Hold <span class="kbd">⌘ R</span> to start recording</div>
+                  </div>
+                </div>
+                <!-- state 2: speak -->
+                <div class="ascreen" data-beat="2">
+                  <div class="ascreen-inner">
+                    <div class="rec-head"><span class="rec"><i></i>Recording · 0:42</span></div>
+                    <div class="wave" id="stepWave" style="height:40px;margin:14px 0 16px"></div>
+                    <p class="transcript">"Shipped the webhook retry, um, need to email Stripe. Sarah's auth PR — review before EOD. Friday morning, block for investors."</p>
+                  </div>
+                </div>
+                <!-- state 3: briefing -->
+                <div class="ascreen" data-beat="3">
+                  <div class="ascreen-inner">
+                    <div class="extract-label">4 TASKS EXTRACTED · SAVED TO TODAY</div>
+                    <div class="task-rows">
+                      <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Email Stripe about webhook retry behavior</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+                      <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Review Sarah's PR on the auth refactor</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+                      <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Friday morning for investor calls</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
+                      <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Waiting on legal feedback for terms v3</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

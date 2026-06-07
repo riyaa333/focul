@@ -120,8 +120,9 @@
     var beats = parseInt(scrolly.getAttribute('data-beats'), 10) || 4;
     scrolly.style.setProperty('--beats', beats);
     var panels = Array.prototype.slice.call(scrolly.querySelectorAll('.spanel'));
-    var visuals = Array.prototype.slice.call(scrolly.querySelectorAll('.svisual'));
     var rail = Array.prototype.slice.call(scrolly.querySelectorAll('.srail i'));
+    var track = document.getElementById('appTrack');
+    var view = scrolly.querySelector('.appscreen-view');
 
     // reduced motion → flat, fully-visible fallback (no scroll-jacking)
     if (reduce) { scrolly.classList.add('is-flat'); return; }
@@ -131,7 +132,6 @@
       if (i === active) return;
       active = i;
       panels.forEach(function (el, n) { el.classList.toggle('on', n === i); });
-      visuals.forEach(function (el, n) { el.classList.toggle('on', n === i); });
       rail.forEach(function (el, n) { el.classList.toggle('on', n === i); });
     }
 
@@ -142,8 +142,13 @@
       var total = scrolly.offsetHeight - vh; // scrollable distance while pinned
       if (total <= 0) { setActive(0); return; }
       var p = Math.min(Math.max(-rect.top / total, 0), 1);
-      // bias slightly so each beat holds before switching
-      var idx = Math.min(beats - 1, Math.floor(p * beats * 0.999));
+      // scroll the inner screen content: one viewport per state
+      if (track && view) {
+        var maxShift = (beats - 1) * view.clientHeight;
+        track.style.transform = 'translate3d(0,' + (-p * maxShift) + 'px,0)';
+      }
+      // left text + rail follow the state nearest centre
+      var idx = Math.min(beats - 1, Math.round(p * (beats - 1)));
       setActive(idx);
     }
     function requestTick() {
