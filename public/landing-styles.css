@@ -411,11 +411,32 @@ html:not(.js) .ascreen { height: auto; min-height: 200px; }
 .cta { text-align: center; }
 .cta .h-sec { font-size: clamp(40px,5vw,64px); }
 .cta-card {
-  max-width: 920px; margin: 0 auto; padding: 80px 40px; border-radius: 32px;
+  max-width: 920px; margin: 0 auto; padding: 80px 40px 96px; border-radius: 32px;
   background: var(--l-bg-grad); border: 1px solid var(--l-border);
   position: relative; overflow: hidden;
+  box-shadow: 0 40px 90px -50px rgba(24,160,106,.35);
 }
+.cta-card > *:not(.cta-glow):not(.cta-wave) { position: relative; z-index: 2; }
 .cta-glow { position: absolute; top: -120px; left: 50%; transform: translateX(-50%); width: 700px; height: 360px; border-radius: 999px; background: var(--accent); opacity: .12; filter: blur(110px); pointer-events: none; }
+.cta-glow--2 { top: auto; bottom: -160px; left: 78%; width: 420px; height: 300px; background: #45c191; opacity: .14; }
+
+/* animated soundwave rising from the base — the Focul motif */
+.cta-wave {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 150px; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: center; gap: 6px;
+  padding: 0 28px; pointer-events: none; opacity: .55;
+  -webkit-mask-image: linear-gradient(transparent, #000 55%);
+  mask-image: linear-gradient(transparent, #000 55%);
+}
+.cta-wave i {
+  display: block; width: 7px; border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, var(--accent), rgba(24,160,106,.08));
+  transform-origin: bottom; transform: scaleY(.45);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cta-wave i { animation: eq 2.4s ease-in-out infinite; }
+}
+@keyframes eq { 0%,100% { transform: scaleY(.4); } 50% { transform: scaleY(1); } }
 
 /* ============================================================
    FOOTER (dark)

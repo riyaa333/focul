@@ -22,6 +22,24 @@
   buildWave(document.getElementById('heroWave'), 46);
   buildWave(document.getElementById('stepWave'), 48);
 
+  /* ---------- CTA equaliser (animated soundwave) ---------- */
+  (function () {
+    var el = document.getElementById('ctaWave');
+    if (!el) return;
+    var count = Math.min(64, Math.max(28, Math.floor(window.innerWidth / 22)));
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var bar = document.createElement('i');
+      // smooth rolling height profile so it reads as a waveform, not noise
+      var base = 22 + Math.abs(Math.sin(i * 0.5)) * 78 + Math.abs(Math.sin(i * 0.17)) * 24;
+      bar.style.height = base.toFixed(0) + 'px';
+      bar.style.animationDelay = (-(i % 12) * 0.18).toFixed(2) + 's';
+      bar.style.animationDuration = (2.0 + (i % 5) * 0.25).toFixed(2) + 's';
+      frag.appendChild(bar);
+    }
+    el.appendChild(frag);
+  })();
+
   /* ---------- scroll reveal ---------- */
   var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
   function revealIfVisible() {
