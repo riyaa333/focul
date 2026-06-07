@@ -477,6 +477,15 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .nav-links, .nav-sep, .nav-login { display: none; }
   .step-visual { order: 2 !important; }
   .step-text { order: 1 !important; }
+  /* scroll showcase: stack text above the visual, still pinned + wiping */
+  .scrolly-stage { grid-template-columns: 1fr; gap: 18px; align-items: start; padding-top: 104px; padding-bottom: 20px; }
+  .scrolly-text { gap: 16px; }
+  .spanels { min-height: 250px; }
+  .spanel .step-body { max-width: none; }
+  .scrolly-visual { width: 100%; }
+  .appscreen-view { height: 280px; max-width: 100%; }
+  .ascreen { height: 280px; padding: 0; }
+  .appscreen-view::before, .appscreen-view::after { height: 36px; }
 }
 @media (max-width: 560px) {
   .wrap { padding: 0 20px; }
