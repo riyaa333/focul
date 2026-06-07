@@ -213,92 +213,86 @@
   <div class="wrap">
     <div class="section-head center" data-reveal>
       <span class="eyebrow"><span class="dot"></span>How it works</span>
-      <h2 class="h-sec">Take a look inside Focul.</h2>
+      <h2 class="h-sec">Take a look <span class="accent">inside Focul.</span></h2>
       <p class="lead">A 15-minute focus loop that captures itself, organises itself, and hands your work forward to the next session.</p>
     </div>
 
-    <div class="steps">
-      <!-- step 1 -->
-      <div class="step" data-reveal>
-        <div class="step-text">
-          <div class="step-index">01 · FOCUS</div>
-          <h3 class="step-h">Start the timer.<br />Go heads-down.</h3>
-          <p class="step-body">Fifteen minutes on the clock, living in your menu bar. No notifications, no noise — just the work in front of you until the bell.</p>
-          <div class="steprail"><i class="on"></i><i></i><i></i><i></i></div>
-        </div>
-        <div class="step-visual">
-          <div class="statecard">
-            <div class="appwin-bar" style="border:0;padding:0 0 4px">
-              <div class="appwin-dots"><i></i><i></i><i></i></div>
-              <span class="appwin-title">Focul</span><span class="appwin-meta">· live loop</span>
+    <!-- scroll-pinned showcase: text + product window stay centred and morph through 4 beats -->
+    <div class="scrolly" id="scrolly" data-beats="4">
+      <div class="scrolly-stage">
+        <!-- LEFT: crossfading text -->
+        <div class="scrolly-text">
+          <div class="srail" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+          <div class="spanels">
+            <div class="spanel on" data-beat="0">
+              <div class="step-index">01 · FOCUS</div>
+              <h3 class="step-h">Start the timer.<br />Go heads-down.</h3>
+              <p class="step-body">Fifteen minutes on the clock, living in your menu bar. No notifications, no noise — just the work in front of you until the bell.</p>
             </div>
-            <div class="focus-timer">
-              <span class="focus-status"><span class="pulse"></span>Focusing</span>
-              <div class="focus-time">14:32</div>
-              <span class="focus-hint">Heads-down. No notifications until the bell.</span>
+            <div class="spanel" data-beat="1">
+              <div class="step-index">02 · BELL</div>
+              <h3 class="step-h">The bell rings.<br />Time to debrief.</h3>
+              <p class="step-body">When the session ends, Focul gently prompts you. Hold one key and the recording starts — no app to open, no doc to find.</p>
+            </div>
+            <div class="spanel" data-beat="2">
+              <div class="step-index">03 · SPEAK</div>
+              <h3 class="step-h">Talk for 60 seconds.<br />However it comes out.</h3>
+              <p class="step-body">Ramble, think out loud, contradict yourself. Focul transcribes the whole thing — the "um"s and tangents included — and finds the signal.</p>
+            </div>
+            <div class="spanel" data-beat="3">
+              <div class="step-index">04 · BRIEFING</div>
+              <h3 class="step-h">Tasks appear.<br />The loop closes.</h3>
+              <p class="step-body">Sixty seconds of talking becomes a clean, tagged list — actions, blockers, and calendar holds — saved to today and waiting when you start your next session.</p>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- step 2 -->
-      <div class="step rev" data-reveal>
-        <div class="step-text">
-          <div class="step-index">02 · BELL</div>
-          <h3 class="step-h">The bell rings.<br />Time to debrief.</h3>
-          <p class="step-body">When the session ends, Focul gently prompts you. Hold one key and the recording starts — no app to open, no doc to find.</p>
-          <div class="steprail"><i></i><i class="on"></i><i></i><i></i></div>
-        </div>
-        <div class="step-visual">
-          <div class="statecard">
-            <div class="bell-ring">
-              <div class="bell-emoji">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <!-- RIGHT: pinned product window, states crossfade -->
+        <div class="scrolly-visual">
+          <div class="svisual on" data-beat="0">
+            <div class="statecard">
+              <div class="appwin-bar" style="border:0;padding:0 0 4px">
+                <div class="appwin-dots"><i></i><i></i><i></i></div>
+                <span class="appwin-title">Focul</span><span class="appwin-meta">· live loop</span>
               </div>
-              <div class="bell-txt">— time to debrief —</div>
-              <div class="bell-sub">Hold <span class="kbd">⌘ R</span> to start recording</div>
+              <div class="focus-timer">
+                <span class="focus-status"><span class="pulse"></span>Focusing</span>
+                <div class="focus-time">14:32</div>
+                <span class="focus-hint">Heads-down. No notifications until the bell.</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- step 3 -->
-      <div class="step" data-reveal>
-        <div class="step-text">
-          <div class="step-index">03 · SPEAK</div>
-          <h3 class="step-h">Talk for 60 seconds.<br />However it comes out.</h3>
-          <p class="step-body">Ramble, think out loud, contradict yourself. Focul transcribes the whole thing — the "um"s and tangents included — and finds the signal.</p>
-          <div class="steprail"><i></i><i></i><i class="on"></i><i></i></div>
-        </div>
-        <div class="step-visual">
-          <div class="statecard">
-            <div class="appwin-bar" style="border:0;padding:0 0 14px">
-              <div class="appwin-dots"><i></i><i></i><i></i></div>
-              <span class="appwin-title">Recording</span>
-              <span class="rec"><i></i>0:42</span>
+          <div class="svisual" data-beat="1">
+            <div class="statecard">
+              <div class="bell-ring">
+                <div class="bell-emoji">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </div>
+                <div class="bell-txt">— time to debrief —</div>
+                <div class="bell-sub">Hold <span class="kbd">⌘ R</span> to start recording</div>
+              </div>
             </div>
-            <div class="wave" id="stepWave" style="height:40px;margin-bottom:16px"></div>
-            <p class="transcript">"Shipped the webhook retry, um, need to email Stripe. Sarah's auth PR — review before EOD. Friday morning, block for investors."</p>
           </div>
-        </div>
-      </div>
-
-      <!-- step 4 -->
-      <div class="step rev" data-reveal>
-        <div class="step-text">
-          <div class="step-index">04 · BRIEFING</div>
-          <h3 class="step-h">Tasks appear.<br />The loop closes.</h3>
-          <p class="step-body">Sixty seconds of talking becomes a clean, tagged list — actions, blockers, and calendar holds — saved to today and waiting when you start your next session.</p>
-          <div class="steprail"><i></i><i></i><i></i><i class="on"></i></div>
-        </div>
-        <div class="step-visual">
-          <div class="statecard">
-            <div class="extract-label">4 TASKS EXTRACTED · SAVED TO TODAY</div>
-            <div class="task-rows">
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Email Stripe about webhook retry behavior</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Review Sarah's PR on the auth refactor</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Friday morning for investor calls</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Waiting on legal feedback for terms v3</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
+          <div class="svisual" data-beat="2">
+            <div class="statecard">
+              <div class="appwin-bar" style="border:0;padding:0 0 14px">
+                <div class="appwin-dots"><i></i><i></i><i></i></div>
+                <span class="appwin-title">Recording</span>
+                <span class="rec"><i></i>0:42</span>
+              </div>
+              <div class="wave" id="stepWave" style="height:40px;margin-bottom:16px"></div>
+              <p class="transcript">"Shipped the webhook retry, um, need to email Stripe. Sarah's auth PR — review before EOD. Friday morning, block for investors."</p>
+            </div>
+          </div>
+          <div class="svisual" data-beat="3">
+            <div class="statecard">
+              <div class="extract-label">4 TASKS EXTRACTED · SAVED TO TODAY</div>
+              <div class="task-rows">
+                <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Email Stripe about webhook retry behavior</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+                <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Review Sarah's PR on the auth refactor</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+                <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Friday morning for investor calls</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
+                <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Waiting on legal feedback for terms v3</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
+              </div>
             </div>
           </div>
         </div>

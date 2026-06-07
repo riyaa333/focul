@@ -113,6 +113,50 @@
     });
   });
 
+  /* ---------- scroll-pinned showcase ---------- */
+  (function () {
+    var scrolly = document.getElementById('scrolly');
+    if (!scrolly) return;
+    var beats = parseInt(scrolly.getAttribute('data-beats'), 10) || 4;
+    scrolly.style.setProperty('--beats', beats);
+    var panels = Array.prototype.slice.call(scrolly.querySelectorAll('.spanel'));
+    var visuals = Array.prototype.slice.call(scrolly.querySelectorAll('.svisual'));
+    var rail = Array.prototype.slice.call(scrolly.querySelectorAll('.srail i'));
+
+    // reduced motion → flat, fully-visible fallback (no scroll-jacking)
+    if (reduce) { scrolly.classList.add('is-flat'); return; }
+
+    var active = -1;
+    function setActive(i) {
+      if (i === active) return;
+      active = i;
+      panels.forEach(function (el, n) { el.classList.toggle('on', n === i); });
+      visuals.forEach(function (el, n) { el.classList.toggle('on', n === i); });
+      rail.forEach(function (el, n) { el.classList.toggle('on', n === i); });
+    }
+
+    var ticking = false;
+    function onScroll() {
+      var rect = scrolly.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var total = scrolly.offsetHeight - vh; // scrollable distance while pinned
+      if (total <= 0) { setActive(0); return; }
+      var p = Math.min(Math.max(-rect.top / total, 0), 1);
+      // bias slightly so each beat holds before switching
+      var idx = Math.min(beats - 1, Math.floor(p * beats * 0.999));
+      setActive(idx);
+    }
+    function requestTick() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { onScroll(); ticking = false; });
+    }
+    setActive(0);
+    onScroll();
+    window.addEventListener('scroll', requestTick, { passive: true });
+    window.addEventListener('resize', requestTick);
+  })();
+
   /* ---------- adaptive nav (light/dark by section behind it) ---------- */
   var nav = document.getElementById('nav');
   var sections = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));

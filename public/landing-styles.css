@@ -302,14 +302,39 @@ body {
 /* ============================================================
    INSIDE — 4-step loop (dark)
    ============================================================ */
-.steps { display: flex; flex-direction: column; gap: 96px; margin-top: 74px; }
-.step { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: center; }
-.step.rev .step-text { order: 2; }
-.step.rev .step-visual { order: 1; }
 .step-index { font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: .12em; color: var(--accent); }
 .step-h { font-size: clamp(28px,3vw,40px); line-height: 1.04; letter-spacing: -.03em; font-weight: 620; margin: 16px 0 0; color: var(--ink); }
 .step-body { font-size: 16.5px; line-height: 1.6; color: var(--sub); margin: 18px 0 0; max-width: 440px; }
-.step-visual { display: flex; justify-content: center; }
+
+/* ---------- scroll-pinned showcase ---------- */
+.scrolly { position: relative; margin-top: 60px; }
+html.js .scrolly { height: calc(var(--beats, 4) * 88vh); }
+.scrolly-stage { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: center; }
+html.js .scrolly-stage { position: sticky; top: 0; height: 100vh; }
+
+/* left: progress rail + crossfading text panels */
+.scrolly-text { display: flex; gap: 26px; align-items: stretch; }
+.srail { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; }
+.srail i { width: 3px; height: 30px; border-radius: 99px; background: var(--border-2); transition: background .4s, height .4s; }
+.srail i.on { background: var(--accent); height: 42px; }
+.spanels { position: relative; flex: 1; min-height: 230px; }
+.spanel { transition: opacity .5s ease, transform .5s cubic-bezier(.2,.7,.2,1); }
+html.js .spanel { position: absolute; inset: 0; opacity: 0; transform: translateY(16px); pointer-events: none; }
+html.js .spanel.on { opacity: 1; transform: none; pointer-events: auto; }
+
+/* right: pinned visual stack */
+.scrolly-visual { position: relative; display: flex; align-items: center; justify-content: center; min-height: 300px; }
+.svisual { display: flex; justify-content: center; width: 100%; }
+html.js .svisual { position: absolute; inset: 0; align-items: center; opacity: 0; transform: scale(.96) translateY(14px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.7,.2,1); pointer-events: none; }
+html.js .svisual.on { opacity: 1; transform: none; pointer-events: auto; }
+
+/* no-js / reduced-motion fallback: stack everything, readable */
+html:not(.js) .scrolly-text, .scrolly.is-flat .scrolly-text { flex-direction: column; }
+html:not(.js) .srail, .scrolly.is-flat .srail { display: none; }
+html:not(.js) .scrolly-stage, .scrolly.is-flat .scrolly-stage { grid-template-columns: 1fr; gap: 40px; }
+.scrolly.is-flat { height: auto; }
+.scrolly.is-flat .scrolly-stage { position: static; height: auto; }
+.scrolly.is-flat .spanel, .scrolly.is-flat .svisual { position: relative; opacity: 1; transform: none; inset: auto; margin-bottom: 56px; }
 
 /* mini state cards used inside steps */
 .statecard { width: 100%; max-width: 440px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px; position: relative; overflow: hidden; }
