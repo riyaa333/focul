@@ -59,7 +59,7 @@ function WaitlistInner() {
     setError(null)
     if (step === 0) {
       if (!emailValid) {
-        setError('That email looks off — try again.')
+        setError('That email looks off - try again.')
         return
       }
       setStep(1)
@@ -165,7 +165,7 @@ function WaitlistInner() {
         {step === 0 && (
           <div className={s.step}>
             <label className={s.qlabel}>What's your email?</label>
-            <p className={s.hint}>We'll send your access there. No spam — promise.</p>
+            <p className={s.hint}>We'll send your access there. No spam - promise.</p>
             <input
               className={s.input}
               type="email"
@@ -182,7 +182,7 @@ function WaitlistInner() {
         {step === 1 && (
           <div className={s.step}>
             <label className={s.qlabel}>What brings you to Focul?</label>
-            <p className={s.hint}>Pick whichever fits best — we use this to build for the people actually using it. No wrong answer.</p>
+            <p className={s.hint}>Pick whichever fits best - we use this to build for the people actually using it. No wrong answer.</p>
             <div className={s.chips}>
               {ROLES.map(r => (
                 <button
@@ -244,7 +244,7 @@ function WaitlistInner() {
         </div>
 
         {ref && step === 0 && (
-          <p className={s.refNote}>Referred by a founder — you'll start a few spots ahead.</p>
+          <p className={s.refNote}>Referred by a founder - you'll start a few spots ahead.</p>
         )}
       </div>
     </main>

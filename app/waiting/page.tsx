@@ -60,7 +60,7 @@ function WaitingInner() {
 
         <h1 className={s.h1}>
           You're #
-          <span className={s.num}>{data ? data.position : '—'}</span>
+          <span className={s.num}>{data ? data.position : '-'}</span>
           <br />
           on the waitlist.
         </h1>

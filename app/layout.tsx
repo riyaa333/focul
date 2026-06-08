@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://focul.co"),
   title: "Focul | Close the loop on your work day",
   description:
-    "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
+    "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds - AI captures your next tasks before the context decays.",
   icons: {
     icon: [
       { url: "/favicon.png?v=4", type: "image/png" },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     siteName: "Focul",
     title: "Focul | Close the loop on your work day",
     description:
-      "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
+      "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds - AI captures your next tasks before the context decays.",
     images: [
       {
         url: "/focul-og.png",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Focul | Close the loop on your work day",
     description:
-      "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
+      "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds - AI captures your next tasks before the context decays.",
     images: ["/focul-og.png"],
   },
 }
