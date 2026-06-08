@@ -1,11 +1,13 @@
-/* ---------- shared ---------- */
+/* Light theme matched to the Focul landing (cream + ink, green accent) */
+
+/* ---------- shared form wrap ---------- */
 .wrap {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 50% 30%, rgba(58, 158, 82, 0.14) 0%, transparent 60%),
-    #07140d;
-  color: #eaf6ec;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    radial-gradient(ellipse at 50% 22%, rgba(24, 160, 106, 0.08) 0%, transparent 58%),
+    #f6f4f0;
+  color: #14181a;
+  font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   padding: 28px 24px 80px;
   display: flex;
   flex-direction: column;
@@ -14,22 +16,22 @@
 .back {
   align-self: flex-start;
   font-size: 14px;
-  font-weight: 700;
-  color: #a9c4b1;
+  font-weight: 600;
+  color: rgba(20, 24, 26, 0.5);
   text-decoration: none;
   margin-bottom: 48px;
   letter-spacing: 0.02em;
 }
-.back:hover { color: #7cd49b; }
+.back:hover { color: #18a06a; }
 
-/* ---------- dark intro + hero ---------- */
+/* ---------- intro + hero (now light) ---------- */
 .dark {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 50% 40%, rgba(58, 158, 82, 0.18) 0%, transparent 60%),
-    #07140d;
-  color: #eaf6ec;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    radial-gradient(ellipse at 50% 42%, rgba(24, 160, 106, 0.10) 0%, transparent 60%),
+    #f6f4f0;
+  color: #14181a;
+  font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,34 +48,27 @@
   gap: 22px;
   animation: fade 0.4s ease;
 }
-.introLogo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+.introLogo { display: flex; align-items: center; gap: 14px; }
 .introWord {
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.18em;
-  color: #eaf6ec;
+  color: #14181a;
 }
 .loader {
   width: 220px;
   height: 3px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(20, 24, 26, 0.08);
   border-radius: 2px;
   overflow: hidden;
 }
 .loaderBar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #3a9e52, #7cd49b);
+  background: linear-gradient(90deg, #1f9d63, #45c191);
   animation: load 1.2s ease forwards;
 }
-@keyframes load {
-  from { width: 0%; }
-  to   { width: 100%; }
-}
+@keyframes load { from { width: 0%; } to { width: 100%; } }
 
 /* hero (apply screen) */
 .hero {
@@ -85,11 +80,7 @@
   gap: 36px;
   animation: fade 0.5s ease;
 }
-.iconStage {
-  position: relative;
-  width: 100%;
-  height: 320px;
-}
+.iconStage { position: relative; width: 100%; height: 320px; }
 .appIcon {
   position: absolute;
   width: 68px;
@@ -99,19 +90,19 @@
   align-items: center;
   justify-content: center;
   font-size: 32px;
-  background: #0d1f15;
-  border: 1px solid rgba(124, 212, 155, 0.25);
+  background: #ffffff;
+  border: 1px solid rgba(20, 24, 26, 0.08);
   box-shadow:
-    0 12px 36px rgba(0, 0, 0, 0.5),
-    0 0 28px var(--glow, rgba(124, 212, 155, 0.35));
+    0 14px 30px -12px rgba(20, 40, 30, 0.18),
+    0 0 26px var(--glow, rgba(24, 160, 106, 0.22));
   animation: float 6s ease-in-out infinite;
 }
-.i1 { top: 18%; left: 22%; --glow: rgba(255, 90, 110, 0.45); animation-delay: 0s; }
-.i2 { top: 8%;  left: 52%; --glow: rgba(120, 200, 255, 0.45); animation-delay: 0.6s; }
-.i3 { top: 38%; left: 70%; --glow: rgba(255, 200, 80, 0.45); animation-delay: 1.2s; }
-.i4 { top: 58%; left: 38%; --glow: rgba(124, 212, 155, 0.55); animation-delay: 1.8s; }
-.i5 { top: 32%; left: 8%;  --glow: rgba(180, 130, 255, 0.45); animation-delay: 2.4s; }
-.i6 { top: 65%; left: 62%; --glow: rgba(90, 220, 200, 0.45); animation-delay: 3.0s; }
+.i1 { top: 18%; left: 22%; --glow: rgba(255, 90, 110, 0.30); animation-delay: 0s; }
+.i2 { top: 8%;  left: 52%; --glow: rgba(80, 170, 255, 0.30); animation-delay: 0.6s; }
+.i3 { top: 38%; left: 70%; --glow: rgba(255, 190, 70, 0.32); animation-delay: 1.2s; }
+.i4 { top: 58%; left: 38%; --glow: rgba(24, 160, 106, 0.34); animation-delay: 1.8s; }
+.i5 { top: 32%; left: 8%;  --glow: rgba(160, 110, 255, 0.30); animation-delay: 2.4s; }
+.i6 { top: 65%; left: 62%; --glow: rgba(60, 200, 180, 0.30); animation-delay: 3.0s; }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-10px); }
@@ -119,40 +110,41 @@
 
 .heroTitle {
   font-size: 38px;
-  font-weight: 800;
-  letter-spacing: -0.8px;
-  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
   text-align: center;
   margin: 0;
+  color: #14181a;
 }
 .heroSub {
   font-size: 16px;
-  color: #a9c4b1;
+  color: rgba(20, 24, 26, 0.58);
   text-align: center;
   margin: 0;
   line-height: 1.55;
   max-width: 480px;
 }
 .startBtn {
-  background: linear-gradient(180deg, #4ab368, #3a9e52);
+  background: linear-gradient(95deg, #1f9d63, #45c191);
   color: #fff;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 14px 38px;
-  border-radius: 999px;
+  border-radius: 14px;
   border: none;
   cursor: pointer;
   font-family: inherit;
-  box-shadow: 0 10px 30px rgba(58, 158, 82, 0.4);
+  box-shadow: 0 12px 28px -12px rgba(24, 160, 106, 0.55);
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .startBtn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 38px rgba(58, 158, 82, 0.55);
+  box-shadow: 0 16px 34px -12px rgba(24, 160, 106, 0.7);
 }
 .timeNote {
   font-size: 13px;
-  color: #7a9683;
+  color: rgba(20, 24, 26, 0.45);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -165,34 +157,33 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #eaf6ec;
-  font-weight: 800;
+  color: #14181a;
+  font-weight: 600;
   letter-spacing: 0.16em;
   font-size: 14px;
 }
 
-/* ---------- existing form (light) ---------- */
+/* ---------- multi-step form ---------- */
 .card {
   width: 100%;
   max-width: 520px;
-  background: rgba(15, 30, 22, 0.6);
-  border: 1px solid rgba(124, 212, 155, 0.18);
+  background: #ffffff;
+  border: 1px solid rgba(20, 24, 26, 0.09);
   border-radius: 20px;
   padding: 36px 36px 32px;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 30px 70px -40px rgba(20, 40, 30, 0.22);
   margin-top: 4vh;
 }
 .progress {
   height: 3px;
-  background: rgba(124, 212, 155, 0.12);
+  background: rgba(20, 24, 26, 0.08);
   border-radius: 2px;
   overflow: hidden;
   margin-bottom: 10px;
 }
 .bar {
   height: 100%;
-  background: linear-gradient(90deg, #3a9e52, #7cd49b);
+  background: linear-gradient(90deg, #1f9d63, #45c191);
   border-radius: 2px;
   transition: width 0.35s cubic-bezier(0.34, 1.1, 0.64, 1);
 }
@@ -201,7 +192,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #7a9683;
+  color: rgba(20, 24, 26, 0.45);
   margin-bottom: 28px;
 }
 .step { animation: fade 0.3s ease; }
@@ -212,55 +203,55 @@
 .qlabel {
   display: block;
   font-size: 26px;
-  font-weight: 800;
-  letter-spacing: -0.6px;
-  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
   margin-bottom: 10px;
-  color: #eaf6ec;
+  color: #14181a;
 }
 .hint {
   font-size: 14px;
-  color: #8aa494;
+  color: rgba(20, 24, 26, 0.55);
   margin: 0 0 24px;
   line-height: 1.55;
 }
 .input, .textarea {
   width: 100%;
-  background: rgba(7, 20, 13, 0.6);
-  border: 1px solid rgba(124, 212, 155, 0.22);
+  background: #faf9f6;
+  border: 1px solid rgba(20, 24, 26, 0.12);
   border-radius: 12px;
   font-size: 17px;
-  color: #eaf6ec;
+  color: #14181a;
   padding: 15px 18px;
   outline: none;
   font-family: inherit;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.input::placeholder, .textarea::placeholder { color: #5a7464; }
+.input::placeholder, .textarea::placeholder { color: rgba(20, 24, 26, 0.38); }
 .textarea { font-size: 16px; resize: vertical; min-height: 120px; line-height: 1.5; }
 .input:focus, .textarea:focus {
-  border-color: #7cd49b;
-  box-shadow: 0 0 0 3px rgba(124, 212, 155, 0.18);
+  border-color: #18a06a;
+  box-shadow: 0 0 0 3px rgba(24, 160, 106, 0.14);
 }
 .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .chip {
-  background: rgba(7, 20, 13, 0.5);
-  border: 1.5px solid rgba(124, 212, 155, 0.2);
+  background: #faf9f6;
+  border: 1.5px solid rgba(20, 24, 26, 0.12);
   border-radius: 12px;
   padding: 15px 18px;
   font-size: 15px;
   font-weight: 600;
-  color: #eaf6ec;
+  color: #14181a;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
   transition: all 0.15s;
 }
-.chip:hover { border-color: #7cd49b; }
-.chipOn { border-color: #7cd49b; background: rgba(124, 212, 155, 0.12); color: #7cd49b; }
+.chip:hover { border-color: #18a06a; }
+.chipOn { border-color: #18a06a; background: rgba(24, 160, 106, 0.08); color: #18a06a; }
 .err {
-  background: #fff3f3;
-  border: 1px solid #ffcccc;
+  background: #fff6f6;
+  border: 1px solid #f3cccc;
   color: #b00020;
   border-radius: 10px;
   padding: 10px 14px;
@@ -270,39 +261,39 @@
 .actions { display: flex; gap: 10px; margin-top: 28px; justify-content: space-between; }
 .btn {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 13px 24px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.15s;
 }
 .btnPrimary {
-  background: linear-gradient(180deg, #4ab368, #3a9e52);
+  background: linear-gradient(95deg, #1f9d63, #45c191);
   color: #fff;
-  border-radius: 999px;
+  border-radius: 12px;
   padding: 13px 28px;
-  box-shadow: 0 10px 26px rgba(58, 158, 82, 0.4);
+  box-shadow: 0 12px 26px -12px rgba(24, 160, 106, 0.55);
   margin-left: auto;
 }
 .btnPrimary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 14px 32px rgba(58, 158, 82, 0.55);
+  box-shadow: 0 16px 32px -12px rgba(24, 160, 106, 0.7);
 }
 .btnPrimary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 .btnGhost {
   background: transparent;
-  border: 1px solid rgba(124, 212, 155, 0.25);
-  color: #a9c4b1;
-  border-radius: 999px;
+  border: 1px solid rgba(20, 24, 26, 0.14);
+  color: rgba(20, 24, 26, 0.6);
+  border-radius: 12px;
   padding: 13px 22px;
 }
-.btnGhost:hover { border-color: #7cd49b; color: #7cd49b; }
+.btnGhost:hover { border-color: #18a06a; color: #18a06a; }
 .refNote {
   font-size: 13px;
   font-weight: 600;
-  color: #7cd49b;
+  color: #18a06a;
   margin: 16px 0 0;
   text-align: center;
 }
