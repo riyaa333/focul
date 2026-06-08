@@ -549,15 +549,41 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
 }
 @media (max-width: 560px) {
   .wrap { padding: 0 20px; }
+  .section { padding: 60px 0; }
+  .hero { padding: 116px 0 56px; }
   .appwin, .statecard { width: 100%; max-width: 100%; }
-  .hero-cta .btn { flex: 1; justify-content: center; }
   .notif { display: none; }
   .hero-visual .appwin { transform: none !important; }
-  .hero-h { font-size: 36px; }
-  .h-sec { font-size: 28px; }
+
+  /* typography down a notch */
+  .eyebrow { font-size: 11px; letter-spacing: .08em; padding: 7px 13px; }
+  .hero-h { font-size: 33px; line-height: 1.06; }
+  .hero .lead { margin-top: 22px; }
+  .h-sec { font-size: 27px; }
   .step-h { font-size: 24px; }
-  .persona-h { font-size: 22px; }
-  .lane-num b { font-size: 34px; }
   .lead { font-size: 15px; }
+  .lane-num b { font-size: 34px; }
   .cta .h-sec { font-size: 32px; }
+  .cta-join { font-size: 26px; }
+
+  /* hero CTA: stack full-width, no awkward wrapping */
+  .hero-cta { flex-direction: column; gap: 10px; margin-top: 26px; }
+  .hero-cta .btn { width: 100%; justify-content: center; }
+
+  /* built-for grid: compact cells */
+  .who-grid { gap: 12px; margin-top: 34px; }
+  .who-cell { padding: 20px 20px; }
+  .who-line { font-size: 16px; margin-top: 11px; }
+  .who-cell--cta { gap: 14px; }
+
+  /* speed strip + integrations: tighter */
+  .speed-strip { padding: 30px 0; }
+  .sstrip { gap: 22px; }
+  .sstrip-head { font-size: 17px; }
+  .sl { grid-template-columns: 48px 1fr auto; gap: 10px; }
+  .intg { font-size: 16px; gap: 9px; }
+  .marquee-track { gap: 44px; }
+
+  /* section heads: a touch tighter */
+  .section-head .lead { margin-top: 14px; }
 }
