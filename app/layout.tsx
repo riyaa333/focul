@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://focul.co"),
-  title: "Focul — Close the loop on your work day",
+  title: "Focul | Close the loop on your work day",
   description:
     "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
   icons: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://focul.co",
     siteName: "Focul",
-    title: "Focul — Close the loop on your work day",
+    title: "Focul | Close the loop on your work day",
     description:
       "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
     images: [
@@ -27,13 +27,13 @@ export const metadata: Metadata = {
         url: "/focul-og.png",
         width: 1200,
         height: 627,
-        alt: "Focul — Close the loop on your work day",
+        alt: "Focul | Close the loop on your work day",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Focul — Close the loop on your work day",
+    title: "Focul | Close the loop on your work day",
     description:
       "A 15-min focus timer for founders. When the bell rings, speak for 60 seconds — AI captures your next tasks before the context decays.",
     images: ["/focul-og.png"],
