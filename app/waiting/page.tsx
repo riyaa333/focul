@@ -47,10 +47,6 @@ function WaitingInner() {
     })
   }
 
-  const tweet = `I just joined the waitlist for Focul — a focus timer for founders that remembers your work. Skip ahead with my link: ${referralLink}`
-  const twitterHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`
-  const linkedinHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`
-  const mailtoHref = `mailto:?subject=${encodeURIComponent('You should try Focul')}&body=${encodeURIComponent(tweet)}`
 
   return (
     <main className={s.wrap}>
@@ -87,12 +83,6 @@ function WaitingInner() {
             <button className={s.refBtn} onClick={copy} disabled={!referralLink}>
               {copied ? 'Copied' : 'Copy'}
             </button>
-          </div>
-
-          <div className={s.shareRow}>
-            <a href={twitterHref} target="_blank" rel="noreferrer">Share on X</a>
-            <a href={linkedinHref} target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href={mailtoHref}>Email</a>
           </div>
 
           {data && data.referrals > 0 && (
