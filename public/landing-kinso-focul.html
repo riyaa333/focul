@@ -217,82 +217,77 @@
       <p class="lead">A 15-minute focus loop that captures itself, organises itself, and hands your work forward to the next session.</p>
     </div>
 
-    <!-- scroll-pinned showcase: text + product window stay centred and morph through 4 beats -->
-    <div class="scrolly" id="scrolly" data-beats="4">
-      <div class="scrolly-stage">
-        <!-- LEFT: crossfading text -->
-        <div class="scrolly-text">
-          <div class="srail" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
-          <div class="spanels">
-            <div class="spanel on" data-beat="0" style="--ba:#18a06a">
-              <div class="step-index">01 · FOCUS</div>
-              <h3 class="step-h">Start the timer.<br /><span class="ln2">Go heads-down.</span></h3>
-              <p class="step-body">Fifteen minutes on the clock, living in your menu bar. No notifications, no noise — just the work in front of you until the bell.</p>
-            </div>
-            <div class="spanel" data-beat="1" style="--ba:#e0823d">
-              <div class="step-index">02 · BELL</div>
-              <h3 class="step-h">The bell rings.<br /><span class="ln2">Time to debrief.</span></h3>
-              <p class="step-body">When the session ends, Focul gently prompts you. Hold one key and the recording starts — no app to open, no doc to find.</p>
-            </div>
-            <div class="spanel" data-beat="2" style="--ba:#6b7cff">
-              <div class="step-index">03 · SPEAK</div>
-              <h3 class="step-h">Talk for 60 seconds.<br /><span class="ln2">However it comes out.</span></h3>
-              <p class="step-body">Ramble, think out loud, contradict yourself. Focul transcribes the whole thing — the "um"s and tangents included — and finds the signal.</p>
-            </div>
-            <div class="spanel" data-beat="3" style="--ba:#18a06a">
-              <div class="step-index">04 · BRIEFING</div>
-              <h3 class="step-h">Tasks appear.<br /><span class="ln2">The loop closes.</span></h3>
-              <p class="step-body">Sixty seconds of talking becomes a clean, tagged list — actions, blockers, and calendar holds — saved to today and waiting when you start your next session.</p>
+    <!-- Kinso-style alternating feature rows -->
+    <div class="frows">
+      <!-- 01 focus -->
+      <div class="frow" data-reveal style="--ba:#18a06a">
+        <div class="frow-text">
+          <span class="frow-eyebrow">01 · Focus</span>
+          <h3 class="frow-h">Start the timer.<br /><span class="ln2">Go heads-down.</span></h3>
+          <p class="frow-body">Fifteen minutes on the clock, living in your menu bar. No notifications, no noise — just the work in front of you until the bell.</p>
+        </div>
+        <div class="frow-visual">
+          <div class="vcard vcard--center">
+            <div class="focus-timer">
+              <span class="focus-status"><span class="pulse"></span>Focusing</span>
+              <div class="focus-time">14:32</div>
+              <span class="focus-hint">Heads-down. No notifications until the bell.</span>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- RIGHT: distinct visuals that wipe vertically as you scroll -->
-        <div class="scrolly-visual">
-          <div class="appscreen-view">
-            <div class="appscreen-track" id="appTrack">
-              <!-- state 0: focus -->
-              <div class="ascreen" data-beat="0" style="--ba:#18a06a">
-                <div class="vcard vcard--center">
-                  <div class="focus-timer">
-                    <span class="focus-status"><span class="pulse"></span>Focusing</span>
-                    <div class="focus-time">14:32</div>
-                    <span class="focus-hint">Heads-down. No notifications until the bell.</span>
-                  </div>
-                </div>
+      <!-- 02 bell -->
+      <div class="frow frow--rev" data-reveal style="--ba:#e0823d">
+        <div class="frow-text">
+          <span class="frow-eyebrow">02 · Bell</span>
+          <h3 class="frow-h">The bell rings.<br /><span class="ln2">Time to debrief.</span></h3>
+          <p class="frow-body">When the session ends, Focul gently prompts you. Hold one key and the recording starts — no app to open, no doc to find.</p>
+        </div>
+        <div class="frow-visual">
+          <div class="vcard vcard--center">
+            <div class="bell-ring">
+              <div class="bell-emoji">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
               </div>
-              <!-- state 1: bell -->
-              <div class="ascreen" data-beat="1" style="--ba:#e0823d">
-                <div class="vcard vcard--center">
-                  <div class="bell-ring">
-                    <div class="bell-emoji">
-                      <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                    </div>
-                    <div class="bell-txt">— time to debrief —</div>
-                    <div class="bell-sub">Hold <span class="kbd">⌘ R</span> to start recording</div>
-                  </div>
-                </div>
-              </div>
-              <!-- state 2: speak -->
-              <div class="ascreen" data-beat="2" style="--ba:#6b7cff">
-                <div class="vcard">
-                  <div class="rec-head"><span class="rec"><i></i>Recording · 0:42</span></div>
-                  <div class="wave" id="stepWave" style="height:44px;margin:16px 0 18px"></div>
-                  <p class="transcript">"Shipped the webhook retry, um, need to email Stripe. Sarah's auth PR — review before EOD. Friday morning, block for investors."</p>
-                </div>
-              </div>
-              <!-- state 3: briefing -->
-              <div class="ascreen" data-beat="3" style="--ba:#18a06a">
-                <div class="vcard">
-                  <div class="extract-label">4 TASKS EXTRACTED · SAVED TO TODAY</div>
-                  <div class="task-rows">
-                    <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Email Stripe about webhook retry behavior</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-                    <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Review Sarah's PR on the auth refactor</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-                    <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Friday morning for investor calls</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
-                    <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Waiting on legal feedback for terms v3</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
-                  </div>
-                </div>
-              </div>
+              <div class="bell-txt">— time to debrief —</div>
+              <div class="bell-sub">Hold <span class="kbd">⌘ R</span> to start recording</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 speak -->
+      <div class="frow" data-reveal style="--ba:#6b7cff">
+        <div class="frow-text">
+          <span class="frow-eyebrow">03 · Speak</span>
+          <h3 class="frow-h">Talk for 60 seconds.<br /><span class="ln2">However it comes out.</span></h3>
+          <p class="frow-body">Ramble, think out loud, contradict yourself. Focul transcribes the whole thing — the "um"s and tangents included — and finds the signal.</p>
+        </div>
+        <div class="frow-visual">
+          <div class="vcard">
+            <div class="rec-head"><span class="rec"><i></i>Recording · 0:42</span></div>
+            <div class="wave" id="stepWave" style="height:44px;margin:16px 0 18px"></div>
+            <p class="transcript">"Shipped the webhook retry, um, need to email Stripe. Sarah's auth PR — review before EOD. Friday morning, block for investors."</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 briefing -->
+      <div class="frow frow--rev" data-reveal style="--ba:#18a06a">
+        <div class="frow-text">
+          <span class="frow-eyebrow">04 · Briefing</span>
+          <h3 class="frow-h">Tasks appear.<br /><span class="ln2">The loop closes.</span></h3>
+          <p class="frow-body">Sixty seconds of talking becomes a clean, tagged list — actions, blockers, and calendar holds — saved to today and waiting when you start your next session.</p>
+        </div>
+        <div class="frow-visual">
+          <div class="vcard">
+            <div class="extract-label">4 TASKS EXTRACTED · SAVED TO TODAY</div>
+            <div class="task-rows">
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Email Stripe about webhook retry behavior</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Review Sarah's PR on the auth refactor</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Friday morning for investor calls</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Waiting on legal feedback for terms v3</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
             </div>
           </div>
         </div>

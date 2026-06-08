@@ -307,39 +307,27 @@ body {
 .step-h { font-size: clamp(28px,3vw,40px); line-height: 1.04; letter-spacing: -.03em; font-weight: 620; margin: 16px 0 0; color: var(--ink); }
 .step-body { font-size: 16.5px; line-height: 1.6; color: var(--sub); margin: 18px 0 0; max-width: 440px; }
 
-/* ---------- scroll-pinned showcase ---------- */
-.scrolly { position: relative; margin-top: 60px; }
-html.js .scrolly { height: calc(var(--beats, 4) * 88vh); }
-.scrolly-stage { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: center; }
-html.js .scrolly-stage { position: sticky; top: 0; height: 100vh; }
-
-/* left: progress rail + crossfading text panels */
-.scrolly-text { display: flex; gap: 26px; align-items: stretch; }
-.srail { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; }
-.srail i { width: 3px; height: 30px; border-radius: 99px; background: var(--border-2); transition: background .4s, height .4s; }
-.srail i.on { background: var(--ba, var(--accent)); height: 42px; }
-.spanels { position: relative; flex: 1; min-height: 230px; }
-.spanel { transition: opacity .5s ease, transform .5s cubic-bezier(.2,.7,.2,1); }
-html.js .spanel { position: absolute; inset: 0; opacity: 0; transform: translateY(16px); pointer-events: none; }
-html.js .spanel.on { opacity: 1; transform: none; pointer-events: auto; }
-/* heading accent phrase changes colour per beat */
-.spanel .step-index { color: var(--ba, var(--accent)); transition: color .4s; }
-.ln2 { color: var(--ba, var(--accent)); transition: color .4s; }
-
-/* right: distinct visuals that wipe vertically through a frameless viewport */
-.scrolly-visual { display: flex; align-items: center; justify-content: center; }
-.appscreen-view { position: relative; width: 100%; max-width: 460px; height: 440px; overflow: hidden; }
-/* soft fade at top & bottom edges so each visual wipes in/out smoothly */
-.appscreen-view::before, .appscreen-view::after {
-  content: ""; position: absolute; left: 0; right: 0; height: 64px; z-index: 2; pointer-events: none;
+/* ---------- alternating feature rows (Kinso-style) ---------- */
+.frows { display: flex; flex-direction: column; gap: 112px; margin-top: 84px; }
+.frow { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.frow--rev .frow-text { order: 2; }
+.frow--rev .frow-visual { order: 1; }
+.frow-eyebrow {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  letter-spacing: .13em; text-transform: uppercase; color: var(--ba, var(--accent));
 }
-.appscreen-view::before { top: 0; background: linear-gradient(var(--bg), transparent); }
-.appscreen-view::after { bottom: 0; background: linear-gradient(transparent, var(--bg)); }
-.appscreen-track { display: flex; flex-direction: column; will-change: transform; }
-.ascreen { height: 440px; display: flex; align-items: center; justify-content: center; padding: 8px; }
-/* each beat is its own floating card, tinted by the beat colour */
+.frow-eyebrow::after { content: ""; width: 56px; height: 1px; background: var(--border-2); }
+.frow-h { font-size: clamp(28px, 3vw, 40px); line-height: 1.06; letter-spacing: -.03em; font-weight: 600; margin: 18px 0 0; color: var(--ink); }
+.frow-body { font-size: 16.5px; line-height: 1.6; color: var(--sub); margin: 18px 0 0; max-width: 440px; }
+.frow-body + .frow-body { margin-top: 14px; }
+.frow-visual { display: flex; justify-content: center; }
+.frow-visual .vcard { width: 100%; max-width: 460px; }
+.ln2 { color: var(--ba, var(--accent)); }
+
+/* product card used in each row, tinted by the row colour */
 .vcard {
-  width: 100%; background: var(--card); border: 1px solid var(--border);
+  background: var(--card); border: 1px solid var(--border);
   border-radius: 20px; padding: 26px; position: relative; overflow: hidden;
   box-shadow: 0 40px 80px -44px rgba(0,0,0,.65);
 }
@@ -350,23 +338,9 @@ html.js .spanel.on { opacity: 1; transform: none; pointer-events: auto; }
 .vcard--center { display: flex; align-items: center; justify-content: center; min-height: 220px; }
 .rec-head .rec { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ba, var(--accent)); }
 .rec-head .rec i { background: var(--ba, var(--accent)) !important; }
-/* per-beat tinting inside the visuals */
-.ascreen .bell-emoji svg { color: var(--ba, var(--accent)); }
-.ascreen .focus-status .pulse { background: var(--ba, var(--accent)); }
-.ascreen .wave i.on { background: var(--ba, var(--accent)); }
-
-/* no-js / reduced-motion fallback: stack everything, readable */
-html:not(.js) .scrolly-text, .scrolly.is-flat .scrolly-text { flex-direction: column; }
-html:not(.js) .srail, .scrolly.is-flat .srail { display: none; }
-html:not(.js) .scrolly-stage, .scrolly.is-flat .scrolly-stage { grid-template-columns: 1fr; gap: 40px; }
-.scrolly.is-flat { height: auto; }
-.scrolly.is-flat .scrolly-stage { position: static; height: auto; }
-.scrolly.is-flat .spanel { position: relative; opacity: 1; transform: none; inset: auto; margin-bottom: 40px; }
-/* in flat mode let the screen grow to show all states stacked */
-.scrolly.is-flat .appscreen-view { height: auto; }
-.scrolly.is-flat .ascreen { height: auto; min-height: 200px; }
-html:not(.js) .appscreen-view { height: auto; }
-html:not(.js) .ascreen { height: auto; min-height: 200px; }
+.frow .bell-emoji svg { color: var(--ba, var(--accent)); }
+.frow .focus-status .pulse { background: var(--ba, var(--accent)); }
+.frow .wave i.on { background: var(--ba, var(--accent)); }
 
 /* mini state cards used inside steps */
 .statecard { width: 100%; max-width: 440px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 26px; position: relative; overflow: hidden; }
@@ -496,6 +470,11 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .nav-links, .nav-sep, .nav-login { display: none; }
   .step-visual { order: 2 !important; }
   .step-text { order: 1 !important; }
+  /* feature rows stack: text then visual */
+  .frows { gap: 64px; margin-top: 48px; }
+  .frow { grid-template-columns: 1fr; gap: 28px; }
+  .frow--rev .frow-text { order: 1; }
+  .frow--rev .frow-visual { order: 2; }
   /* scroll showcase: stack text above the visual, still pinned + wiping */
   .scrolly-stage { grid-template-columns: 1fr; gap: 18px; align-items: start; padding-top: 104px; padding-bottom: 20px; }
   .scrolly-text { gap: 16px; }
