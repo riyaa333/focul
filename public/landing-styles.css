@@ -260,19 +260,21 @@ body {
 /* ============================================================
    SPEED — 3x faster comparison
    ============================================================ */
-.speed-race { max-width: 880px; margin: 60px auto 0; display: flex; flex-direction: column; gap: 44px; }
-.lane-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; gap: 16px; }
-.lane-label { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--faint); }
-.lane-num { font-size: 16px; color: var(--sub); font-weight: 500; white-space: nowrap; }
-.lane-num b { font-size: 46px; font-weight: 600; letter-spacing: -.04em; color: var(--ink); margin-right: 4px; font-variant-numeric: tabular-nums; }
-.lane--accent .lane-num b { background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.lane-bar { height: 16px; border-radius: 99px; background: var(--row); overflow: hidden; }
-.lane-bar i {
-  display: block; height: 100%; width: 0; border-radius: 99px; background: var(--border-2);
-  transition: width 1.6s cubic-bezier(.16,.84,.3,1);
-}
-.lane--accent .lane-bar i { background: var(--accent-grad); box-shadow: 0 4px 18px -4px rgba(24,160,106,.55); }
-.lane-desc { font-size: 14.5px; line-height: 1.55; color: var(--sub); margin: 14px 0 0; max-width: 560px; }
+/* compact speed strip */
+.speed-strip { background: var(--l-bg); padding: 40px 0; border-top: 1px solid var(--l-border); border-bottom: 1px solid var(--l-border); }
+.sstrip { max-width: 920px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: center; }
+.sstrip-head { font-size: 20px; line-height: 1.35; font-weight: 600; letter-spacing: -.02em; color: var(--l-ink); margin: 0; }
+.sstrip-head .accent { background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sstrip-lanes { display: flex; flex-direction: column; gap: 14px; }
+.sl { display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 14px; }
+.sl-label { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--l-faint); }
+.sl-bar { height: 10px; border-radius: 99px; background: var(--l-row); overflow: hidden; }
+.sl-bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: var(--l-border-2, #c9ccc6); transition: width 1.5s cubic-bezier(.16,.84,.3,1); }
+.sl--accent .sl-bar i { background: var(--accent-grad); }
+.sl-num { font-size: 13px; color: var(--l-sub); white-space: nowrap; }
+.sl-num b { font-size: 22px; font-weight: 600; letter-spacing: -.03em; color: var(--l-ink); margin-right: 3px; font-variant-numeric: tabular-nums; }
+.sl--accent .sl-num b { color: var(--accent); }
+@media (max-width: 720px) { .sstrip { grid-template-columns: 1fr; gap: 24px; } }
 
 /* ============================================================
    PERSONA TABS

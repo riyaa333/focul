@@ -120,29 +120,22 @@
   </div>
 </section>
 
-<!-- ============ 2 · SPEED (light) ============ -->
-<section class="section light" data-nav="light" id="speed">
+<!-- ============ 2 · SPEED (compact strip, light) ============ -->
+<section class="speed-strip" data-nav="light" id="speed">
   <div class="wrap">
-    <div class="section-head" data-reveal>
-      <span class="eyebrow"><span class="dot"></span>Speed</span>
-      <h2 class="h-sec">Speaking is <span class="accent">3× faster</span><br />than typing your tasks.</h2>
-    </div>
-    <div class="speed-race" data-reveal>
-      <div class="lane">
-        <div class="lane-top">
-          <span class="lane-label">Typing it out</span>
-          <span class="lane-num"><b data-count="45">0</b> wpm</span>
+    <div class="sstrip" data-reveal>
+      <p class="sstrip-head">Speaking is <span class="accent">3× faster</span> than typing your tasks.</p>
+      <div class="sstrip-lanes">
+        <div class="sl">
+          <span class="sl-label">Typing</span>
+          <div class="sl-bar"><i data-fill="33"></i></div>
+          <span class="sl-num"><b data-count="45">0</b> wpm</span>
         </div>
-        <div class="lane-bar"><i data-fill="33"></i></div>
-        <p class="lane-desc">Open the doc. Re-read yesterday. Try to remember what you were going to do. Type four bullet points.</p>
-      </div>
-      <div class="lane lane--accent">
-        <div class="lane-top">
-          <span class="lane-label">Voice debrief</span>
-          <span class="lane-num"><b data-count="135">0</b> wpm spoken</span>
+        <div class="sl sl--accent">
+          <span class="sl-label">Voice</span>
+          <div class="sl-bar"><i data-fill="100"></i></div>
+          <span class="sl-num"><b data-count="135">0</b> wpm</span>
         </div>
-        <div class="lane-bar"><i data-fill="100"></i></div>
-        <p class="lane-desc">Hold a key. Talk for 60 seconds. Tasks, blockers, and next session — extracted automatically.</p>
       </div>
     </div>
   </div>
@@ -165,7 +158,14 @@
           <p class="frow-body">Investor calls, hiring, product, ops — every 15 minutes you're in a different brain. Focul holds the context for you so you stop losing the thread.</p>
         </div>
         <div class="frow-visual">
-          <blockquote class="persona-quote"><p>"I used to lose the first 10 minutes of every session re-reading yesterday. Now I just open the briefing and go."</p><cite>— Solo founder, pre-seed SaaS</cite></blockquote>
+          <div class="vcard">
+            <div class="extract-label">Today's briefing · saved</div>
+            <div class="task-rows">
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Follow up with the lead investor on the deck</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Approve the design-hire offer</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Thursday morning for board prep</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -176,7 +176,14 @@
           <p class="frow-body">You almost had it. Then standup, then lunch, then a meeting. Focul captures the half-thought before it decays — the exact line you suspected, the test that flaked, the next thing to try.</p>
         </div>
         <div class="frow-visual">
-          <blockquote class="persona-quote"><p>"My voice debrief is basically a future-me Slack DM. I tell tomorrow's me what to look at first."</p><cite>— Staff engineer, infra team</cite></blockquote>
+          <div class="vcard">
+            <div class="extract-label">Captured before you logged off</div>
+            <div class="task-rows">
+              <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Retry logic looks off in webhook.ts:142</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Re-run the flaky auth_refresh test</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Try an idempotency key on the callback</span><span class="tag" style="color:var(--ba)">idea</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -187,7 +194,14 @@
           <p class="frow-body">You read three chapters, then realise you can't remember any of it. Focul makes the last 60 seconds of each study block matter — say what you understood, what you didn't, and what to revisit.</p>
         </div>
         <div class="frow-visual">
-          <blockquote class="persona-quote"><p>"I talk for a minute after every block — and the questions I have for office hours just appear in my list."</p><cite>— CS undergrad, finals season</cite></blockquote>
+          <div class="vcard">
+            <div class="extract-label">For office hours</div>
+            <div class="task-rows">
+              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Why does mergesort beat quicksort here?</span><span class="tag" style="color:var(--ba)">question</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Revisit the chapter 7 proofs</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Re-derive the Bayes example</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -198,7 +212,14 @@
           <p class="frow-body">The angle, the lede, the section you'll cut — talk through it while it's hot. Focul keeps the threads so the next session opens with structure, not a blank page.</p>
         </div>
         <div class="frow-visual">
-          <blockquote class="persona-quote"><p>"My best paragraphs start as 45-second voice notes I forgot I made. Focul makes me actually find them."</p><cite>— Newsletter writer, 30k subs</cite></blockquote>
+          <div class="vcard">
+            <div class="extract-label">Threads kept warm</div>
+            <div class="task-rows">
+              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Lede: "the day the servers went quiet"</span><span class="tag" style="color:var(--ba)">idea</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Cut the methodology tangent</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Chase the Q3 data for section two</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -209,7 +230,14 @@
           <p class="frow-body">The fix is obvious before you open Figma — until you open Figma. Focul holds the decision out loud so it survives the trip from couch to canvas.</p>
         </div>
         <div class="frow-visual">
-          <blockquote class="persona-quote"><p>"I describe the change before I make it. By the time I'm in the file I already know what I'm doing."</p><cite>— Product designer, fintech</cite></blockquote>
+          <div class="vcard">
+            <div class="extract-label">Decision held overnight</div>
+            <div class="task-rows">
+              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Drop the modal — use inline editing</span><span class="tag" style="color:var(--ba)">idea</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Test the 8px grid on the cards</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Ship the empty-state illustration</span><span class="tag" style="color:var(--tag-action)">action</span></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
