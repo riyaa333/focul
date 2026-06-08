@@ -551,9 +551,10 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .appscreen-view::before, .appscreen-view::after { height: 36px; }
 }
 @media (max-width: 560px) {
-  .wrap { padding: 0 20px; }
-  .section { padding: 60px 0; }
-  .hero { padding: 116px 0 56px; }
+  .wrap { padding: 0 22px; }
+  /* more air between sections so the page breathes */
+  .section { padding: 76px 0; }
+  .hero { padding: 124px 0 40px; }
   .appwin, .statecard { width: 100%; max-width: 100%; }
   .notif { display: none; }
   .hero-visual .appwin { transform: none !important; }
@@ -570,22 +571,28 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .cta-join { font-size: 26px; }
 
   /* hero CTA: stack full-width, no awkward wrapping */
-  .hero-cta { flex-direction: column; gap: 10px; margin-top: 26px; }
+  .hero-cta { flex-direction: column; gap: 10px; margin-top: 28px; }
   .hero-cta .btn { width: 100%; justify-content: center; }
+  .hero-proof { margin-top: 26px; }
 
-  /* built-for grid: compact cells */
-  .who-grid { gap: 12px; margin-top: 34px; }
-  .who-cell { padding: 20px 20px; }
-  .who-line { font-size: 16px; margin-top: 11px; }
+  /* built-for grid: roomier, calmer cells */
+  .who-grid { gap: 14px; margin-top: 40px; }
+  .who-cell { padding: 24px 22px; }
+  .who-line { font-size: 16px; margin-top: 12px; }
   .who-cell--cta { gap: 14px; }
 
-  /* speed strip + integrations: tighter */
-  .speed-strip { padding: 30px 0; }
-  .sstrip { gap: 22px; }
-  .sstrip-head { font-size: 17px; }
-  .sl { grid-template-columns: 48px 1fr auto; gap: 10px; }
-  .intg { font-size: 16px; gap: 9px; margin-right: 44px; }
+  /* speed strip: its own calm band with real breathing room */
+  .speed-strip { padding: 48px 0; }
+  .sstrip { gap: 28px; }
+  .sstrip-head { font-size: 18px; line-height: 1.4; }
+  .sstrip-lanes { gap: 18px; }
+  .sl { grid-template-columns: 46px 1fr auto; gap: 10px; }
 
-  /* section heads: a touch tighter */
+  /* integrations: more space around the moving row */
+  .intg-sec { padding: 60px 0; }
+  .marquee { margin-top: 30px; }
+  .intg { font-size: 16px; gap: 9px; margin-right: 40px; }
+
+  /* section heads: a touch tighter internally */
   .section-head .lead { margin-top: 14px; }
 }
