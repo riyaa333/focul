@@ -193,21 +193,36 @@ body {
 .cta-join .wl-num { font-size: 1em; }
 
 .hero-visual { position: relative; display: flex; justify-content: center; }
+/* ambient depth so the window reads as a real screenshot, not a flat card */
+.hero-visual::before {
+  content: ""; position: absolute; inset: -10% -8% -14% -8%; z-index: 0; pointer-events: none;
+  background: radial-gradient(58% 48% at 54% 44%, rgba(24,160,106,.12), transparent 72%);
+}
+.hero-visual > * { position: relative; z-index: 1; }
 
 /* ---------- app window (reused) ---------- */
 .appwin {
-  width: 420px; background: var(--card, #fff);
-  border: 1px solid var(--win-bd, rgba(20,24,26,.07)); border-radius: 20px;
-  box-shadow: 0 50px 100px -45px rgba(24,60,42,.32), 0 16px 40px -24px rgba(24,60,42,.16);
+  width: 440px; background: var(--card, #fff);
+  border: 1px solid var(--win-bd, rgba(20,24,26,.08)); border-radius: 16px;
+  /* layered, realistic macOS-style depth + glass top highlight */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.85),
+    0 2px 5px -2px rgba(24,40,30,.10),
+    0 14px 34px -16px rgba(24,60,42,.22),
+    0 56px 104px -48px rgba(24,60,42,.40);
   overflow: hidden;
 }
 .section.dark .appwin, .appwin.dark {
   --win-bd: rgba(255,255,255,.08); background: #16191b;
   box-shadow: 0 50px 90px -40px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.02);
 }
-.appwin-bar { display: flex; align-items: center; gap: 9px; padding: 14px 18px; border-bottom: 1px solid var(--win-bd, rgba(20,24,26,.07)); }
-.appwin-dots { display: flex; gap: 6px; }
-.appwin-dots i { width: 10px; height: 10px; border-radius: 99px; background: #e7e8e7; display: block; }
+.appwin-bar { display: flex; align-items: center; gap: 9px; padding: 13px 18px; border-bottom: 1px solid var(--win-bd, rgba(20,24,26,.06)); background: linear-gradient(rgba(20,24,26,.02), rgba(20,24,26,0)); }
+.appwin-dots { display: flex; gap: 7px; }
+.appwin-dots i { width: 11px; height: 11px; border-radius: 99px; background: #e7e8e7; display: block; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,.08); }
+/* real macOS traffic lights */
+.appwin-dots i:nth-child(1) { background: #ff5f57; }
+.appwin-dots i:nth-child(2) { background: #febc2e; }
+.appwin-dots i:nth-child(3) { background: #28c840; }
 .appwin.dark .appwin-dots i, .section.dark .appwin-dots i { background: #33383b; }
 .appwin-title { font-size: 13px; font-weight: 600; letter-spacing: -.01em; color: var(--win-ink, #14181a); }
 .appwin.dark .appwin-title, .section.dark .appwin-title { color: #f1f4f3; }
