@@ -48,6 +48,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=general-sans@400,450,500,600,650,700&display=swap"
+          rel="stylesheet"
+        />
         <script
           type="text/javascript"
           dangerouslySetInnerHTML={{

@@ -1,8 +1,9 @@
+/* Palette matched to the Focul landing page (calm cream + ink, green as accent) */
 .wrap {
   min-height: 100vh;
-  background: #f8fff3;
-  color: #1a3020;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: #f6f4f0;
+  color: #14181a;
+  font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   padding: 32px 24px 80px;
   display: flex;
   flex-direction: column;
@@ -12,19 +13,19 @@
   align-self: flex-start;
   font-size: 14px;
   font-weight: 600;
-  color: #6a8f72;
+  color: rgba(20, 24, 26, 0.5);
   text-decoration: none;
   margin-bottom: 32px;
 }
-.back:hover { color: #3a9e52; }
+.back:hover { color: #18a06a; }
 .card {
   width: 100%;
   max-width: 640px;
   background: #ffffff;
-  border: 1px solid #d4f0be;
-  border-radius: 24px;
+  border: 1px solid rgba(20, 24, 26, 0.09);
+  border-radius: 22px;
   padding: 48px 44px;
-  box-shadow: 0 24px 60px rgba(58, 158, 82, 0.1);
+  box-shadow: 0 30px 70px -40px rgba(20, 40, 30, 0.22);
 }
 .badge {
   display: inline-flex;
@@ -34,39 +35,43 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #3a9e52;
-  background: rgba(58, 158, 82, 0.1);
-  border: 1px solid rgba(58, 158, 82, 0.22);
+  color: rgba(20, 24, 26, 0.55);
+  background: transparent;
+  border: 1px solid rgba(20, 24, 26, 0.12);
   border-radius: 99px;
   padding: 6px 16px;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 .badgeDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #3a9e52;
+  background: #18a06a;
 }
 .h1 {
-  font-size: clamp(34px, 5.5vw, 48px);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -1.5px;
+  font-size: clamp(32px, 5.5vw, 46px);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
   margin: 0 0 16px;
+  color: #14181a;
 }
 .num {
-  color: #3a9e52;
+  background: linear-gradient(95deg, #1f9d63, #45c191);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   font-variant-numeric: tabular-nums;
 }
 .sub {
   font-size: 17px;
-  color: #6a8f72;
+  color: rgba(20, 24, 26, 0.58);
   line-height: 1.6;
   margin: 0 0 32px;
 }
 .err {
-  background: #fff3f3;
-  border: 1px solid #ffcccc;
+  background: #fff6f6;
+  border: 1px solid #f3cccc;
   color: #b00020;
   border-radius: 10px;
   padding: 12px 16px;
@@ -74,18 +79,18 @@
   margin-bottom: 24px;
 }
 .refBlock {
-  background: rgba(58, 158, 82, 0.06);
-  border: 1px solid rgba(58, 158, 82, 0.18);
-  border-radius: 14px;
+  background: rgba(20, 24, 26, 0.025);
+  border: 1px solid rgba(20, 24, 26, 0.09);
+  border-radius: 16px;
   padding: 24px;
   margin-bottom: 32px;
 }
 .refLabel {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #3a9e52;
+  color: #18a06a;
   margin-bottom: 14px;
 }
 .refRow {
@@ -95,45 +100,46 @@
 .refInput {
   flex: 1;
   background: #ffffff;
-  border: 1px solid #d4f0be;
+  border: 1px solid rgba(20, 24, 26, 0.12);
   border-radius: 10px;
   padding: 12px 14px;
   font-size: 14px;
-  color: #1a3020;
-  font-family: monospace;
+  color: #14181a;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
   outline: none;
   min-width: 0;
 }
 .refBtn {
-  background: #3a9e52;
+  background: #14181a;
   color: #fff;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   border: none;
   border-radius: 10px;
-  padding: 12px 20px;
+  padding: 12px 22px;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: transform 0.15s, opacity 0.15s;
 }
-.refBtn:hover:not(:disabled) { opacity: 0.88; }
+.refBtn:hover:not(:disabled) { transform: translateY(-1px); }
 .refBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 .shareRow {
   display: flex;
-  gap: 16px;
-  margin-top: 14px;
+  gap: 18px;
+  margin-top: 16px;
 }
 .shareRow a {
   font-size: 13px;
   font-weight: 600;
-  color: #3a9e52;
+  color: rgba(20, 24, 26, 0.55);
   text-decoration: none;
   border-bottom: 1px solid transparent;
+  transition: color 0.15s;
 }
-.shareRow a:hover { border-bottom-color: #3a9e52; }
+.shareRow a:hover { color: #18a06a; border-bottom-color: #18a06a; }
 .refCount {
   font-size: 13px;
-  color: #6a8f72;
-  margin: 14px 0 0;
+  color: rgba(20, 24, 26, 0.45);
+  margin: 16px 0 0;
 }
 .timeline {
   list-style: none;
@@ -141,7 +147,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 .timeline li {
   display: flex;
@@ -152,10 +158,11 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: rgba(58, 158, 82, 0.1);
-  color: #3a9e52;
+  background: rgba(20, 24, 26, 0.05);
+  color: #18a06a;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,12 +171,13 @@
 .timeline strong {
   display: block;
   font-size: 15px;
-  color: #1a3020;
+  font-weight: 600;
+  color: #14181a;
   margin-bottom: 4px;
 }
 .timeline p {
   font-size: 14px;
-  color: #6a8f72;
+  color: rgba(20, 24, 26, 0.55);
   line-height: 1.55;
   margin: 0;
 }
