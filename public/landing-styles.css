@@ -292,8 +292,9 @@ body {
 .persona-h { font-size: clamp(26px,2.6vw,36px); line-height: 1.08; letter-spacing: -.03em; font-weight: 620; margin: 0; color: var(--ink); }
 .persona-body { font-size: 16.5px; line-height: 1.6; color: var(--sub); margin: 18px 0 0; }
 .persona-quote {
-  border-left: 2px solid var(--accent); padding: 4px 0 4px 22px; margin: 0;
+  border-left: 2px solid var(--ba, var(--accent)); padding: 4px 0 4px 22px; margin: 0;
 }
+.frow-visual .persona-quote { width: 100%; max-width: 460px; }
 .persona-quote p { font-size: 18px; line-height: 1.5; color: var(--ink); margin: 0; letter-spacing: -.01em; }
 .persona-quote cite { display: block; margin-top: 14px; font-style: normal; font-size: 13.5px; color: var(--faint); }
 .persona-card-wrap { display: flex; justify-content: center; }
