@@ -376,11 +376,17 @@ html:not(.js) .ascreen { height: auto; min-height: 200px; }
 .who-cell:hover { transform: translateY(-3px); box-shadow: 0 24px 50px -30px rgba(20,40,30,.35); border-color: var(--border-2); }
 .who-name { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--ba, var(--accent)); }
 .who-line { font-size: 18px; line-height: 1.4; font-weight: 500; letter-spacing: -.01em; color: var(--ink); margin: 16px 0 0; }
-.who-cell--cta { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; background: var(--ink); border-color: var(--ink); text-decoration: none; }
+/* CTA spans the full row beneath the 3 cards, as a horizontal banner */
+.who-cell--cta {
+  grid-column: 1 / -1;
+  display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+  gap: 18px; background: var(--ink); border-color: var(--ink); text-decoration: none;
+  padding: 24px 30px;
+}
 .who-cell--cta::before { display: none; }
-.who-cell--cta .who-line { color: var(--bg); }
-.who-arrow { font-size: 14px; font-weight: 600; color: var(--accent-2); }
-.who-cell--cta:hover { transform: translateY(-3px); }
+.who-cell--cta .who-line { color: var(--bg); margin: 0; }
+.who-arrow { font-size: 14px; font-weight: 600; color: var(--accent-2); white-space: nowrap; }
+.who-cell--cta:hover { transform: translateY(-2px); }
 @media (max-width: 860px) { .who-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .who-grid { grid-template-columns: 1fr; } }
 
@@ -594,7 +600,7 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .who-grid { gap: 14px; margin-top: 40px; }
   .who-cell { padding: 24px 22px; }
   .who-line { font-size: 16px; margin-top: 12px; }
-  .who-cell--cta { gap: 14px; }
+  .who-cell--cta { flex-direction: column; align-items: flex-start; gap: 14px; }
 
   /* speed strip: its own calm band with real breathing room */
   .speed-strip { padding: 48px 0; }
