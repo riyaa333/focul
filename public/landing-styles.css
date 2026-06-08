@@ -129,6 +129,7 @@ body {
 }
 .nav-inner {
   pointer-events: auto;
+  width: min(1180px, calc(100vw - 36px));
   display: flex; align-items: center; gap: 6px;
   padding: 9px 9px 9px 20px; border-radius: 999px;
   background: rgba(255,255,255,.72);
@@ -162,6 +163,7 @@ body {
 }
 .nav.on-dark .nav-login { color: #f3f5f4; background: rgba(255,255,255,.07); }
 .nav-cta {
+  margin-left: auto;
   font-size: 14.5px; font-weight: 600; text-decoration: none;
   color: #fff; background: #14181a; padding: 10px 17px; border-radius: 999px;
   display: inline-flex; align-items: center; gap: 7px; transition: all .25s var(--ease);
