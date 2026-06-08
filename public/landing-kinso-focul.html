@@ -143,96 +143,31 @@
       <p class="lead" style="margin-top:18px">The bell rings, you talk, the loop closes. Different work, same rhythm.</p>
     </div>
 
-    <div class="frows" style="margin-top:64px">
-      <div class="frow" data-reveal style="--ba:#18a06a">
-        <div class="frow-text">
-          <span class="frow-eyebrow">Founders</span>
-          <h3 class="frow-h">For founders juggling six contexts.</h3>
-          <p class="frow-body">Investor calls, hiring, product, ops — every 15 minutes you're in a different brain. Focul holds the context for you so you stop losing the thread.</p>
-        </div>
-        <div class="frow-visual">
-          <div class="vcard">
-            <div class="extract-label">Today's briefing · saved</div>
-            <div class="task-rows">
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Follow up with the lead investor on the deck</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Approve the design-hire offer</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-calendar)"></span><span class="txt">Block Thursday morning for board prep</span><span class="tag" style="color:var(--tag-calendar)">calendar</span></div>
-            </div>
-          </div>
-        </div>
+    <div class="who-grid" data-reveal data-delay="1">
+      <div class="who-cell" style="--ba:#18a06a">
+        <span class="who-name">Founders</span>
+        <p class="who-line">Hold the thread across investor calls, hiring, product and ops.</p>
       </div>
-
-      <div class="frow frow--rev" data-reveal style="--ba:#6b7cff">
-        <div class="frow-text">
-          <span class="frow-eyebrow">Engineers</span>
-          <h3 class="frow-h">For engineers who lose the bug at 5pm.</h3>
-          <p class="frow-body">You almost had it. Then standup, then lunch, then a meeting. Focul captures the half-thought before it decays — the exact line you suspected, the test that flaked, the next thing to try.</p>
-        </div>
-        <div class="frow-visual">
-          <div class="vcard">
-            <div class="extract-label">Captured before you logged off</div>
-            <div class="task-rows">
-              <div class="task-row"><span class="bullet" style="background:var(--tag-blocker)"></span><span class="txt">Retry logic looks off in webhook.ts:142</span><span class="tag" style="color:var(--tag-blocker)">blocker</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Re-run the flaky auth_refresh test</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Try an idempotency key on the callback</span><span class="tag" style="color:var(--ba)">idea</span></div>
-            </div>
-          </div>
-        </div>
+      <div class="who-cell" style="--ba:#6b7cff">
+        <span class="who-name">Engineers</span>
+        <p class="who-line">Catch the bug context before standup wipes it.</p>
       </div>
-
-      <div class="frow" data-reveal style="--ba:#e0823d">
-        <div class="frow-text">
-          <span class="frow-eyebrow">Students</span>
-          <h3 class="frow-h">For students whose brain leaves before they do.</h3>
-          <p class="frow-body">You read three chapters, then realise you can't remember any of it. Focul makes the last 60 seconds of each study block matter — say what you understood, what you didn't, and what to revisit.</p>
-        </div>
-        <div class="frow-visual">
-          <div class="vcard">
-            <div class="extract-label">For office hours</div>
-            <div class="task-rows">
-              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Why does mergesort beat quicksort here?</span><span class="tag" style="color:var(--ba)">question</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Revisit the chapter 7 proofs</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Re-derive the Bayes example</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-            </div>
-          </div>
-        </div>
+      <div class="who-cell" style="--ba:#e0823d">
+        <span class="who-name">Students</span>
+        <p class="who-line">Turn the last minute of a study block into office-hours questions.</p>
       </div>
-
-      <div class="frow frow--rev" data-reveal style="--ba:#18a06a">
-        <div class="frow-text">
-          <span class="frow-eyebrow">Writers</span>
-          <h3 class="frow-h">For writers who think faster than they type.</h3>
-          <p class="frow-body">The angle, the lede, the section you'll cut — talk through it while it's hot. Focul keeps the threads so the next session opens with structure, not a blank page.</p>
-        </div>
-        <div class="frow-visual">
-          <div class="vcard">
-            <div class="extract-label">Threads kept warm</div>
-            <div class="task-rows">
-              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Lede: "the day the servers went quiet"</span><span class="tag" style="color:var(--ba)">idea</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Cut the methodology tangent</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Chase the Q3 data for section two</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-            </div>
-          </div>
-        </div>
+      <div class="who-cell" style="--ba:#18a06a">
+        <span class="who-name">Writers</span>
+        <p class="who-line">Keep the lede — and the cut — warm for the next session.</p>
       </div>
-
-      <div class="frow" data-reveal style="--ba:#6b7cff">
-        <div class="frow-text">
-          <span class="frow-eyebrow">Designers</span>
-          <h3 class="frow-h">For designers iterating in their head.</h3>
-          <p class="frow-body">The fix is obvious before you open Figma — until you open Figma. Focul holds the decision out loud so it survives the trip from couch to canvas.</p>
-        </div>
-        <div class="frow-visual">
-          <div class="vcard">
-            <div class="extract-label">Decision held overnight</div>
-            <div class="task-rows">
-              <div class="task-row"><span class="bullet" style="background:var(--ba)"></span><span class="txt">Drop the modal — use inline editing</span><span class="tag" style="color:var(--ba)">idea</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Test the 8px grid on the cards</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-              <div class="task-row"><span class="bullet" style="background:var(--tag-action)"></span><span class="txt">Ship the empty-state illustration</span><span class="tag" style="color:var(--tag-action)">action</span></div>
-            </div>
-          </div>
-        </div>
+      <div class="who-cell" style="--ba:#6b7cff">
+        <span class="who-name">Designers</span>
+        <p class="who-line">Hold the decision out loud so it survives the trip to Figma.</p>
       </div>
+      <a class="who-cell who-cell--cta" href="/waitlist">
+        <span class="who-line">However you think out loud — Focul closes the loop.</span>
+        <span class="who-arrow">Join the waitlist →</span>
+      </a>
     </div>
   </div>
 </section>
