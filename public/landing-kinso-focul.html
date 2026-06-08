@@ -76,14 +76,7 @@
         <a class="btn btn-ghost" href="#how">See how it works</a>
       </div>
       <div class="hero-proof" data-reveal data-delay="3">
-        <svg class="proof-logo" width="28" height="22" viewBox="0 0 28 22" fill="none">
-          <rect x="0" y="7" width="4" height="8" rx="2" fill="#b6d8c0"/>
-          <rect x="6" y="3" width="4" height="16" rx="2" fill="#7cc096"/>
-          <rect x="12" y="0" width="4" height="22" rx="2" fill="#1a5c32"/>
-          <rect x="18" y="2" width="4" height="18" rx="2" fill="#3da366"/>
-          <rect x="24" y="6" width="4" height="10" rx="2" fill="#a3cfb3"/>
-        </svg>
-        Building alongside <strong id="wl-count-2" style="color:var(--l-ink);font-weight:600;margin:0 .2em">47</strong> other founders
+        Join <strong id="wl-count-2" class="wl-num">47</strong> others on the waitlist.
       </div>
     </div>
 
@@ -390,11 +383,9 @@
 <section class="section light cta" data-nav="light">
   <div class="wrap">
     <div class="cta-card" data-reveal>
-      <span class="eyebrow"><span class="dot"></span>Start the loop</span>
-      <h2 class="h-sec" style="margin-top:20px">Do 10 sessions.<br /><span class="accent" style="background-image:linear-gradient(95deg,#2a6e49,#357a52)">See what changes.</span></h2>
-      <p class="lead" style="margin:22px auto 0;text-align:center">After 10 sessions you'll know where every minute went. After 30, you won't want to stop.</p>
-      <div style="display:flex;justify-content:center;margin-top:32px">
-        <a class="btn btn-accent" href="/waitlist">Join the waitlist
+      <h2 class="cta-join">Join <strong id="wl-count-3" class="wl-num">47</strong> others on the waitlist.</h2>
+      <div style="display:flex;justify-content:center;margin-top:28px">
+        <a class="btn btn-accent" href="/waitlist">Join now
           <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -420,7 +411,7 @@
 <script>
 // Live waitlist count
 (async function() {
-  var els = [document.getElementById('wl-count'), document.getElementById('wl-count-2')].filter(Boolean);
+  var els = [document.getElementById('wl-count'), document.getElementById('wl-count-2'), document.getElementById('wl-count-3')].filter(Boolean);
   if (!els.length) return;
   var target = 47;
   try {

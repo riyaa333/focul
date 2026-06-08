@@ -185,8 +185,12 @@ body {
 .hero-h .muted { color: rgba(20,24,26,.34); font-weight: 450; }
 .hero .lead { margin-top: 28px; }
 .hero-cta { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
-.hero-proof { display: flex; align-items: center; gap: 12px; margin-top: 30px; color: var(--l-sub); font-size: 14px; }
+.hero-proof { margin-top: 30px; color: var(--l-sub); font-size: 16px; }
 .proof-logo { flex-shrink: 0; }
+.wl-num { color: var(--accent); font-weight: 700; margin: 0 .15em; }
+/* simplistic Kinso-style closing CTA */
+.cta-join { font-size: clamp(28px, 4vw, 46px); font-weight: 600; letter-spacing: -.03em; color: var(--l-ink); margin: 0; text-align: center; }
+.cta-join .wl-num { font-size: 1em; }
 
 .hero-visual { position: relative; display: flex; justify-content: center; }
 
