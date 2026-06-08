@@ -481,12 +481,15 @@ html:not(.js) .ascreen { height: auto; min-height: 200px; }
   mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
 .marquee-track {
-  display: flex; align-items: center; gap: 64px; width: max-content;
+  display: flex; align-items: center; width: max-content;
   animation: marquee 34s linear infinite;
+  will-change: transform;
 }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 .intg {
   display: inline-flex; align-items: center; gap: 11px; flex: 0 0 auto;
+  /* spacing as margin (not flex gap) so the last item carries it too — seamless loop */
+  margin-right: 64px;
   font-size: 19px; font-weight: 650; letter-spacing: -.01em; color: var(--ink);
   opacity: .82; transition: opacity .2s;
 }
@@ -581,8 +584,7 @@ html.js [data-reveal].in[data-delay="3"] { animation-delay: .24s; }
   .sstrip { gap: 22px; }
   .sstrip-head { font-size: 17px; }
   .sl { grid-template-columns: 48px 1fr auto; gap: 10px; }
-  .intg { font-size: 16px; gap: 9px; }
-  .marquee-track { gap: 44px; }
+  .intg { font-size: 16px; gap: 9px; margin-right: 44px; }
 
   /* section heads: a touch tighter */
   .section-head .lead { margin-top: 14px; }
