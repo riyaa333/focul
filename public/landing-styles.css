@@ -92,10 +92,10 @@ body {
 .eyebrow .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); }
 
 .h-sec {
-  font-size: clamp(34px, 4.4vw, 56px); line-height: 1.02; letter-spacing: -.035em;
-  font-weight: 640; margin: 22px 0 0; color: var(--ink); text-wrap: balance;
+  font-size: clamp(34px, 4.4vw, 56px); line-height: 1.06; letter-spacing: -.032em;
+  font-weight: 600; margin: 22px 0 0; color: var(--ink); text-wrap: balance;
 }
-.h-sec .muted { color: var(--faint); }
+.h-sec .muted { color: var(--faint); font-weight: 450; }
 .h-sec .accent {
   background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -179,10 +179,10 @@ body {
 .hero { padding: 150px 0 96px; background: var(--l-bg-grad); overflow: hidden; }
 .hero .wrap { display: grid; grid-template-columns: 1fr 1.04fr; gap: 24px; align-items: center; }
 .hero-h {
-  font-size: clamp(44px, 5.6vw, 72px); line-height: .99; letter-spacing: -.042em;
-  font-weight: 640; margin: 24px 0 0; color: #14181a;
+  font-size: clamp(44px, 5.6vw, 72px); line-height: 1.04; letter-spacing: -.038em;
+  font-weight: 600; margin: 24px 0 0; color: #14181a;
 }
-.hero-h .muted { color: rgba(20,24,26,.34); }
+.hero-h .muted { color: rgba(20,24,26,.34); font-weight: 450; }
 .hero .lead { margin-top: 28px; }
 .hero-cta { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
 .hero-proof { display: flex; align-items: center; gap: 12px; margin-top: 30px; color: var(--l-sub); font-size: 14px; }
