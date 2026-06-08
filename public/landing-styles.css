@@ -413,10 +413,8 @@ html:not(.js) .ascreen { height: auto; min-height: 200px; }
 .cta { text-align: center; }
 .cta .h-sec { font-size: clamp(40px,5vw,64px); }
 .cta-card {
-  max-width: 920px; margin: 0 auto; padding: 80px 40px 96px; border-radius: 32px;
-  background: var(--l-bg-grad); border: 1px solid var(--l-border);
-  position: relative; overflow: hidden;
-  box-shadow: 0 40px 90px -50px rgba(24,160,106,.35);
+  max-width: 720px; margin: 0 auto; padding: 40px 24px;
+  position: relative;
 }
 .cta-card > *:not(.cta-glow):not(.cta-wave) { position: relative; z-index: 2; }
 .cta-glow { position: absolute; top: -120px; left: 50%; transform: translateX(-50%); width: 700px; height: 360px; border-radius: 999px; background: var(--accent); opacity: .12; filter: blur(110px); pointer-events: none; }
