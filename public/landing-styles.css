@@ -434,6 +434,55 @@ html:not(.js) .ascreen { height: auto; min-height: 200px; }
 .section.dark .focus-status, .section.dark .focus-hint { font-size: 15px; }
 .rec-head .rec { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ba, var(--accent)); }
 .rec-head .rec i { background: var(--ba, var(--accent)) !important; }
+
+/* ---- distinct per-beat visuals that float on the grid (How it works) ---- */
+/* beat 0: menu-bar timer widget */
+.v-focus { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.mbwidget {
+  display: inline-flex; align-items: center; gap: 20px;
+  background: rgba(18,23,21,.88); border: 1px solid rgba(255,255,255,.10);
+  border-radius: 14px; padding: 14px 24px;
+  box-shadow: 0 34px 64px -32px rgba(0,0,0,.75);
+}
+.mbw-status { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,.55); white-space: nowrap; }
+.mbw-status .pulse { width: 8px; height: 8px; border-radius: 99px; background: var(--ba, var(--accent)); }
+.mbw-time { font-size: 38px; font-weight: 600; letter-spacing: -.04em; font-variant-numeric: tabular-nums; color: #f3f5f4; }
+.v-note { font-size: 14px; line-height: 1.5; color: rgba(255,255,255,.42); text-align: center; max-width: 300px; margin: 0; }
+
+/* beat 1: notification toast */
+.v-toast {
+  display: flex; align-items: center; gap: 14px; width: 100%; max-width: 400px;
+  background: rgba(26,23,20,.9); border: 1px solid rgba(255,255,255,.10); border-left: 3px solid var(--ba);
+  border-radius: 16px; padding: 16px 18px; box-shadow: 0 34px 64px -30px rgba(0,0,0,.75);
+}
+.vt-ico { width: 42px; height: 42px; border-radius: 11px; background: color-mix(in srgb, var(--ba) 18%, transparent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.vt-ico svg { width: 22px; height: 22px; color: var(--ba); }
+.vt-tx { display: flex; flex-direction: column; gap: 3px; }
+.vt-title { font-size: 15px; font-weight: 600; color: #f3f5f4; }
+.vt-body { font-size: 13px; color: rgba(255,255,255,.55); }
+
+/* beat 2: recording capsule + transcript bubble */
+.v-speak { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 430px; }
+.v-rechud {
+  display: flex; align-items: center; gap: 13px; width: 100%;
+  background: rgba(18,22,28,.88); border: 1px solid rgba(255,255,255,.10);
+  border-radius: 999px; padding: 12px 20px; box-shadow: 0 28px 56px -30px rgba(0,0,0,.7);
+}
+.rec-dot { width: 9px; height: 9px; border-radius: 99px; background: #ff5f57; flex-shrink: 0; }
+.v-rechud .wave { flex: 1; height: 24px; margin: 0; }
+.v-rectime { font-family: var(--font-mono); font-size: 13px; color: rgba(255,255,255,.55); flex-shrink: 0; }
+.v-bubble {
+  align-self: flex-end; max-width: 350px;
+  background: color-mix(in srgb, var(--ba) 14%, transparent); border: 1px solid color-mix(in srgb, var(--ba) 28%, transparent);
+  border-radius: 16px 16px 4px 16px; padding: 14px 16px;
+  font-size: 13.5px; line-height: 1.5; color: rgba(255,255,255,.82); font-style: italic;
+}
+
+/* beat 3: floating task list */
+.v-brief { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 14px; }
+.v-brief-head { display: flex; align-items: center; justify-content: space-between; }
+.v-brief-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+.v-chip { font-size: 11px; font-weight: 600; color: var(--ba); background: color-mix(in srgb, var(--ba) 16%, transparent); border-radius: 999px; padding: 4px 11px; }
 .frow .bell-emoji svg { color: var(--ba, var(--accent)); }
 .frow .focus-status .pulse { background: var(--ba, var(--accent)); }
 .frow .wave i.on { background: var(--ba, var(--accent)); }
