@@ -74,11 +74,11 @@ body {
 .section.dark .grid-tex {
   position: absolute; inset: 0; pointer-events: none;
   background-image:
-    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-  background-size: 34px 34px;
-  -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 95%);
-          mask-image: radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 95%);
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 42px 42px;
+  -webkit-mask-image: radial-gradient(135% 115% at 50% 28%, #000 58%, transparent 100%);
+          mask-image: radial-gradient(135% 115% at 50% 28%, #000 58%, transparent 100%);
 }
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; position: relative; }
 
@@ -328,9 +328,9 @@ body {
 /* ============================================================
    INSIDE — 4-step loop (dark)
    ============================================================ */
-.step-index { font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: .12em; color: var(--accent); }
-.step-h { font-size: clamp(28px,3vw,40px); line-height: 1.04; letter-spacing: -.03em; font-weight: 620; margin: 16px 0 0; color: var(--ink); }
-.step-body { font-size: 16.5px; line-height: 1.6; color: var(--sub); margin: 18px 0 0; max-width: 440px; }
+.step-index { font-family: var(--font-mono); font-size: 14px; font-weight: 700; letter-spacing: .12em; color: var(--accent); }
+.step-h { font-size: clamp(36px,4vw,54px); line-height: 1.03; letter-spacing: -.035em; font-weight: 600; margin: 18px 0 0; color: var(--ink); }
+.step-body { font-size: 18px; line-height: 1.6; color: var(--sub); margin: 22px 0 0; max-width: 460px; }
 
 /* ---------- scroll-pinned showcase (How it works) ---------- */
 .scrolly { position: relative; margin-top: 60px; }
@@ -347,7 +347,7 @@ html.js .spanel { position: absolute; inset: 0; opacity: 0; transform: translate
 html.js .spanel.on { opacity: 1; transform: none; pointer-events: auto; }
 .spanel .step-index { color: var(--ba, var(--accent)); transition: color .4s; }
 .scrolly-visual { display: flex; align-items: center; justify-content: center; }
-.appscreen-view { position: relative; width: 100%; max-width: 460px; height: 440px; overflow: hidden; }
+.appscreen-view { position: relative; width: 100%; max-width: 560px; height: 480px; overflow: hidden; }
 .appscreen-view::before, .appscreen-view::after { content: ""; position: absolute; left: 0; right: 0; height: 64px; z-index: 2; pointer-events: none; }
 .appscreen-view::before { top: 0; background: linear-gradient(var(--bg), transparent); }
 .appscreen-view::after { bottom: 0; background: linear-gradient(transparent, var(--bg)); }
@@ -422,6 +422,16 @@ html:not(.js) .ascreen { height: auto; min-height: 200px; }
   background: var(--ba, var(--accent)); opacity: .9;
 }
 .vcard--center { display: flex; align-items: center; justify-content: center; min-height: 220px; }
+/* dark section: big translucent glass card so the grid shows through (Kinso-style) */
+.section.dark .vcard {
+  background: rgba(20, 25, 23, 0.55);
+  border-color: rgba(255,255,255,.10);
+  box-shadow: 0 50px 110px -50px rgba(0,0,0,.75);
+  padding: 34px;
+}
+.section.dark .vcard--center { min-height: 300px; }
+.section.dark .focus-time { font-size: 80px; }
+.section.dark .focus-status, .section.dark .focus-hint { font-size: 15px; }
 .rec-head .rec { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ba, var(--accent)); }
 .rec-head .rec i { background: var(--ba, var(--accent)) !important; }
 .frow .bell-emoji svg { color: var(--ba, var(--accent)); }
