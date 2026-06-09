@@ -130,13 +130,21 @@ function WaitlistInner() {
           <WaveLogo size={22} /> FOCUL
         </Link>
         <div className={s.hero}>
-          <div className={s.iconStage} aria-hidden>
-            <div className={`${s.appIcon} ${s.i1}`}>📷</div>
-            <div className={`${s.appIcon} ${s.i2}`}>💬</div>
-            <div className={`${s.appIcon} ${s.i3}`}>📺</div>
-            <div className={`${s.appIcon} ${s.i4}`}>🎵</div>
-            <div className={`${s.appIcon} ${s.i5}`}>🎮</div>
-            <div className={`${s.appIcon} ${s.i6}`}>📱</div>
+          <div className={s.waveStage} aria-hidden="true">
+            {Array.from({ length: 34 }).map((_, i) => {
+              const h = 16 + Math.abs(Math.sin(i * 0.55)) * 64 + Math.abs(Math.sin(i * 0.19)) * 18
+              return (
+                <span
+                  key={i}
+                  className={s.wbar}
+                  style={{
+                    height: `${h.toFixed(0)}px`,
+                    animationDelay: `${(-(i % 11) * 0.12).toFixed(2)}s`,
+                    animationDuration: `${(1.6 + (i % 5) * 0.18).toFixed(2)}s`,
+                  }}
+                />
+              )
+            })}
           </div>
           <h1 className={s.heroTitle}>Apply for Focul Invite-Only Access</h1>
           <p className={s.heroSub}>
