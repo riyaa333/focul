@@ -714,16 +714,19 @@ export default function DashboardPage() {
             </div>
 
             {/* ── Bento grid: dark timer hero left, coach/stats/tasks right ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.45fr 1fr', gap: 14, alignItems: 'stretch' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.45fr 1fr', gap: 14, alignItems: 'start' }}>
 
             {/* ── Hero timer card (dark deep-forest) ── */}
+            {/* Sticky + natural height: stretching to match a long right column
+                leaves a huge empty dark void above the timer */}
             <div style={{
               background: '#13291B',
               borderRadius: 6,
               border: '1px solid #13291B',
-              padding: '64px 48px 56px',
+              padding: '72px 48px 64px',
               textAlign: 'center',
               display: 'flex', flexDirection: 'column', justifyContent: 'center',
+              position: 'sticky', top: 92,
             }}>
               <p style={{
                 fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase',
