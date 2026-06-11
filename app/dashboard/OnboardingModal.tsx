@@ -201,18 +201,18 @@ export default function OnboardingModal({ onDismiss }: Props) {
 
                   <button onClick={() => setSelectedMode('accountability')} style={{
                     textAlign: 'left', padding: '16px 18px', borderRadius: 16, cursor: 'pointer',
-                    border: selectedMode === 'accountability' ? '2px solid #2d6aaa' : '1.5px solid #e8e2d8',
+                    border: selectedMode === 'accountability' ? '2px solid #3D6B47' : '1.5px solid #e8e2d8',
                     background: selectedMode === 'accountability' ? '#f0f5fb' : '#fff',
                     transition: 'all 0.18s',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
                       <div style={{
-                        width: 32, height: 32, borderRadius: 10, background: '#2d6aaa',
+                        width: 32, height: 32, borderRadius: 10, background: '#3D6B47',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: 15,
                       }}>✓</div>
                       <span style={{ fontSize: 14, fontWeight: 700, color: '#1a1410' }}>Accountability mode</span>
-                      {selectedMode === 'accountability' && <span style={{ marginLeft: 'auto', fontSize: 12, color: '#2d6aaa', fontWeight: 600 }}>✓ selected</span>}
+                      {selectedMode === 'accountability' && <span style={{ marginLeft: 'auto', fontSize: 12, color: '#3D6B47', fontWeight: 600 }}>✓ selected</span>}
                     </div>
                     <p style={{ fontSize: 12, color: '#a09888', lineHeight: 1.5, margin: 0 }}>
                       Set your tasks before you start. Review what you actually completed when the timer ends.

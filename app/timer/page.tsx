@@ -511,7 +511,7 @@ function TimerContent() {
             <button
               onClick={() => { setSecondsLeft(totalSeconds); setPhase('running') }}
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #2d8a44, #4db864)', boxShadow: '0 4px 16px rgba(58,158,82,0.3)' }}
+              style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}
             >
               Start {durationMinutes} min session →
             </button>
@@ -520,19 +520,24 @@ function TimerContent() {
 
         {/* INPUT (Accountability pre-timer) */}
         {phase === 'input' && (
-          <div className="w-full max-w-sm">
-            <h2 className="text-2xl font-bold text-center text-[#1a3020] mb-2 tracking-tight">What&apos;s the plan?</h2>
-            <p className="text-sm text-[#a8c4a8] text-center mb-6">Set your tasks before the clock starts.</p>
+          <div className="w-full max-w-md bg-white border border-[#E8E4DA] rounded-md px-10 py-12"
+            style={{ fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+            <p className="text-[11px] font-semibold text-center uppercase text-[#7BA177] mb-3" style={{ letterSpacing: '0.18em' }}>
+              Accountability sprint
+            </p>
+            <h2 className="text-2xl font-semibold text-center text-[#1F3A24] mb-2 tracking-tight">What&apos;s the plan?</h2>
+            <p className="text-sm text-[#8A8678] text-center mb-7">Set your tasks before the clock starts.</p>
 
             {/* Mode toggle */}
-            <div className="flex bg-[#eef4ee] rounded-full p-1 mb-5">
+            <div className="flex bg-[#F2EFE7] p-[3px] mb-5" style={{ borderRadius: 7 }}>
               {(['voice', 'type'] as const).map(m => (
                 <button key={m} onClick={() => setInputMode(m)}
-                  className="flex-1 py-2 rounded-full text-xs font-semibold transition-all"
+                  className="flex-1 py-2 text-xs font-semibold transition-all"
                   style={{
+                    borderRadius: 5,
                     background: inputMode === m ? '#fff' : 'transparent',
-                    color: inputMode === m ? '#1a3020' : '#9ab09a',
-                    boxShadow: inputMode === m ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                    color: inputMode === m ? '#1F3A24' : '#8A8678',
+                    boxShadow: inputMode === m ? '0 1px 3px rgba(31,58,36,0.08)' : 'none',
                   }}>
                   {m === 'voice' ? 'Speak' : 'Type'}
                 </button>
@@ -543,7 +548,7 @@ function TimerContent() {
             {accountabilityItems.length > 0 && (
               <div className="space-y-2 mb-4">
                 {accountabilityItems.map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[#dceadc] bg-white">
+                  <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-md border border-[#E8E4DA] bg-[#FAF9F4]">
                     <span className="text-[#3a9e52] font-bold text-sm w-4 flex-shrink-0">{i + 1}.</span>
                     <span className="text-sm text-[#1a3020] flex-1">{item.text}</span>
                     <button onClick={() => setAccountabilityItems(prev => prev.filter((_, j) => j !== i))}
@@ -560,7 +565,7 @@ function TimerContent() {
                   <div className="flex flex-col items-center gap-3 py-4">
                     <div className="flex gap-1.5">
                       {[0, 1, 2].map(i => (
-                        <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#4a8fd4]"
+                        <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#3D6B47]"
                           style={{ animation: 'wavebar 0.7s ease-in-out infinite alternate', animationDelay: `${i * 0.15}s` }} />
                       ))}
                     </div>
@@ -571,9 +576,9 @@ function TimerContent() {
                     <button onClick={startInputRecording}
                       className="relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
                       style={{ width: 72, height: 72 }}>
-                      <span className="absolute inset-0 rounded-full bg-[#4a8fd4] opacity-15" style={{ transform: 'scale(1.35)' }} />
+                      <span className="absolute inset-0 rounded-full bg-[#3D6B47] opacity-15" style={{ transform: 'scale(1.35)' }} />
                       <span className="relative flex items-center justify-center w-[72px] h-[72px] rounded-full"
-                        style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 6px 24px rgba(45,106,170,0.35)' }}>
+                        style={{ background: '#3D6B47', boxShadow: '0 6px 24px rgba(61,107,71,0.30)' }}>
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
                           <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
                           <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
@@ -591,15 +596,15 @@ function TimerContent() {
                 ) : (
                   <div className="flex flex-col items-center gap-4 w-full">
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-[#4a8fd4] rounded-full animate-pulse" />
-                      <span className="text-xs font-semibold tracking-widest uppercase text-[#4a8fd4]">
+                      <span className="w-2 h-2 bg-[#3D6B47] rounded-full animate-pulse" />
+                      <span className="text-xs font-semibold tracking-widest uppercase text-[#3D6B47]">
                         {String(Math.floor(inputRecordingSeconds / 60)).padStart(2, '0')}:{String(inputRecordingSeconds % 60).padStart(2, '0')}
                       </span>
                     </div>
                     <p className="text-xs text-[#b0c8b4] text-center">Say your tasks naturally...</p>
                     <button onClick={stopInputRecording}
-                      className="px-8 py-3.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                      style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 4px 16px rgba(45,106,170,0.3)' }}>
+                      className="px-8 py-3.5 rounded-md text-sm font-semibold text-white transition-all hover:opacity-90"
+                      style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}>
                       Stop recording
                     </button>
                   </div>
@@ -615,13 +620,13 @@ function TimerContent() {
                   onChange={e => setInputTask(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') addAccountabilityItem() }}
                   placeholder={accountabilityItems.length === 0 ? 'e.g. Finish the landing page copy' : 'Add another task...'}
-                  className="flex-1 text-sm border border-[#e0ede0] rounded-xl px-4 py-3 outline-none bg-white text-[#1a3020] placeholder-[#c0d4c0]"
+                  className="flex-1 text-sm border border-[#E8E4DA] rounded-md px-4 py-3 outline-none bg-white text-[#1F3A24] placeholder-[#B5B09C]"
                   style={{ fontFamily: 'inherit' }}
                   autoFocus
                 />
                 {inputTask.trim() && (
                   <button onClick={addAccountabilityItem}
-                    className="px-4 py-3 rounded-xl text-[#4a8fd4] font-bold text-xl bg-[#eef4fb] hover:bg-[#e0ecf8] transition-colors">
+                    className="px-4 py-3 rounded-md text-[#3D6B47] font-bold text-xl bg-[#EFF4E8] hover:bg-[#E2EDD8] transition-colors">
                     +
                   </button>
                 )}
@@ -631,8 +636,8 @@ function TimerContent() {
             {accountabilityItems.length > 0 && !inputRecording && !inputProcessing && (
               <button
                 onClick={() => { setSecondsLeft(totalSeconds); setPhase('running') }}
-                className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 4px 16px rgba(45,106,170,0.3)' }}
+                className="w-full py-4 rounded-md text-sm font-semibold text-white transition-all hover:opacity-90"
+                style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}
               >
                 Start {durationMinutes} min session →
               </button>
@@ -651,7 +656,7 @@ function TimerContent() {
               fontWeight: 500,
               letterSpacing: '-0.045em',
               lineHeight: 1,
-              color: mode === 'accountability' ? '#2a3a52' : '#2a3a2c',
+              color: mode === 'accountability' ? '#2a3a2c' : '#2a3a2c',
               display: 'inline-flex', alignItems: 'baseline', gap: 6,
             }}>
               <span>{String(minutes).padStart(2, '0')}</span>
@@ -663,7 +668,7 @@ function TimerContent() {
             <div aria-hidden="true" style={{
               margin: '52px auto 36px',
               width: 36, height: 1,
-              background: mode === 'accountability' ? 'rgba(94,111,140,0.30)' : 'rgba(94,111,94,0.28)',
+              background: mode === 'accountability' ? 'rgba(94,111,94,0.28)' : 'rgba(94,111,94,0.28)',
             }} />
 
             {/* Quote — treated like a book epigraph */}
@@ -673,7 +678,7 @@ function TimerContent() {
               fontWeight: 500,
               fontSize: 'clamp(15px, 1.4vw, 18px)',
               lineHeight: 1.55,
-              color: mode === 'accountability' ? '#5e6f8a' : '#5e6f5e',
+              color: mode === 'accountability' ? '#5e6f5e' : '#5e6f5e',
               maxWidth: 420,
               margin: '0 auto',
               letterSpacing: '0',
@@ -892,8 +897,8 @@ function TimerContent() {
 
             <button
               onClick={finishAccountability}
-              className="w-full py-4 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #2d6aaa, #4a8fd4)', boxShadow: '0 4px 16px rgba(45,106,170,0.3)' }}
+              className="w-full py-4 rounded-md text-sm font-semibold text-white transition-all hover:opacity-90"
+              style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}
             >
               Save & finish →
             </button>

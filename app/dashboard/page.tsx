@@ -307,17 +307,17 @@ export default function DashboardPage() {
                       {(['focus', 'accountability'] as const).map(m => (
                         <button key={m} onClick={() => setMode(m)} style={{
                           padding: '5px 14px', borderRadius: 100, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: 'none',
-                          background: mode === m ? (m === 'focus' ? '#1a1410' : '#2d6aaa') : 'transparent',
-                          color: mode === m ? '#fff' : '#b0a898', transition: 'all 0.18s',
+                          background: mode === m ? (m === 'focus' ? '#1F3A24' : '#C5D9B8') : 'transparent',
+                          color: mode === m ? (m === 'focus' ? '#fff' : '#13291B') : '#b0a898', transition: 'all 0.18s',
                         }}>{m === 'focus' ? 'Focus' : 'Accountability'}</button>
                       ))}
                     </div>
                   </div>
                   <button onClick={startSession} style={{
                     width: '100%', padding: '15px 0', borderRadius: 8, fontSize: 15, fontWeight: 700,
-                    color: '#fff', cursor: 'pointer', border: 'none',
-                    background: mode === 'accountability' ? 'linear-gradient(135deg, #2d6aaa, #4a8fd4)' : 'linear-gradient(135deg, #2d8a44, #4aaa60)',
-                    boxShadow: mode === 'accountability' ? '0 4px 20px rgba(45,106,170,0.22)' : '0 4px 20px rgba(45,138,68,0.22)',
+                    color: mode === 'accountability' ? '#13291B' : '#fff', cursor: 'pointer', border: 'none',
+                    background: mode === 'accountability' ? '#C5D9B8' : '#1F3A24',
+                    boxShadow: 'none',
                   }}>
                     Start {activeDuration} min →
                   </button>
@@ -730,7 +730,7 @@ export default function DashboardPage() {
             }}>
               <p style={{
                 fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase',
-                color: mode === 'accountability' ? '#7fa3c9' : '#7BA177', marginBottom: 22,
+                color: '#7BA177', marginBottom: 22,
               }}>
                 Ready when you are
               </p>
@@ -739,7 +739,7 @@ export default function DashboardPage() {
                 fontSize: 128, fontWeight: 700, letterSpacing: '-0.05em', lineHeight: 1,
                 color: '#F7F5EF', fontVariantNumeric: 'tabular-nums', marginBottom: 18,
               }}>
-                {timerDisplay}<span style={{ color: mode === 'accountability' ? '#7fa3c9' : '#7BA177' }}>{timerSuffix}</span>
+                {timerDisplay}<span style={{ color: '#7BA177' }}>{timerSuffix}</span>
               </div>
 
               {/* Soundwave divider */}
@@ -807,8 +807,8 @@ export default function DashboardPage() {
                     <button key={m} onClick={() => setMode(m)} style={{
                       padding: '6px 18px', borderRadius: 5, fontSize: 11, fontWeight: 600,
                       cursor: 'pointer', border: 'none', fontFamily: 'inherit',
-                      background: mode === m ? (m === 'focus' ? '#3D6B47' : '#2d6aaa') : 'transparent',
-                      color: mode === m ? '#F7F5EF' : '#7BA177',
+                      background: mode === m ? (m === 'focus' ? '#3D6B47' : '#C5D9B8') : 'transparent',
+                      color: mode === m ? (m === 'focus' ? '#F7F5EF' : '#13291B') : '#7BA177',
                       transition: 'all 0.18s',
                     }}>
                       {m === 'focus' ? 'Focus' : 'Accountability'}
@@ -822,8 +822,8 @@ export default function DashboardPage() {
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                 padding: '16px 36px', borderRadius: 6, alignSelf: 'center',
                 fontSize: 16, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit',
-                color: mode === 'accountability' ? '#fff' : '#13291B',
-                background: mode === 'accountability' ? '#2d6aaa' : '#F7F5EF',
+                color: '#13291B',
+                background: mode === 'accountability' ? '#C5D9B8' : '#F7F5EF',
                 transition: 'all 0.2s',
                 letterSpacing: '0.01em',
               }}>
