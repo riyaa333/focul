@@ -140,7 +140,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#faf9f7' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F7F5EF' }}>
         <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3a9e52', animation: 'ping 1s infinite' }} />
       </div>
     )
@@ -191,8 +191,8 @@ export default function DashboardPage() {
     return (
       <div style={{
         minHeight: '100vh',
-        background: '#faf9f7',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        background: '#F7F5EF',
+        fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
         opacity: isLeaving ? 0 : 1,
         transition: 'opacity 0.38s ease',
         paddingBottom: 80, // space for bottom nav
@@ -267,7 +267,7 @@ export default function DashboardPage() {
           {/* Timer card */}
           {activeNav === 'dashboard' && (
             <>
-              <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+              <div style={{ background: '#fff', borderRadius: 8, border: '1px solid #E8E4DA', boxShadow: 'none', overflow: 'hidden' }}>
                 {/* Timer display */}
                 <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid #f3f1ee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
                   <div style={{ fontSize: 72, fontWeight: 900, letterSpacing: -4, lineHeight: 1, color: '#1a1410' }}>
@@ -314,7 +314,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <button onClick={startSession} style={{
-                    width: '100%', padding: '15px 0', borderRadius: 14, fontSize: 15, fontWeight: 700,
+                    width: '100%', padding: '15px 0', borderRadius: 8, fontSize: 15, fontWeight: 700,
                     color: '#fff', cursor: 'pointer', border: 'none',
                     background: mode === 'accountability' ? 'linear-gradient(135deg, #2d6aaa, #4a8fd4)' : 'linear-gradient(135deg, #2d8a44, #4aaa60)',
                     boxShadow: mode === 'accountability' ? '0 4px 20px rgba(45,106,170,0.22)' : '0 4px 20px rgba(45,138,68,0.22)',
@@ -339,7 +339,7 @@ export default function DashboardPage() {
               </div>
 
               {/* To-do */}
-              <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #ede9e2', boxShadow: '0 2px 16px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+              <div style={{ background: '#fff', borderRadius: 8, border: '1px solid #E8E4DA', boxShadow: 'none', overflow: 'hidden' }}>
                 <div style={{ padding: '16px 20px 12px', borderBottom: '1px solid #f3f1ee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8' }}>To-do</p>
                   {todos.filter(t => t.completed).length > 0 && (
@@ -397,7 +397,7 @@ export default function DashboardPage() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {sessions.map(session => (
-                    <div key={session.id} style={{ background: '#fff', borderRadius: 14, padding: '12px 16px', border: '1px solid #ede9e2' }}>
+                    <div key={session.id} style={{ background: '#fff', borderRadius: 8, padding: '12px 16px', border: '1px solid #E8E4DA' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                         <span style={{ fontSize: 13, fontWeight: 600, color: '#1a1410' }}>{session.duration_minutes} min</span>
                         <span style={{ fontSize: 11, color: '#c0b8a8' }}>{timeAgo(session.created_at)}</span>
@@ -461,9 +461,9 @@ export default function DashboardPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif',
-      background: '#faf9f7',
-      color: '#0d1f15',
+      fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+      background: '#F7F5EF',
+      color: '#1F3A24',
       opacity: isLeaving ? 0 : 1,
       transform: isLeaving ? 'scale(1.02)' : 'scale(1)',
       transition: 'opacity 0.38s cubic-bezier(0.4,0,0.2,1), transform 0.38s cubic-bezier(0.4,0,0.2,1)',
@@ -475,8 +475,8 @@ export default function DashboardPage() {
       <nav style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '18px 32px',
-        borderBottom: '1px solid rgba(30,55,32,0.08)',
-        background: 'rgba(250,249,247,0.88)',
+        borderBottom: '1px solid #E8E4DA',
+        background: 'rgba(247,245,239,0.88)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         position: 'sticky', top: 0, zIndex: 10,
@@ -494,7 +494,7 @@ export default function DashboardPage() {
           <span>Focul</span>
         </div>
 
-        <div style={{ display: 'flex', gap: 2, background: '#f3f1ec', padding: 4, borderRadius: 999 }}>
+        <div style={{ display: 'flex', gap: 2, background: '#EFEBE1', padding: 3, borderRadius: 7 }}>
           {([
             { key: 'dashboard', label: 'Today' },
             { key: 'history', label: 'History' },
@@ -502,12 +502,12 @@ export default function DashboardPage() {
             <button key={key}
               onClick={() => setActiveNav(key)}
               style={{
-                padding: '7px 18px', borderRadius: 999,
+                padding: '7px 18px', borderRadius: 5,
                 fontSize: 13, fontWeight: 500,
                 border: 'none', cursor: 'pointer',
                 background: activeNav === key ? '#fff' : 'transparent',
-                color: activeNav === key ? '#0d1f15' : 'rgba(13,31,21,0.62)',
-                boxShadow: activeNav === key ? '0 1px 3px rgba(0,0,0,0.06)' : 'none',
+                color: activeNav === key ? '#1F3A24' : '#8A8678',
+                boxShadow: activeNav === key ? '0 1px 3px rgba(31,58,36,0.08)' : 'none',
                 transition: 'all 0.15s',
               }}>
               {label}
@@ -515,10 +515,10 @@ export default function DashboardPage() {
           ))}
           <button onClick={() => router.push('/settings')}
             style={{
-              padding: '7px 18px', borderRadius: 999,
+              padding: '7px 18px', borderRadius: 5,
               fontSize: 13, fontWeight: 500,
               border: 'none', cursor: 'pointer',
-              background: 'transparent', color: 'rgba(13,31,21,0.62)',
+              background: 'transparent', color: '#8A8678',
               transition: 'all 0.15s',
             }}>
             Settings
@@ -530,8 +530,8 @@ export default function DashboardPage() {
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
               fontSize: 12, fontWeight: 500,
-              color: '#1e5c30', background: '#d4ead8',
-              padding: '6px 12px', borderRadius: 999,
+              color: '#3D6B47', background: '#EFF4E8',
+              padding: '6px 12px', borderRadius: 6,
             }}>
               🔥 {computedStreak}-day streak
             </span>
@@ -564,7 +564,7 @@ export default function DashboardPage() {
                   minWidth: 240, zIndex: 50,
                   background: '#fffdf8',
                   border: '1px solid rgba(30,55,32,0.10)',
-                  borderRadius: 14,
+                  borderRadius: 8,
                   boxShadow:
                     '0 1px 2px rgba(13,31,21,0.04), 0 12px 32px rgba(13,31,21,0.10)',
                   overflow: 'hidden',
@@ -663,7 +663,7 @@ export default function DashboardPage() {
 
 
       {/* ── Main ── */}
-      <main style={{ maxWidth: 720, margin: '0 auto', padding: activeNav === 'dashboard' ? '56px 32px 96px' : '48px 32px' }}>
+      <main style={{ maxWidth: 1240, margin: '0 auto', padding: activeNav === 'dashboard' ? '36px 40px 64px' : '48px 32px' }}>
 
         {activeNav === 'dashboard' && (
           <div style={{ width: '100%' }}>
@@ -713,59 +713,67 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* Focus Coach (desktop) */}
-            <FocusCoach onStart={startCoachSession} />
+            {/* ── Bento grid: dark timer hero left, coach/stats/tasks right ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1.45fr 1fr', gap: 14, alignItems: 'stretch' }}>
 
-            {/* ── Hero timer card (v1 minimal) ── */}
+            {/* ── Hero timer card (dark deep-forest) ── */}
             <div style={{
-              background: '#fff',
-              borderRadius: 24,
-              border: '1px solid #ede9e2',
-              boxShadow: '0 4px 32px rgba(0,0,0,0.05)',
-              padding: '56px 48px 48px',
+              background: '#13291B',
+              borderRadius: 6,
+              border: '1px solid #13291B',
+              padding: '64px 48px 56px',
               textAlign: 'center',
-              marginBottom: 24,
+              display: 'flex', flexDirection: 'column', justifyContent: 'center',
             }}>
               <p style={{
-                fontSize: 11, fontWeight: 600, letterSpacing: 1.6, textTransform: 'uppercase',
-                color: mode === 'accountability' ? '#2d6aaa' : '#1e5c30', marginBottom: 22,
+                fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase',
+                color: mode === 'accountability' ? '#7fa3c9' : '#7BA177', marginBottom: 22,
               }}>
                 Ready when you are
               </p>
 
               <div style={{
-                fontSize: 128, fontWeight: 500, letterSpacing: -7, lineHeight: 1,
-                color: '#1a1410', fontVariantNumeric: 'tabular-nums', marginBottom: 12,
+                fontSize: 128, fontWeight: 700, letterSpacing: '-0.05em', lineHeight: 1,
+                color: '#F7F5EF', fontVariantNumeric: 'tabular-nums', marginBottom: 18,
               }}>
-                {timerDisplay}<span style={{ color: mode === 'accountability' ? '#a8c8e8' : '#8dcc9e' }}>{timerSuffix}</span>
+                {timerDisplay}<span style={{ color: mode === 'accountability' ? '#7fa3c9' : '#7BA177' }}>{timerSuffix}</span>
               </div>
 
-              <p style={{ fontSize: 14, color: '#b0a898', marginBottom: 32 }}>
+              {/* Soundwave divider */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3, height: 22, marginBottom: 18 }}>
+                {[7, 13, 22, 13, 7].map((h, i) => (
+                  <span key={i} style={{
+                    width: 4, height: h, borderRadius: 99,
+                    background: i === 2 ? '#7BA177' : i === 1 || i === 3 ? '#3D6B47' : '#27402e',
+                  }} />
+                ))}
+              </div>
+
+              <p style={{ fontSize: 14, color: '#5F7D66', marginBottom: 32 }}>
                 Bell rings, then 60s voice debrief
               </p>
 
               {/* Duration pills */}
               {!showCustom ? (
                 <div style={{
-                  display: 'inline-flex', background: '#f3f1ee', padding: 4, borderRadius: 100,
-                  marginBottom: 32,
+                  display: 'inline-flex', background: '#0E1F14', padding: 3, borderRadius: 7,
+                  marginBottom: 32, alignSelf: 'center',
                 }}>
                   {[15, 30].map(d => (
                     <button key={d} onClick={() => setSelected(d)} style={{
-                      padding: '9px 22px', borderRadius: 100, fontSize: 14, fontWeight: 500,
-                      cursor: 'pointer', border: 'none',
-                      background: selected === d && !showCustom ? '#fff' : 'transparent',
-                      color: selected === d && !showCustom ? '#1a1410' : '#a09888',
-                      boxShadow: selected === d && !showCustom ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                      padding: '9px 22px', borderRadius: 5, fontSize: 14, fontWeight: 500,
+                      cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                      background: selected === d && !showCustom ? '#3D6B47' : 'transparent',
+                      color: selected === d && !showCustom ? '#F7F5EF' : '#7BA177',
                       transition: 'all 0.15s',
                     }}>
                       {d} min
                     </button>
                   ))}
                   <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
-                    padding: '9px 22px', borderRadius: 100, fontSize: 14, fontWeight: 500,
-                    cursor: 'pointer', border: 'none',
-                    background: 'transparent', color: '#a09888',
+                    padding: '9px 22px', borderRadius: 5, fontSize: 14, fontWeight: 500,
+                    cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                    background: 'transparent', color: '#7BA177',
                   }}>
                     Custom
                   </button>
@@ -773,31 +781,31 @@ export default function DashboardPage() {
               ) : (
                 <div style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: '#f3f1ee', borderRadius: 100, padding: '8px 18px',
-                  marginBottom: 32,
+                  background: '#0E1F14', borderRadius: 7, padding: '8px 18px',
+                  marginBottom: 32, alignSelf: 'center',
                 }}>
                   <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
                     onChange={e => setCustomMins(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && startSession()}
                     style={{
                       width: 48, background: 'transparent', outline: 'none', fontSize: 14,
-                      fontWeight: 600, color: '#1a1410', textAlign: 'center', border: 'none',
+                      fontWeight: 600, color: '#F7F5EF', textAlign: 'center', border: 'none', fontFamily: 'inherit',
                     }} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: '#a09888' }}>min</span>
+                  <span style={{ fontSize: 13, fontWeight: 500, color: '#7BA177' }}>min</span>
                   <button onClick={() => { setShowCustom(false); setCustomMins('') }}
-                    style={{ fontSize: 13, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
+                    style={{ fontSize: 13, color: '#5F7D66', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
                 </div>
               )}
 
               {/* Mode toggle (compact, sits above start button) */}
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
-                <div style={{ display: 'flex', background: '#f7f5f2', borderRadius: 100, padding: 3 }}>
+                <div style={{ display: 'flex', background: '#0E1F14', borderRadius: 7, padding: 3 }}>
                   {(['focus', 'accountability'] as const).map(m => (
                     <button key={m} onClick={() => setMode(m)} style={{
-                      padding: '6px 18px', borderRadius: 100, fontSize: 11, fontWeight: 600,
-                      cursor: 'pointer', border: 'none',
-                      background: mode === m ? (m === 'focus' ? '#1a1410' : '#2d6aaa') : 'transparent',
-                      color: mode === m ? '#fff' : '#a09888',
+                      padding: '6px 18px', borderRadius: 5, fontSize: 11, fontWeight: 600,
+                      cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                      background: mode === m ? (m === 'focus' ? '#3D6B47' : '#2d6aaa') : 'transparent',
+                      color: mode === m ? '#F7F5EF' : '#7BA177',
                       transition: 'all 0.18s',
                     }}>
                       {m === 'focus' ? 'Focus' : 'Accountability'}
@@ -808,13 +816,11 @@ export default function DashboardPage() {
 
               {/* Start button */}
               <button onClick={startSession} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                padding: '16px 36px', borderRadius: 16,
-                fontSize: 16, fontWeight: 600, color: '#fff', cursor: 'pointer', border: 'none',
-                background: mode === 'accountability' ? '#2d6aaa' : '#1e5c30',
-                boxShadow: mode === 'accountability'
-                  ? '0 4px 16px rgba(45,106,170,0.24)'
-                  : '0 4px 16px rgba(30,92,48,0.24)',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                padding: '16px 36px', borderRadius: 6, alignSelf: 'center',
+                fontSize: 16, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                color: mode === 'accountability' ? '#fff' : '#13291B',
+                background: mode === 'accountability' ? '#2d6aaa' : '#F7F5EF',
                 transition: 'all 0.2s',
                 letterSpacing: '0.01em',
               }}>
@@ -823,8 +829,14 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* ── Today (editorial — no boxes) ── */}
-            <section style={{ marginTop: 56, marginBottom: 56 }}>
+            {/* ── Right column: coach + stats + tasks ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0 }}>
+
+            {/* Focus Coach (desktop) */}
+            <FocusCoach onStart={startCoachSession} />
+
+            {/* ── Today (card) ── */}
+            <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
               <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                 marginBottom: 18, paddingBottom: 14,
@@ -835,11 +847,11 @@ export default function DashboardPage() {
                 </h2>
                 <span style={{ fontSize: 12, color: 'rgba(13,31,21,0.42)' }}>{dateLabel}</span>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 32 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
                 <div>
                   <div style={{
-                    fontSize: 48, fontWeight: 600, letterSpacing: '-0.035em',
-                    color: '#0d1f15', fontVariantNumeric: 'tabular-nums',
+                    fontSize: 40, fontWeight: 700, letterSpacing: '-0.03em',
+                    color: '#1F3A24', fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1, marginBottom: 8,
                   }}>{todayCount}</div>
                   <div style={{ fontSize: 12, color: 'rgba(13,31,21,0.62)', lineHeight: 1.4 }}>
@@ -848,8 +860,8 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div style={{
-                    fontSize: 48, fontWeight: 600, letterSpacing: '-0.035em',
-                    color: '#0d1f15', fontVariantNumeric: 'tabular-nums',
+                    fontSize: 40, fontWeight: 700, letterSpacing: '-0.03em',
+                    color: '#1F3A24', fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1, marginBottom: 8,
                   }}>{todayTaskCount}</div>
                   <div style={{ fontSize: 12, color: 'rgba(13,31,21,0.62)', lineHeight: 1.4 }}>
@@ -858,15 +870,11 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <div style={{
-                    fontSize: 48, fontWeight: 600, letterSpacing: '-0.035em',
-                    background: computedStreak > 0 ? 'linear-gradient(135deg, #ff8a3c, #b85a3c)' : 'transparent',
-                    WebkitBackgroundClip: computedStreak > 0 ? 'text' : 'unset',
-                    backgroundClip: computedStreak > 0 ? 'text' : 'unset',
-                    WebkitTextFillColor: computedStreak > 0 ? 'transparent' : '#0d1f15',
-                    color: '#0d1f15',
+                    fontSize: 40, fontWeight: 700, letterSpacing: '-0.03em',
+                    color: '#1F3A24',
                     fontVariantNumeric: 'tabular-nums',
                     lineHeight: 1, marginBottom: 8,
-                  }}>{computedStreak} {computedStreak > 0 && '🔥'}</div>
+                  }}>{computedStreak}</div>
                   <div style={{ fontSize: 12, color: 'rgba(13,31,21,0.62)', lineHeight: 1.4 }}>
                     <strong style={{ color: '#0d1f15', fontWeight: 600 }}>day streak</strong> · {computedStreak === 0 ? 'start one today' : 'keep it going'}
                   </div>
@@ -932,9 +940,9 @@ export default function DashboardPage() {
               })()}
             </section>
 
-            {/* ── Coming up (editorial — no box) ── */}
+            {/* ── Coming up (card) ── */}
             {continuationTasks.length > 0 && (
-              <section style={{ marginBottom: 56 }}>
+              <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
                 <div style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                   marginBottom: 18, paddingBottom: 14,
@@ -961,8 +969,8 @@ export default function DashboardPage() {
                       }} />
                       <span style={{ flex: 1, lineHeight: 1.5 }}>{task}</span>
                       <span style={{
-                        fontSize: 11, padding: '3px 9px', borderRadius: 999,
-                        background: '#d4ead8', color: '#1e5c30', fontWeight: 500,
+                        fontSize: 11, padding: '3px 9px', borderRadius: 4,
+                        background: '#EFF4E8', color: '#3D6B47', fontWeight: 600,
                       }}>action</span>
                     </div>
                   ))}
@@ -970,8 +978,8 @@ export default function DashboardPage() {
               </section>
             )}
 
-            {/* ── Your tasks (editorial — no box) ── */}
-            <section>
+            {/* ── Your tasks (card) ── */}
+            <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
               <div style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                 marginBottom: 18, paddingBottom: 14,
@@ -1066,6 +1074,8 @@ export default function DashboardPage() {
                 )}
               </div>
             </section>
+            </div>{/* end right column */}
+            </div>{/* end bento grid */}
           </div>
         )}
 
@@ -1103,7 +1113,7 @@ export default function DashboardPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {sessions.map(session => (
                       <div key={session.id} style={{
-                        background: '#fff', borderRadius: 16, padding: '14px 18px',
+                        background: '#fff', borderRadius: 8, padding: '14px 18px',
                         border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
                         display: 'flex', gap: 14, alignItems: 'flex-start',
                       }}>
@@ -1131,13 +1141,13 @@ export default function DashboardPage() {
               <div style={{ width: 240, flexShrink: 0 }}>
                 <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 20 }}>Your patterns</h2>
                 {sessions.length === 0 ? (
-                  <div style={{ background: '#fff', borderRadius: 16, padding: '18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                  <div style={{ background: '#fff', borderRadius: 8, padding: '18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
                     <p style={{ fontSize: 12, color: '#b0a898', lineHeight: 1.6 }}>Patterns appear after your first session — time of day, best days, recurring themes.</p>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {/* Stats */}
-                    <div style={{ background: '#fff', borderRadius: 16, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                    <div style={{ background: '#fff', borderRadius: 8, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
                       <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Focus time</p>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
                         <span style={{ fontSize: 32, fontWeight: 900, color: '#1a1410', letterSpacing: -1, lineHeight: 1 }}>{totalHrs > 0 ? `${totalHrs}h ${remMins}m` : `${totalMins}m`}</span>
@@ -1146,7 +1156,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Peak day + hour */}
-                    <div style={{ background: '#fff', borderRadius: 16, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                    <div style={{ background: '#fff', borderRadius: 8, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
                       <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>When you focus</p>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                         {dayNames.map((d, i) => (
@@ -1165,7 +1175,7 @@ export default function DashboardPage() {
 
                     {/* Recent topics */}
                     {recentTopics.length > 0 && (
-                      <div style={{ background: '#fff', borderRadius: 16, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
+                      <div style={{ background: '#fff', borderRadius: 8, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
                         <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Recent topics</p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                           {recentTopics.map((t, i) => (

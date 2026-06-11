@@ -125,7 +125,7 @@ export function FocusCoach({
     return (
       <div style={{
         background: '#fff',
-        borderRadius: isMobile ? 16 : 20,
+        borderRadius: isMobile ? 8 : 6,
         border: '1px solid #ede9e2',
         padding: isMobile ? '18px 18px' : '22px 24px',
         marginBottom: 16,
@@ -152,7 +152,7 @@ export function FocusCoach({
   return (
     <div style={{
       background: bgGlow,
-      borderRadius: isMobile ? 16 : 20,
+      borderRadius: isMobile ? 8 : 6,
       border: '1px solid #ede9e2',
       padding: isMobile ? '18px 18px 16px' : '22px 24px 20px',
       marginBottom: 16,
@@ -184,7 +184,7 @@ export function FocusCoach({
       {/* Suggestion card */}
       {data.state !== 'empty' && (
         <div style={{
-          border: '1px solid #ede9e2', borderRadius: 12,
+          border: '1px solid #E8E4DA', borderRadius: 6,
           padding: '12px 14px', background: '#faf9f7',
           display: 'flex', alignItems: 'center', gap: 12,
           marginBottom: 14,
@@ -210,7 +210,7 @@ export function FocusCoach({
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button onClick={() => onStart(data.suggested_minutes)} style={{
           background: '#1a1410', color: '#fff',
-          border: 'none', borderRadius: 10,
+          border: 'none', borderRadius: 5,
           padding: '9px 16px', fontSize: 13, fontWeight: 600,
           cursor: 'pointer', fontFamily: 'inherit',
         }}>
@@ -220,7 +220,7 @@ export function FocusCoach({
           <>
             <button onClick={() => setDismissed(true)} style={{
               background: '#fff', color: '#1a1410',
-              border: '1px solid #ede9e2', borderRadius: 10,
+              border: '1px solid #E8E4DA', borderRadius: 5,
               padding: '9px 14px', fontSize: 13, fontWeight: 500,
               cursor: 'pointer', fontFamily: 'inherit',
             }}>Pick something else</button>
