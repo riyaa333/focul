@@ -649,14 +649,31 @@ function TimerContent() {
         {phase === 'running' && variant === '' && (
           <div className="text-center select-none" style={{ width: '100%', maxWidth: 560, paddingBottom: 40 }}>
 
-            {/* Timer — medium weight, warm muted ink; tone shifts in accountability mode */}
+            {/* Accountability cue — names the contract you made before the clock started */}
+            {mode === 'accountability' && (
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: '#EFF4E8', border: '1px solid #DCE7D2', borderRadius: 5,
+                padding: '6px 14px', marginBottom: 36,
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#3D6B47' }} />
+                <span style={{
+                  fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
+                  letterSpacing: '0.16em', color: '#3D6B47',
+                }}>
+                  Accountability sprint{accountabilityItems.length > 0 ? ` · ${accountabilityItems.length} task${accountabilityItems.length > 1 ? 's' : ''}` : ''}
+                </span>
+              </div>
+            )}
+
+            {/* Timer — medium weight, warm muted ink */}
             <div style={{
               fontVariantNumeric: 'tabular-nums',
               fontSize: 'clamp(104px, 14vw, 176px)',
               fontWeight: 500,
               letterSpacing: '-0.045em',
               lineHeight: 1,
-              color: mode === 'accountability' ? '#2a3a2c' : '#2a3a2c',
+              color: '#2a3a2c',
               display: 'inline-flex', alignItems: 'baseline', gap: 6,
             }}>
               <span>{String(minutes).padStart(2, '0')}</span>
@@ -671,32 +688,58 @@ function TimerContent() {
               background: mode === 'accountability' ? 'rgba(94,111,94,0.28)' : 'rgba(94,111,94,0.28)',
             }} />
 
-            {/* Quote — treated like a book epigraph */}
-            <p style={{
-              fontFamily: '"Inter Tight", Georgia, "Times New Roman", serif',
-              fontStyle: 'italic',
-              fontWeight: 500,
-              fontSize: 'clamp(15px, 1.4vw, 18px)',
-              lineHeight: 1.55,
-              color: mode === 'accountability' ? '#5e6f5e' : '#5e6f5e',
-              maxWidth: 420,
-              margin: '0 auto',
-              letterSpacing: '0',
-            }}>
-              &ldquo;{quote.text}&rdquo;
-            </p>
+            {/* Accountability: show the committed tasks where the quote would be —
+                the contract stays on screen for the whole sprint */}
+            {mode === 'accountability' && accountabilityItems.length > 0 ? (
+              <div style={{ maxWidth: 380, margin: '0 auto', textAlign: 'left' }}>
+                <p style={{
+                  fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
+                  letterSpacing: '0.16em', color: '#a39d8e', marginBottom: 14, textAlign: 'center',
+                }}>
+                  You committed to
+                </p>
+                {accountabilityItems.map((item, i) => (
+                  <p key={i} style={{
+                    display: 'flex', alignItems: 'flex-start', gap: 10,
+                    fontSize: 14, lineHeight: 1.5, color: '#5e6f5e',
+                    padding: '7px 0',
+                    borderBottom: i < accountabilityItems.length - 1 ? '1px solid rgba(94,111,94,0.12)' : 'none',
+                  }}>
+                    <span style={{ color: '#7BA177', flexShrink: 0, fontWeight: 600 }}>{i + 1}.</span>
+                    {item.text}
+                  </p>
+                ))}
+              </div>
+            ) : (
+              <>
+                {/* Quote — treated like a book epigraph */}
+                <p style={{
+                  fontFamily: '"Inter Tight", Georgia, "Times New Roman", serif',
+                  fontStyle: 'italic',
+                  fontWeight: 500,
+                  fontSize: 'clamp(15px, 1.4vw, 18px)',
+                  lineHeight: 1.55,
+                  color: '#5e6f5e',
+                  maxWidth: 420,
+                  margin: '0 auto',
+                  letterSpacing: '0',
+                }}>
+                  &ldquo;{quote.text}&rdquo;
+                </p>
 
-            {/* Attribution — small, tracked, quiet */}
-            <p style={{
-              marginTop: 18,
-              fontSize: 11,
-              fontWeight: 500,
-              textTransform: 'uppercase',
-              letterSpacing: '0.18em',
-              color: '#a39d8e',
-            }}>
-              — {quote.author}
-            </p>
+                {/* Attribution — small, tracked, quiet */}
+                <p style={{
+                  marginTop: 18,
+                  fontSize: 11,
+                  fontWeight: 500,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.18em',
+                  color: '#a39d8e',
+                }}>
+                  — {quote.author}
+                </p>
+              </>
+            )}
           </div>
         )}
 
