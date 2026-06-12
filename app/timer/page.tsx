@@ -464,10 +464,12 @@ function TimerContent() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      background: (phase === 'running' || phase === 'debrief' || phase === 'done')
-        ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'  /* warm cream-paper for the whole focus loop */
-        : '#f9fdf6',
+      fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+      background: phase === 'running'
+        ? '#0E1F14'  /* dark deep-forest while the clock runs — matches the dashboard hero */
+        : (phase === 'debrief' || phase === 'done')
+          ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'
+          : '#F7F5EF',
       opacity: entered ? 1 : 0,
       transform: entered ? 'scale(1)' : 'scale(0.96)',
       transition: 'opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1), background 0.6s ease',
@@ -480,7 +482,7 @@ function TimerContent() {
           setEntered(false)
           setTimeout(() => router.push('/dashboard'), 380)
         }} className="text-xs font-medium hover:opacity-100 transition-opacity tracking-wide"
-          style={{ color: phase === 'running' ? '#a39d8e' : '#b0c8b4', opacity: phase === 'running' ? 0.65 : 1 }}>
+          style={{ color: phase === 'running' ? '#5F7D66' : '#8A8678', opacity: 1 }}>
           ← Dashboard
         </button>
       </nav>
@@ -653,13 +655,13 @@ function TimerContent() {
             {mode === 'accountability' && (
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: '#EFF4E8', border: '1px solid #DCE7D2', borderRadius: 5,
+                background: '#16301e', border: '1px solid #27402e', borderRadius: 5,
                 padding: '6px 14px', marginBottom: 36,
               }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#3D6B47' }} />
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7BA177' }} />
                 <span style={{
                   fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
-                  letterSpacing: '0.16em', color: '#3D6B47',
+                  letterSpacing: '0.16em', color: '#C5D9B8',
                 }}>
                   Accountability sprint{accountabilityItems.length > 0 ? ` · ${accountabilityItems.length} task${accountabilityItems.length > 1 ? 's' : ''}` : ''}
                 </span>
@@ -673,19 +675,19 @@ function TimerContent() {
               fontWeight: 500,
               letterSpacing: '-0.045em',
               lineHeight: 1,
-              color: '#2a3a2c',
+              color: '#F7F5EF',
               display: 'inline-flex', alignItems: 'baseline', gap: 6,
             }}>
               <span>{String(minutes).padStart(2, '0')}</span>
-              <span style={{ opacity: 0.28, fontWeight: 300 }}>:</span>
-              <span>{String(seconds).padStart(2, '0')}</span>
+              <span style={{ opacity: 0.4, fontWeight: 300, color: '#7BA177' }}>:</span>
+              <span style={{ color: '#7BA177' }}>{String(seconds).padStart(2, '0')}</span>
             </div>
 
             {/* Faint hairline separator — anchors the eye without shouting */}
             <div aria-hidden="true" style={{
               margin: '52px auto 36px',
               width: 36, height: 1,
-              background: mode === 'accountability' ? 'rgba(94,111,94,0.28)' : 'rgba(94,111,94,0.28)',
+              background: 'rgba(123,161,119,0.35)',
             }} />
 
             {/* Accountability: show the committed tasks where the quote would be —
@@ -694,16 +696,16 @@ function TimerContent() {
               <div style={{ maxWidth: 380, margin: '0 auto', textAlign: 'left' }}>
                 <p style={{
                   fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
-                  letterSpacing: '0.16em', color: '#a39d8e', marginBottom: 14, textAlign: 'center',
+                  letterSpacing: '0.16em', color: '#5F7D66', marginBottom: 14, textAlign: 'center',
                 }}>
                   You committed to
                 </p>
                 {accountabilityItems.map((item, i) => (
                   <p key={i} style={{
                     display: 'flex', alignItems: 'flex-start', gap: 10,
-                    fontSize: 14, lineHeight: 1.5, color: '#5e6f5e',
+                    fontSize: 14, lineHeight: 1.5, color: '#A8C2AD',
                     padding: '7px 0',
-                    borderBottom: i < accountabilityItems.length - 1 ? '1px solid rgba(94,111,94,0.12)' : 'none',
+                    borderBottom: i < accountabilityItems.length - 1 ? '1px solid rgba(123,161,119,0.15)' : 'none',
                   }}>
                     <span style={{ color: '#7BA177', flexShrink: 0, fontWeight: 600 }}>{i + 1}.</span>
                     {item.text}
@@ -719,7 +721,7 @@ function TimerContent() {
                   fontWeight: 500,
                   fontSize: 'clamp(15px, 1.4vw, 18px)',
                   lineHeight: 1.55,
-                  color: '#5e6f5e',
+                  color: '#8FAE96',
                   maxWidth: 420,
                   margin: '0 auto',
                   letterSpacing: '0',
@@ -734,7 +736,7 @@ function TimerContent() {
                   fontWeight: 500,
                   textTransform: 'uppercase',
                   letterSpacing: '0.18em',
-                  color: '#a39d8e',
+                  color: '#5F7D66',
                 }}>
                   — {quote.author}
                 </p>

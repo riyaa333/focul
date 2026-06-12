@@ -504,7 +504,7 @@ export default function DashboardPage() {
               style={{
                 padding: '7px 18px', borderRadius: 5,
                 fontSize: 13, fontWeight: 500,
-                border: 'none', cursor: 'pointer',
+                border: 'none', cursor: 'pointer', outline: 'none',
                 background: activeNav === key ? '#fff' : 'transparent',
                 color: activeNav === key ? '#1F3A24' : '#8A8678',
                 boxShadow: activeNav === key ? '0 1px 3px rgba(31,58,36,0.08)' : 'none',
@@ -517,7 +517,7 @@ export default function DashboardPage() {
             style={{
               padding: '7px 18px', borderRadius: 5,
               fontSize: 13, fontWeight: 500,
-              border: 'none', cursor: 'pointer',
+              border: 'none', cursor: 'pointer', outline: 'none',
               background: 'transparent', color: '#8A8678',
               transition: 'all 0.15s',
             }}>
@@ -1109,88 +1109,83 @@ export default function DashboardPage() {
           const recentTopics = allTasks.filter((t, i, a) => a.indexOf(t) === i).slice(0, 6)
 
           return (
-            <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', width: '100%' }}>
-              {/* Session list */}
-              <div style={{ flex: 1, maxWidth: 480 }}>
-                <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 20 }}>Session history</h2>
-                {sessions.length === 0 ? (
-                  <p style={{ fontSize: 13, color: '#b0a898' }}>No sessions yet. Start your first one!</p>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {sessions.map(session => (
-                      <div key={session.id} style={{
-                        background: '#fff', borderRadius: 8, padding: '14px 18px',
-                        border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
-                        display: 'flex', gap: 14, alignItems: 'flex-start',
-                      }}>
-                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3a9e52', flexShrink: 0, marginTop: 6 }} />
-                        <div style={{ flex: 1 }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                            <span style={{ fontSize: 13, fontWeight: 600, color: '#1a1410' }}>{session.duration_minutes} min session</span>
-                            <span style={{ fontSize: 11, color: '#c0b8a8' }}>{timeAgo(session.created_at)}</span>
-                          </div>
-                          {session.tasks?.length > 0 && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                              {session.tasks.map((t, i) => (
-                                <p key={i} style={{ fontSize: 12, color: '#a09888', lineHeight: 1.4 }}>→ {t}</p>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.45fr 1fr', gap: 14, alignItems: 'start' }}>
 
-              {/* Patterns panel */}
-              <div style={{ width: 240, flexShrink: 0 }}>
-                <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 20 }}>Your patterns</h2>
+              {/* Session list — one calm card, hairline rows, tasks as a muted single line */}
+              <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
+                <div style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                  marginBottom: 6, paddingBottom: 14, borderBottom: '1px solid rgba(30,55,32,0.06)',
+                }}>
+                  <h2 style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em', color: '#1F3A24', margin: 0 }}>Sessions</h2>
+                  <span style={{ fontSize: 12, color: '#9A957F' }}>{sessions.length} total</span>
+                </div>
                 {sessions.length === 0 ? (
-                  <div style={{ background: '#fff', borderRadius: 8, padding: '18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
-                    <p style={{ fontSize: 12, color: '#b0a898', lineHeight: 1.6 }}>Patterns appear after your first session — time of day, best days, recurring themes.</p>
-                  </div>
+                  <p style={{ fontSize: 13, color: '#9A957F', padding: '20px 0', textAlign: 'center' }}>No sessions yet. Start your first one!</p>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {/* Stats */}
-                    <div style={{ background: '#fff', borderRadius: 8, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
-                      <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Focus time</p>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
-                        <span style={{ fontSize: 32, fontWeight: 900, color: '#1a1410', letterSpacing: -1, lineHeight: 1 }}>{totalHrs > 0 ? `${totalHrs}h ${remMins}m` : `${totalMins}m`}</span>
-                      </div>
-                      <p style={{ fontSize: 11, color: '#b0a898' }}>avg {avgMins}m per session · {sessions.length} total</p>
+                  sessions.map((session, idx) => (
+                    <div key={session.id} style={{
+                      display: 'flex', gap: 14, alignItems: 'baseline',
+                      padding: '13px 0',
+                      borderBottom: idx < sessions.length - 1 ? '1px solid rgba(30,55,32,0.06)' : 'none',
+                    }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#1F3A24', fontVariantNumeric: 'tabular-nums', flexShrink: 0, width: 52 }}>
+                        {session.duration_minutes} min
+                      </span>
+                      <span style={{ flex: 1, fontSize: 13, color: '#8A8678', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {session.tasks?.length > 0 ? session.tasks.join(' · ') : 'No debrief captured'}
+                      </span>
+                      <span style={{ fontSize: 11, color: '#B5B09C', flexShrink: 0 }}>{timeAgo(session.created_at)}</span>
                     </div>
+                  ))
+                )}
+              </section>
 
-                    {/* Peak day + hour */}
-                    <div style={{ background: '#fff', borderRadius: 8, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
-                      <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>When you focus</p>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+              {/* Patterns — right column, same card language as Today */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0 }}>
+                {sessions.length === 0 ? (
+                  <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
+                    <p style={{ fontSize: 12, color: '#9A957F', lineHeight: 1.6 }}>Patterns appear after your first session — time of day, best days, recurring themes.</p>
+                  </section>
+                ) : (
+                  <>
+                    <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9A957F', marginBottom: 12 }}>Focus time</p>
+                      <div style={{ fontSize: 36, fontWeight: 700, color: '#1F3A24', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: 6 }}>
+                        {totalHrs > 0 ? `${totalHrs}h ${remMins}m` : `${totalMins}m`}
+                      </div>
+                      <p style={{ fontSize: 12, color: '#8A8678' }}>avg {avgMins}m per session</p>
+                    </section>
+
+                    <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
+                      <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9A957F', marginBottom: 14 }}>When you focus</p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                         {dayNames.map((d, i) => (
-                          <div key={d} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                          <div key={d} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
                             <div style={{
-                              width: 20, height: 20, borderRadius: 6,
-                              background: dayCounts[i] > 0 ? `rgba(58,158,82,${Math.min(0.2 + (dayCounts[i] / Math.max(...dayCounts)) * 0.8, 1)})` : '#f3f0eb',
-                              border: i === peakDayIdx && dayCounts[i] > 0 ? '1.5px solid #3a9e52' : '1.5px solid transparent',
+                              width: 22, height: 22, borderRadius: 4,
+                              background: dayCounts[i] > 0 ? `rgba(61,107,71,${Math.min(0.25 + (dayCounts[i] / Math.max(...dayCounts)) * 0.75, 1)})` : '#F2EFE7',
                             }} />
-                            <span style={{ fontSize: 9, color: '#c0b8a8', fontWeight: i === peakDayIdx ? 700 : 400 }}>{d[0]}</span>
+                            <span style={{ fontSize: 10, color: i === peakDayIdx && dayCounts[i] > 0 ? '#1F3A24' : '#B5B09C', fontWeight: i === peakDayIdx ? 600 : 500 }}>{d[0]}</span>
                           </div>
                         ))}
                       </div>
-                      <p style={{ fontSize: 11, color: '#6a8870' }}>Peak: {dayNames[peakDayIdx]}s · {fmtHour(peakHour)}</p>
-                    </div>
+                      <p style={{ fontSize: 12, color: '#3D6B47' }}>Peak: {dayNames[peakDayIdx]}s · {fmtHour(peakHour)}</p>
+                    </section>
 
-                    {/* Recent topics */}
                     {recentTopics.length > 0 && (
-                      <div style={{ background: '#fff', borderRadius: 8, padding: '16px 18px', border: '1px solid #ede9e2', boxShadow: '0 1px 6px rgba(0,0,0,0.04)' }}>
-                        <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 12 }}>Recent topics</p>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                          {recentTopics.map((t, i) => (
-                            <p key={i} style={{ fontSize: 11, color: '#7a7060', lineHeight: 1.4, borderLeft: '2px solid #ede9e2', paddingLeft: 8 }}>{t}</p>
-                          ))}
-                        </div>
-                      </div>
+                      <section style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 6, padding: '20px 22px' }}>
+                        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9A957F', marginBottom: 12 }}>Recent topics</p>
+                        {recentTopics.slice(0, 4).map((t, i, arr) => (
+                          <p key={i} style={{
+                            fontSize: 13, color: '#5e6f5e', lineHeight: 1.5, padding: '8px 0',
+                            borderBottom: i < arr.length - 1 ? '1px solid rgba(30,55,32,0.06)' : 'none',
+                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                          }}>{t}</p>
+                        ))}
+                      </section>
                     )}
-                  </div>
+                  </>
                 )}
               </div>
             </div>
