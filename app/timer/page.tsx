@@ -102,6 +102,10 @@ function TimerContent() {
   const [accountabilityItems, setAccountabilityItems] = useState<AccountabilityItem[]>([])
   const [inputTask, setInputTask] = useState('')
   const [inputMode, setInputMode] = useState<'type' | 'voice'>('voice')
+  // Debrief fallback: when mic is denied/unavailable, users can type instead of being dead-ended
+  const [debriefMode, setDebriefMode] = useState<'voice' | 'type'>('voice')
+  const [debriefText, setDebriefText] = useState('')
+  const [debriefSubmitting, setDebriefSubmitting] = useState(false)
   const [inputRecording, setInputRecording] = useState(false)
   const [inputRecordingSeconds, setInputRecordingSeconds] = useState(0)
   const [inputProcessing, setInputProcessing] = useState(false)
@@ -378,6 +382,36 @@ function TimerContent() {
     }
   }
 
+  // Text-debrief path: when mic is denied, user types what they did; we hit
+  // /api/extract-tasks to pull task list, then save the session like a voice debrief.
+  async function submitTypedDebrief() {
+    const text = debriefText.trim()
+    if (!text || debriefSubmitting) return
+    setDebriefSubmitting(true)
+    setError('')
+    let extracted: string[] = []
+    try {
+      const res = await fetch('/api/extract-tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcript: text }),
+      })
+      const data = await res.json()
+      if (Array.isArray(data.tasks)) extracted = data.tasks
+    } catch {
+      // Task extraction is a nice-to-have here; the transcript still saves below.
+    }
+    setTranscript(text)
+    setTasks(extracted)
+    try {
+      await saveSession(text, extracted)
+      setPhase('done')
+    } catch {
+      setError('Could not save your debrief. Try again.')
+    }
+    setDebriefSubmitting(false)
+  }
+
   function addAccountabilityItem() {
     if (!inputTask.trim()) return
     setAccountabilityItems(prev => [...prev, { text: inputTask.trim(), completed: false }])
@@ -467,9 +501,7 @@ function TimerContent() {
       fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
       background: phase === 'running'
         ? '#0E1F14'  /* dark deep-forest while the clock runs — matches the dashboard hero */
-        : (phase === 'debrief' || phase === 'done')
-          ? 'linear-gradient(180deg, #f5f6ed 0%, #f1f3e8 100%)'
-          : '#F7F5EF',
+        : '#F7F5EF', /* brand cream everywhere else, no off-brand gradient wash */
       opacity: entered ? 1 : 0,
       transform: entered ? 'scale(1)' : 'scale(0.96)',
       transition: 'opacity 0.45s cubic-bezier(0.4,0,0.2,1), transform 0.45s cubic-bezier(0.4,0,0.2,1), background 0.6s ease',
@@ -513,7 +545,7 @@ function TimerContent() {
             <button
               onClick={() => { setSecondsLeft(totalSeconds); setPhase('running') }}
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}
+              style={{ background: '#3D6B47' }}
             >
               Start {durationMinutes} min session →
             </button>
@@ -522,28 +554,36 @@ function TimerContent() {
 
         {/* INPUT (Accountability pre-timer) */}
         {phase === 'input' && (
-          <div className="w-full max-w-md bg-white border border-[#E8E4DA] rounded-md px-10 py-12"
-            style={{ fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-            <p className="text-[11px] font-semibold text-center uppercase text-[#7BA177] mb-3" style={{ letterSpacing: '0.18em' }}>
-              Accountability sprint
-            </p>
-            <h2 className="text-2xl font-semibold text-center text-[#1F3A24] mb-2 tracking-tight">What&apos;s the plan?</h2>
-            <p className="text-sm text-[#8A8678] text-center mb-7">Set your tasks before the clock starts.</p>
+          <div className="w-full" style={{ maxWidth: 460, fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+            {/* Anchor kicker — names what's about to happen so the card doesn't float in cream */}
+            <div className="text-center mb-6">
+              <p className="text-[11px] font-semibold uppercase text-[#7BA177] mb-2" style={{ letterSpacing: '0.18em' }}>
+                Accountability · {durationMinutes} min
+              </p>
+              <h1 className="text-3xl font-semibold text-[#1F3A24] tracking-tight" style={{ letterSpacing: '-0.025em' }}>
+                What&apos;s the plan?
+              </h1>
+              <p className="text-sm text-[#8A8678] mt-2">Set your tasks before the clock starts.</p>
+            </div>
 
-            {/* Mode toggle */}
-            <div className="flex bg-[#F2EFE7] p-[3px] mb-5" style={{ borderRadius: 7 }}>
-              {(['voice', 'type'] as const).map(m => (
-                <button key={m} onClick={() => setInputMode(m)}
-                  className="flex-1 py-2 text-xs font-semibold transition-all"
-                  style={{
-                    borderRadius: 5,
-                    background: inputMode === m ? '#fff' : 'transparent',
-                    color: inputMode === m ? '#1F3A24' : '#8A8678',
-                    boxShadow: inputMode === m ? '0 1px 3px rgba(31,58,36,0.08)' : 'none',
-                  }}>
-                  {m === 'voice' ? 'Speak' : 'Type'}
-                </button>
-              ))}
+            <div className="bg-white border border-[#E8E4DA] rounded-md px-8 py-7">
+
+            {/* Mode toggle — inline-flex compact, matches the dashboard pattern */}
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex bg-[#F2EFE7] p-[3px]" style={{ borderRadius: 7 }}>
+                {(['voice', 'type'] as const).map(m => (
+                  <button key={m} onClick={() => setInputMode(m)}
+                    className="py-2 px-6 text-xs font-semibold transition-all"
+                    style={{
+                      borderRadius: 5, outline: 'none',
+                      background: inputMode === m ? '#fff' : 'transparent',
+                      color: inputMode === m ? '#1F3A24' : '#8A8678',
+                      boxShadow: inputMode === m ? '0 1px 3px rgba(31,58,36,0.08)' : 'none',
+                    }}>
+                    {m === 'voice' ? 'Speak' : 'Type'}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Extracted task list */}
@@ -576,22 +616,22 @@ function TimerContent() {
                 ) : !inputRecording ? (
                   <>
                     <button onClick={startInputRecording}
-                      className="relative flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
-                      style={{ width: 72, height: 72 }}>
-                      <span className="absolute inset-0 rounded-full bg-[#3D6B47] opacity-15" style={{ transform: 'scale(1.35)' }} />
-                      <span className="relative flex items-center justify-center w-[72px] h-[72px] rounded-full"
-                        style={{ background: '#3D6B47', boxShadow: '0 6px 24px rgba(61,107,71,0.30)' }}>
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
-                          <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
-                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
-                          <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                          <line x1="8" y1="23" x2="16" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                        </svg>
-                      </span>
+                      aria-label="Start recording tasks"
+                      className="flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+                      style={{
+                        width: 72, height: 72, borderRadius: '50%',
+                        background: '#3D6B47', border: 'none', cursor: 'pointer',
+                      }}>
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                        <line x1="12" y1="19" x2="12" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                        <line x1="8" y1="23" x2="16" y2="23" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
                     </button>
-                    <p className="text-xs text-[#b0c8b4]">
-                      {accountabilityItems.length === 0 ? 'Tap or press' : 'Tap or press'}{' '}
-                      <kbd style={{ background: '#e8f5e8', border: '1px solid #c8dcc8', borderRadius: 4, padding: '1px 6px', fontSize: 10, fontFamily: 'inherit', color: '#5a8060' }}>Space</kbd>
+                    <p className="text-xs text-[#8A8678]">
+                      Tap or press{' '}
+                      <kbd style={{ background: '#fff', border: '1px solid #E8E4DA', borderRadius: 4, padding: '2px 8px', fontSize: 11, fontFamily: 'inherit', color: '#1F3A24', fontWeight: 600 }}>Space</kbd>
                       {accountabilityItems.length === 0 ? ' to say your tasks' : ' to add more'}
                     </p>
                   </>
@@ -606,7 +646,7 @@ function TimerContent() {
                     <p className="text-xs text-[#b0c8b4] text-center">Say your tasks naturally...</p>
                     <button onClick={stopInputRecording}
                       className="px-8 py-3.5 rounded-md text-sm font-semibold text-white transition-all hover:opacity-90"
-                      style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}>
+                      style={{ background: '#3D6B47' }}>
                       Stop recording
                     </button>
                   </div>
@@ -639,11 +679,12 @@ function TimerContent() {
               <button
                 onClick={() => { setSecondsLeft(totalSeconds); setPhase('running') }}
                 className="w-full py-4 rounded-md text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}
+                style={{ background: '#3D6B47' }}
               >
                 Start {durationMinutes} min session →
               </button>
             )}
+            </div>{/* end inner card */}
           </div>
         )}
 
@@ -748,70 +789,140 @@ function TimerContent() {
 
         {/* DEBRIEF — editorial calm, matching the timer page */}
         {phase === 'debrief' && (
-          <div className="text-center select-none" style={{ width: '100%', maxWidth: 480, paddingBottom: 40 }}>
+          <div className="text-center select-none" style={{
+            width: '100%', maxWidth: 520, paddingBottom: 40,
+            fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+          }}>
             {!recording ? (
               <>
                 <h2 style={{
                   fontSize: 'clamp(28px, 3.4vw, 38px)',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   letterSpacing: '-0.025em',
                   lineHeight: 1.15,
-                  color: '#2a3a2c',
-                  marginBottom: 14,
+                  color: '#1F3A24',
+                  marginBottom: 10,
                 }}>
                   What did you get done?
                 </h2>
                 <p style={{
-                  fontFamily: '"Inter Tight", Georgia, "Times New Roman", serif',
-                  fontStyle: 'italic',
-                  fontWeight: 500,
-                  fontSize: 15,
+                  fontSize: 14,
                   color: '#5e6f5e',
-                  marginBottom: 56,
+                  marginBottom: 28,
                   lineHeight: 1.5,
                 }}>
-                  Speak for about thirty seconds. The rest takes care of itself.
+                  {debriefMode === 'voice'
+                    ? 'Speak for about thirty seconds. The rest takes care of itself.'
+                    : 'Type a quick summary. We will extract your next tasks.'}
                 </p>
 
+                {/* Mode toggle — Voice / Type. Matches the accountability input pattern */}
+                <div style={{
+                  display: 'inline-flex', background: '#F2EFE7', padding: 3,
+                  borderRadius: 7, marginBottom: 32,
+                }}>
+                  {(['voice', 'type'] as const).map(m => (
+                    <button key={m} onClick={() => { setDebriefMode(m); setError('') }} style={{
+                      padding: '7px 22px', borderRadius: 5,
+                      fontSize: 13, fontWeight: 500,
+                      border: 'none', cursor: 'pointer', outline: 'none',
+                      fontFamily: 'inherit',
+                      background: debriefMode === m ? '#fff' : 'transparent',
+                      color: debriefMode === m ? '#1F3A24' : '#8A8678',
+                      boxShadow: debriefMode === m ? '0 1px 3px rgba(31,58,36,0.08)' : 'none',
+                      transition: 'all 0.15s',
+                    }}>
+                      {m === 'voice' ? 'Speak' : 'Type'}
+                    </button>
+                  ))}
+                </div>
+
                 {error && (
-                  <p style={{ fontSize: 13, color: '#b85a3c', marginBottom: 24 }}>{error}</p>
+                  <p style={{ fontSize: 13, color: '#b85a3c', marginBottom: 20 }}>{error}</p>
                 )}
 
-                {/* Mic — calmer, no aggressive halo */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22 }}>
-                  <button
-                    onClick={startRecording}
-                    aria-label="Start recording"
-                    style={{
-                      position: 'relative',
-                      width: 84, height: 84, borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #4a9b5d, #6fb87f)',
-                      border: 'none', cursor: 'pointer',
-                      boxShadow: '0 8px 28px rgba(74,155,93,0.22), 0 2px 6px rgba(74,155,93,0.10)',
-                      display: 'grid', placeItems: 'center',
-                      transition: 'transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(74,155,93,0.28), 0 2px 6px rgba(74,155,93,0.12)' }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 8px 28px rgba(74,155,93,0.22), 0 2px 6px rgba(74,155,93,0.10)' }}
-                  >
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
-                      <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round"/>
-                      <line x1="12" y1="19" x2="12" y2="23" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-                      <line x1="8" y1="23" x2="16" y2="23" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-                    </svg>
-                  </button>
+                {debriefMode === 'voice' ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18 }}>
+                    <button
+                      onClick={startRecording}
+                      aria-label="Start recording"
+                      style={{
+                        width: 80, height: 80, borderRadius: '50%',
+                        background: '#3D6B47', border: 'none', cursor: 'pointer',
+                        display: 'grid', placeItems: 'center',
+                        transition: 'transform 0.15s',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)' }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = '' }}
+                    >
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+                        <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round"/>
+                        <line x1="12" y1="19" x2="12" y2="23" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                        <line x1="8" y1="23" x2="16" y2="23" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    </button>
 
-                  <p style={{ fontSize: 12, color: '#a39d8e', letterSpacing: '0.02em' }}>
-                    Tap or press{' '}
-                    <kbd style={{
-                      fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
-                      background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(94,111,94,0.20)',
-                      borderRadius: 5, padding: '2px 8px', color: '#5e6f5e',
-                      boxShadow: '0 1px 0 rgba(94,111,94,0.10)',
-                    }}>Space</kbd>
-                  </p>
-                </div>
+                    <p style={{ fontSize: 12, color: '#8A8678', letterSpacing: '0.02em' }}>
+                      Tap or press{' '}
+                      <kbd style={{
+                        fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
+                        background: '#fff', border: '1px solid #E8E4DA',
+                        borderRadius: 4, padding: '2px 8px', color: '#1F3A24',
+                      }}>Space</kbd>
+                      {' '}to start
+                    </p>
+
+                    {/* Mic blocked? Surface the type fallback inline */}
+                    {error && (
+                      <button onClick={() => { setDebriefMode('type'); setError('') }} style={{
+                        fontSize: 13, color: '#3D6B47', background: 'transparent',
+                        border: 'none', cursor: 'pointer', textDecoration: 'underline',
+                        fontFamily: 'inherit', marginTop: 4,
+                      }}>
+                        Type instead
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14, textAlign: 'left' }}>
+                    <textarea
+                      value={debriefText}
+                      onChange={e => setDebriefText(e.target.value)}
+                      onKeyDown={e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') submitTypedDebrief() }}
+                      placeholder="Wrote the auth flow, fixed the login redirect, and shipped the new dashboard..."
+                      autoFocus
+                      rows={5}
+                      style={{
+                        width: '100%', resize: 'vertical', minHeight: 120,
+                        padding: '14px 16px', borderRadius: 6,
+                        border: '1px solid #E8E4DA', background: '#fff',
+                        fontSize: 15, lineHeight: 1.55, color: '#1F3A24',
+                        fontFamily: 'inherit', outline: 'none',
+                      }}
+                      onFocus={e => { e.currentTarget.style.borderColor = '#3D6B47' }}
+                      onBlur={e => { e.currentTarget.style.borderColor = '#E8E4DA' }}
+                    />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                      <span style={{ fontSize: 12, color: '#8A8678' }}>
+                        {debriefText.trim() ? `${debriefText.trim().split(/\s+/).length} words` : 'A sentence or two is enough'}
+                      </span>
+                      <button
+                        onClick={submitTypedDebrief}
+                        disabled={!debriefText.trim() || debriefSubmitting}
+                        style={{
+                          padding: '11px 22px', borderRadius: 6,
+                          background: debriefText.trim() && !debriefSubmitting ? '#1F3A24' : '#C9C4B4',
+                          color: '#F7F5EF', border: 'none',
+                          cursor: debriefText.trim() && !debriefSubmitting ? 'pointer' : 'not-allowed',
+                          fontSize: 14, fontWeight: 600, fontFamily: 'inherit',
+                          transition: 'all 0.15s',
+                        }}>
+                        {debriefSubmitting ? 'Saving...' : 'Save & finish →'}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <>
@@ -943,7 +1054,7 @@ function TimerContent() {
             <button
               onClick={finishAccountability}
               className="w-full py-4 rounded-md text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ background: '#3D6B47', boxShadow: '0 4px 16px rgba(61,107,71,0.25)' }}
+              style={{ background: '#3D6B47' }}
             >
               Save & finish →
             </button>
