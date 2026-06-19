@@ -133,7 +133,7 @@ export function FocusCoach({
       }}>
         <div style={{
           width: 8, height: 8, borderRadius: '50%',
-          background: '#3a9e52', opacity: 0.5,
+          background: '#3D6B47', opacity: 0.5,
           animation: 'coachPulse 1.4s ease-in-out infinite',
         }} />
         <span style={{ fontSize: 13, color: '#b0a898' }}>Focus Coach is reading your recent sessions…</span>
@@ -144,7 +144,7 @@ export function FocusCoach({
 
   if (!data) return null
 
-  const accentColor = data.state === 'flow' ? '#b87838' : '#3a9e52'
+  const accentColor = data.state === 'flow' ? '#7BA177' : '#3D6B47'
   const bgGlow = data.state === 'flow'
     ? 'radial-gradient(ellipse 80% 100% at 100% 0%, rgba(184,120,56,0.10), transparent 60%), #fff'
     : 'radial-gradient(ellipse 80% 100% at 0% 0%, rgba(58,158,82,0.10), transparent 60%), #fff'
@@ -165,7 +165,7 @@ export function FocusCoach({
           background: accentColor,
           boxShadow: `0 0 0 4px ${accentColor}22`,
         }} />
-        <span style={{ fontSize: 12, fontWeight: 700, color: '#1a1410', letterSpacing: 0.2 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#1F3A24', letterSpacing: 0.2 }}>
           Focus Coach
         </span>
         <span style={{
@@ -177,7 +177,7 @@ export function FocusCoach({
       {/* Message */}
       <p style={{
         fontSize: isMobile ? 14 : 15,
-        lineHeight: 1.45, color: '#1a1410',
+        lineHeight: 1.45, color: '#1F3A24',
         margin: '0 0 14px',
       }}>{data.message}</p>
 
@@ -196,7 +196,7 @@ export function FocusCoach({
             fontSize: 13, flexShrink: 0,
           }}>✦</div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ margin: 0, fontSize: 13.5, fontWeight: 600, color: '#1a1410', lineHeight: 1.3 }}>
+            <p style={{ margin: 0, fontSize: 13.5, fontWeight: 600, color: '#1F3A24', lineHeight: 1.3 }}>
               {data.suggestion}
             </p>
             <div style={{ fontSize: 11, color: '#b0a898', marginTop: 2, fontFamily: 'ui-monospace, monospace' }}>
@@ -209,7 +209,7 @@ export function FocusCoach({
       {/* Actions */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button onClick={() => onStart(data.suggested_minutes)} style={{
-          background: '#1a1410', color: '#fff',
+          background: '#1F3A24', color: '#fff',
           border: 'none', borderRadius: 5,
           padding: '9px 16px', fontSize: 13, fontWeight: 600,
           cursor: 'pointer', fontFamily: 'inherit',
@@ -219,7 +219,7 @@ export function FocusCoach({
         {data.state !== 'empty' && (
           <>
             <button onClick={() => setDismissed(true)} style={{
-              background: '#fff', color: '#1a1410',
+              background: '#fff', color: '#1F3A24',
               border: '1px solid #E8E4DA', borderRadius: 5,
               padding: '9px 14px', fontSize: 13, fontWeight: 500,
               cursor: 'pointer', fontFamily: 'inherit',

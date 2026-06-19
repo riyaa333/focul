@@ -531,7 +531,7 @@ function TimerContent() {
                 <div className="text-left space-y-3 mb-12">
                   {briefingTasks.map((t, i) => (
                     <p key={i} className="text-sm text-[#4a7055] flex items-start gap-3">
-                      <span className="text-[#3a9e52] shrink-0 mt-0.5">→</span>{t}
+                      <span className="text-[#3D6B47] shrink-0 mt-0.5">→</span>{t}
                     </p>
                   ))}
                 </div>
@@ -591,7 +591,7 @@ function TimerContent() {
               <div className="space-y-2 mb-4">
                 {accountabilityItems.map((item, i) => (
                   <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-md border border-[#E8E4DA] bg-[#FAF9F4]">
-                    <span className="text-[#3a9e52] font-bold text-sm w-4 flex-shrink-0">{i + 1}.</span>
+                    <span className="text-[#3D6B47] font-bold text-sm w-4 flex-shrink-0">{i + 1}.</span>
                     <span className="text-sm text-[#1a3020] flex-1">{item.text}</span>
                     <button onClick={() => setAccountabilityItems(prev => prev.filter((_, j) => j !== i))}
                       className="text-[#c0d4c0] hover:text-red-400 text-xs transition-colors">✕</button>
@@ -1011,7 +1011,7 @@ function TimerContent() {
           <div className="text-center">
             <div className="flex justify-center gap-1.5 mb-6">
               {[0, 1, 2].map(i => (
-                <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#3a9e52]"
+                <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#3D6B47]"
                   style={{ animation: 'wavebar 0.7s ease-in-out infinite alternate', animationDelay: `${i * 0.15}s` }} />
               ))}
             </div>
@@ -1031,12 +1031,12 @@ function TimerContent() {
                   className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border transition-all text-left"
                   style={{
                     background: item.completed ? '#f0f9f2' : '#fff',
-                    borderColor: item.completed ? '#3a9e52' : '#e8f0e8',
+                    borderColor: item.completed ? '#3D6B47' : '#E8E4DA',
                   }}>
                   <span className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
                     style={{
-                      borderColor: item.completed ? '#3a9e52' : '#c8dcc8',
-                      background: item.completed ? '#3a9e52' : 'transparent',
+                      borderColor: item.completed ? '#3D6B47' : '#E8E4DA',
+                      background: item.completed ? '#3D6B47' : 'transparent',
                     }}>
                     {item.completed && <span className="text-white text-xs font-bold">✓</span>}
                   </span>
@@ -1117,7 +1117,7 @@ function TimerContent() {
                         }}>
                           <span aria-hidden="true" style={{
                             width: 22, height: 22, borderRadius: '50%',
-                            background: '#3a9e52', flexShrink: 0,
+                            background: '#3D6B47', flexShrink: 0,
                             display: 'grid', placeItems: 'center', color: '#fff',
                             marginTop: 2,
                           }}>

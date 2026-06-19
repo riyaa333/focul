@@ -141,7 +141,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F7F5EF' }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3a9e52', animation: 'ping 1s infinite' }} />
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#3D6B47', animation: 'ping 1s infinite' }} />
       </div>
     )
   }
@@ -212,11 +212,11 @@ export default function DashboardPage() {
               <rect x="18" y="58" width="18" height="52" rx="9" fill="#d4ead8"/>
               <rect x="42" y="36" width="18" height="96" rx="9" fill="#8dcc9e"/>
               <rect x="66" y="18" width="18" height="132" rx="9" fill="#1e5c30"/>
-              <rect x="90" y="36" width="18" height="96" rx="9" fill="#3a9e52"/>
+              <rect x="90" y="36" width="18" height="96" rx="9" fill="#3D6B47"/>
               <rect x="114" y="58" width="18" height="52" rx="9" fill="#8dcc9e"/>
             </svg>
-            <span style={{ fontSize: 17, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5 }}>
-              Foc<span style={{ color: '#3a9e52' }}>ul</span>
+            <span style={{ fontSize: 17, fontWeight: 800, color: '#1F3A24', letterSpacing: -0.5 }}>
+              Foc<span style={{ color: '#3D6B47' }}>ul</span>
             </span>
           </div>
           <button onClick={signOut} style={{
@@ -236,13 +236,13 @@ export default function DashboardPage() {
                 <input ref={nameInputRef} value={nameInput} onChange={e => setNameInput(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') setEditingName(false) }}
                   onBlur={saveName} placeholder="Your first name" autoFocus
-                  style={{ fontSize: 26, fontWeight: 800, color: '#1a1410', letterSpacing: -1,
-                    border: 'none', borderBottom: '2px solid #3a9e52', outline: 'none',
+                  style={{ fontSize: 26, fontWeight: 800, color: '#1F3A24', letterSpacing: -1,
+                    border: 'none', borderBottom: '2px solid #3D6B47', outline: 'none',
                     background: 'transparent', fontFamily: 'inherit', width: 180, padding: '0 0 2px 0' }} />
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                <p style={{ fontSize: 26, fontWeight: 800, color: '#1a1410', letterSpacing: -1 }}>{firstName}.</p>
+                <p style={{ fontSize: 26, fontWeight: 800, color: '#1F3A24', letterSpacing: -1 }}>{firstName}.</p>
                 {!hasCustomName && (
                   <button onClick={() => { setNameInput(''); setEditingName(true) }}
                     style={{ fontSize: 11, color: '#c0b8a8', background: 'transparent',
@@ -270,7 +270,7 @@ export default function DashboardPage() {
               <div style={{ background: '#fff', borderRadius: 8, border: '1px solid #E8E4DA', boxShadow: 'none', overflow: 'hidden' }}>
                 {/* Timer display */}
                 <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid #f3f1ee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-                  <div style={{ fontSize: 72, fontWeight: 900, letterSpacing: -4, lineHeight: 1, color: '#1a1410' }}>
+                  <div style={{ fontSize: 72, fontWeight: 900, letterSpacing: -4, lineHeight: 1, color: '#1F3A24' }}>
                     {timerDisplay}<span style={{ color: '#e8e2d8' }}>{timerSuffix}</span>
                   </div>
                   {!showCustom ? (
@@ -278,8 +278,8 @@ export default function DashboardPage() {
                       {[15, 30].map(d => (
                         <button key={d} onClick={() => setSelected(d)} style={{
                           padding: '7px 16px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-                          cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1a1410' : '#e8e2d8'}`,
-                          color: selected === d ? '#1a1410' : '#b0a898', background: 'transparent',
+                          cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1F3A24' : '#e8e2d8'}`,
+                          color: selected === d ? '#1F3A24' : '#b0a898', background: 'transparent',
                         }}>{d} min</button>
                       ))}
                       <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
@@ -292,7 +292,7 @@ export default function DashboardPage() {
                       <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
                         onChange={e => setCustomMins(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && startSession()}
-                        style={{ width: 40, background: 'transparent', outline: 'none', fontSize: 13, fontWeight: 700, color: '#1a1410', textAlign: 'center', border: 'none' }} />
+                        style={{ width: 40, background: 'transparent', outline: 'none', fontSize: 13, fontWeight: 700, color: '#1F3A24', textAlign: 'center', border: 'none' }} />
                       <span style={{ fontSize: 12, fontWeight: 600, color: '#b0a898' }}>min</span>
                       <button onClick={() => { setShowCustom(false); setCustomMins('') }}
                         style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
@@ -350,9 +350,9 @@ export default function DashboardPage() {
                   <input value={newTodo} onChange={e => setNewTodo(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && addTodo(newTodo)}
                     placeholder="Add a task..."
-                    style={{ flex: 1, fontSize: 13, border: 'none', outline: 'none', background: 'transparent', color: '#1a1410', fontFamily: 'inherit' }} />
+                    style={{ flex: 1, fontSize: 13, border: 'none', outline: 'none', background: 'transparent', color: '#1F3A24', fontFamily: 'inherit' }} />
                   {newTodo.trim() && (
-                    <button onClick={() => addTodo(newTodo)} style={{ fontSize: 20, color: '#3a9e52', border: 'none', background: 'transparent', cursor: 'pointer' }}>+</button>
+                    <button onClick={() => addTodo(newTodo)} style={{ fontSize: 20, color: '#3D6B47', border: 'none', background: 'transparent', cursor: 'pointer' }}>+</button>
                   )}
                 </div>
                 <div style={{ padding: '6px 0', maxHeight: 240, overflowY: 'auto' }}>
@@ -374,7 +374,7 @@ export default function DashboardPage() {
                         <div key={todo.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '7px 20px', opacity: 0.45 }}>
                           <button onClick={() => toggleTodo(todo.id, false)} style={{
                             width: 16, height: 16, borderRadius: 4, flexShrink: 0, marginTop: 1,
-                            border: '1.5px solid #3a9e52', background: '#3a9e52', cursor: 'pointer',
+                            border: '1.5px solid #3D6B47', background: '#3D6B47', cursor: 'pointer',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10,
                           }}>✓</button>
                           <span style={{ fontSize: 13, color: '#a09888', lineHeight: 1.45, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
@@ -391,7 +391,7 @@ export default function DashboardPage() {
           {/* History tab */}
           {activeNav === 'history' && (
             <div>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginBottom: 14 }}>Session history</h2>
+              <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1F3A24', marginBottom: 14 }}>Session history</h2>
               {sessions.length === 0 ? (
                 <p style={{ fontSize: 13, color: '#b0a898' }}>No sessions yet. Start your first one!</p>
               ) : (
@@ -399,7 +399,7 @@ export default function DashboardPage() {
                   {sessions.map(session => (
                     <div key={session.id} style={{ background: '#fff', borderRadius: 8, padding: '12px 16px', border: '1px solid #E8E4DA' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#1a1410' }}>{session.duration_minutes} min</span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: '#1F3A24' }}>{session.duration_minutes} min</span>
                         <span style={{ fontSize: 11, color: '#c0b8a8' }}>{timeAgo(session.created_at)}</span>
                       </div>
                       {session.tasks?.length > 0 && session.tasks.map((t, i) => (
@@ -429,8 +429,8 @@ export default function DashboardPage() {
               border: 'none', background: 'transparent', cursor: 'pointer', padding: '6px 0',
             }}>
               <span style={{ fontSize: 18, lineHeight: 1 }}>{icon}</span>
-              <span style={{ fontSize: 10, fontWeight: 600, color: activeNav === key ? '#1a1410' : '#c0b8a8' }}>{label}</span>
-              {activeNav === key && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#3a9e52' }} />}
+              <span style={{ fontSize: 10, fontWeight: 600, color: activeNav === key ? '#1F3A24' : '#c0b8a8' }}>{label}</span>
+              {activeNav === key && <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#3D6B47' }} />}
             </button>
           ))}
         </div>
@@ -919,7 +919,7 @@ export default function DashboardPage() {
                               <circle cx="22" cy="22" r={r} fill="none" stroke="rgba(30,55,32,0.08)" strokeWidth="3" />
                               {d.mins > 0 && (
                                 <circle cx="22" cy="22" r={r} fill="none"
-                                  stroke={d.isToday ? '#0d1f15' : '#3a9e52'}
+                                  stroke={d.isToday ? '#0d1f15' : '#3D6B47'}
                                   strokeWidth="3"
                                   strokeDasharray={`${strokeLen} ${circ}`}
                                   strokeDashoffset={offset}
@@ -927,7 +927,7 @@ export default function DashboardPage() {
                                   style={{ transition: 'stroke-dasharray 0.8s cubic-bezier(0.4,0,0.2,1)' }} />
                               )}
                               <text x="22" y="26" textAnchor="middle"
-                                style={{ fontFamily: 'inherit', fontSize: 9, fontWeight: 600, fill: d.mins > 0 ? (d.isToday ? '#0d1f15' : '#3a9e52') : 'rgba(13,31,21,0.32)' }}>
+                                style={{ fontFamily: 'inherit', fontSize: 9, fontWeight: 600, fill: d.mins > 0 ? (d.isToday ? '#0d1f15' : '#3D6B47') : 'rgba(13,31,21,0.32)' }}>
                                 {d.mins > 0 ? `${d.mins}m` : '—'}
                               </text>
                             </svg>

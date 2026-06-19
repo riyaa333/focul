@@ -8,8 +8,6 @@ import s from './waiting.module.css'
 type Lookup = {
   email: string
   ref_code: string
-  position: number
-  raw_position: number
   referrals: number
 }
 

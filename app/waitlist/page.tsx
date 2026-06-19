@@ -9,7 +9,7 @@ function WaveLogo({ size = 28 }: { size?: number }) {
   const bars = [
     { h: 0.45, c: '#7cd49b' },
     { h: 0.75, c: '#5ec07e' },
-    { h: 1.0,  c: '#3a9e52' },
+    { h: 1.0,  c: '#3D6B47' },
     { h: 0.7,  c: '#5ec07e' },
     { h: 0.4,  c: '#7cd49b' },
   ]

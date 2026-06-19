@@ -61,7 +61,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
       backdropFilter: 'blur(8px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: 24,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
       opacity: visible ? 1 : 0,
       transition: 'opacity 0.3s ease',
     }}>
@@ -82,7 +82,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
         <div style={{ height: 3, background: '#f0ede8' }}>
           <div style={{
             height: '100%',
-            background: 'linear-gradient(90deg, #2d8a44, #4db864)',
+            background: '#3D6B47',
             width: `${((step + 1) / totalSteps) * 100}%`,
             transition: 'width 0.4s cubic-bezier(0.22,1,0.36,1)',
             borderRadius: 99,
@@ -94,7 +94,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
           {/* Skip */}
           <button onClick={dismiss} style={{
             position: 'absolute', top: 20, right: 22,
-            fontSize: 12, color: '#c0b8a8', background: 'transparent',
+            fontSize: 12, color: '#9A957F', background: 'transparent',
             border: 'none', cursor: 'pointer', fontFamily: 'inherit',
           }}>
             skip
@@ -117,15 +117,15 @@ export default function OnboardingModal({ onDismiss }: Props) {
                       <rect x="18" y="58" width="18" height="52" rx="9" fill="#d4ead8"/>
                       <rect x="42" y="36" width="18" height="96" rx="9" fill="#8dcc9e"/>
                       <rect x="66" y="18" width="18" height="132" rx="9" fill="#1e5c30"/>
-                      <rect x="90" y="36" width="18" height="96" rx="9" fill="#3a9e52"/>
+                      <rect x="90" y="36" width="18" height="96" rx="9" fill="#3D6B47"/>
                       <rect x="114" y="58" width="18" height="52" rx="9" fill="#8dcc9e"/>
                     </svg>
                   </div>
                 </div>
-                <h2 style={{ fontSize: 26, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5, marginBottom: 8 }}>
+                <h2 style={{ fontSize: 26, fontWeight: 800, color: '#1F3A24', letterSpacing: -0.5, marginBottom: 8 }}>
                   Welcome to Focul.
                 </h2>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#3a9e52', marginBottom: 14 }}>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#3D6B47', marginBottom: 14 }}>
                   The focus timer that closes the loop.
                 </p>
                 <p style={{ fontSize: 14, color: '#8a7e72', lineHeight: 1.65 }}>
@@ -142,7 +142,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
                     background: '#f7f5f2', borderRadius: 20, padding: '18px 28px',
                     display: 'flex', alignItems: 'center', gap: 4,
                   }}>
-                    <span style={{ fontSize: 52, fontWeight: 900, letterSpacing: -3, color: '#1a1410', lineHeight: 1 }}>15</span>
+                    <span style={{ fontSize: 52, fontWeight: 900, letterSpacing: -3, color: '#1F3A24', lineHeight: 1 }}>15</span>
                     <span style={{ fontSize: 52, fontWeight: 900, letterSpacing: -3, color: '#e0dbd4', lineHeight: 1 }}>:00</span>
                   </div>
                 </div>
@@ -150,15 +150,15 @@ export default function OnboardingModal({ onDismiss }: Props) {
                   {[15, 30, 45].map(d => (
                     <div key={d} style={{
                       padding: '6px 14px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-                      border: d === 15 ? '1.5px solid #1a1410' : '1.5px solid #e8e2d8',
-                      color: d === 15 ? '#1a1410' : '#c0b8a8',
+                      border: d === 15 ? '1.5px solid #1F3A24' : '1.5px solid #E8E4DA',
+                      color: d === 15 ? '#1F3A24' : '#9A957F',
                     }}>{d} min</div>
                   ))}
                 </div>
-                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5, marginBottom: 8 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1F3A24', letterSpacing: -0.5, marginBottom: 8 }}>
                   Pick a duration. Start.
                 </h2>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#3a9e52', marginBottom: 14 }}>No setup. No friction.</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#3D6B47', marginBottom: 14 }}>No setup. No friction.</p>
                 <p style={{ fontSize: 14, color: '#8a7e72', lineHeight: 1.65 }}>
                   Choose 15, 30, or 45 minutes. Hit start. Close your other tabs. The timer runs — you focus.
                 </p>
@@ -169,7 +169,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
             {step === 2 && (
               <div>
                 <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                  <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5, marginBottom: 8 }}>
+                  <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1F3A24', letterSpacing: -0.5, marginBottom: 8 }}>
                     Two ways to work.
                   </h2>
                   <p style={{ fontSize: 14, color: '#8a7e72', lineHeight: 1.6 }}>
@@ -181,27 +181,27 @@ export default function OnboardingModal({ onDismiss }: Props) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 8 }}>
                   <button onClick={() => setSelectedMode('focus')} style={{
                     textAlign: 'left', padding: '16px 18px', borderRadius: 16, cursor: 'pointer',
-                    border: selectedMode === 'focus' ? '2px solid #1a1410' : '1.5px solid #e8e2d8',
+                    border: selectedMode === 'focus' ? '2px solid #1F3A24' : '1.5px solid #E8E4DA',
                     background: selectedMode === 'focus' ? '#f7f5f2' : '#fff',
                     transition: 'all 0.18s',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
                       <div style={{
-                        width: 32, height: 32, borderRadius: 10, background: '#1a1410',
+                        width: 32, height: 32, borderRadius: 10, background: '#1F3A24',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: 15,
                       }}>⚡</div>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: '#1a1410' }}>Focus mode</span>
-                      {selectedMode === 'focus' && <span style={{ marginLeft: 'auto', fontSize: 12, color: '#3a9e52', fontWeight: 600 }}>✓ selected</span>}
+                      <span style={{ fontSize: 14, fontWeight: 700, color: '#1F3A24' }}>Focus mode</span>
+                      {selectedMode === 'focus' && <span style={{ marginLeft: 'auto', fontSize: 12, color: '#3D6B47', fontWeight: 600 }}>✓ selected</span>}
                     </div>
-                    <p style={{ fontSize: 12, color: '#a09888', lineHeight: 1.5, margin: 0 }}>
+                    <p style={{ fontSize: 12, color: '#8A8678', lineHeight: 1.5, margin: 0 }}>
                       Just start. When the timer ends, speak your debrief and AI extracts your next tasks.
                     </p>
                   </button>
 
                   <button onClick={() => setSelectedMode('accountability')} style={{
                     textAlign: 'left', padding: '16px 18px', borderRadius: 16, cursor: 'pointer',
-                    border: selectedMode === 'accountability' ? '2px solid #3D6B47' : '1.5px solid #e8e2d8',
+                    border: selectedMode === 'accountability' ? '2px solid #3D6B47' : '1.5px solid #E8E4DA',
                     background: selectedMode === 'accountability' ? '#f0f5fb' : '#fff',
                     transition: 'all 0.18s',
                   }}>
@@ -211,15 +211,15 @@ export default function OnboardingModal({ onDismiss }: Props) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: 15,
                       }}>✓</div>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: '#1a1410' }}>Accountability mode</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: '#1F3A24' }}>Accountability mode</span>
                       {selectedMode === 'accountability' && <span style={{ marginLeft: 'auto', fontSize: 12, color: '#3D6B47', fontWeight: 600 }}>✓ selected</span>}
                     </div>
-                    <p style={{ fontSize: 12, color: '#a09888', lineHeight: 1.5, margin: 0 }}>
+                    <p style={{ fontSize: 12, color: '#8A8678', lineHeight: 1.5, margin: 0 }}>
                       Set your tasks before you start. Review what you actually completed when the timer ends.
                     </p>
                   </button>
                 </div>
-                <p style={{ fontSize: 11, color: '#c0b8a8', textAlign: 'center' }}>You can switch modes anytime from the dashboard.</p>
+                <p style={{ fontSize: 11, color: '#9A957F', textAlign: 'center' }}>You can switch modes anytime from the dashboard.</p>
               </div>
             )}
 
@@ -237,7 +237,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
                     <div style={{
                       width: 72, height: 72, borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      background: 'linear-gradient(135deg, #2d8a44, #4db864)',
+                      background: '#3D6B47',
                       boxShadow: '0 8px 28px rgba(58,158,82,0.38)',
                       position: 'relative',
                     }}>
@@ -255,7 +255,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
                       <div key={i} style={{
                         width: 3, borderRadius: 99,
                         height: `${h * 100}%`,
-                        background: 'linear-gradient(to top, #2d8a44, #4db864)',
+                        background: '#3D6B47',
                         opacity: 0.5 + h * 0.5,
                         animation: `wavebar ${0.6 + i * 0.07}s ease-in-out infinite alternate`,
                         animationDelay: `${i * 0.06}s`,
@@ -263,11 +263,11 @@ export default function OnboardingModal({ onDismiss }: Props) {
                     ))}
                   </div>
                 </div>
-                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a1410', letterSpacing: -0.5, marginBottom: 8 }}>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1F3A24', letterSpacing: -0.5, marginBottom: 8 }}>
                   Debrief in 30 seconds.
                 </h2>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#3a9e52', marginBottom: 14 }}>
-                  Press <kbd style={{ background: '#e8f5e8', border: '1px solid #c8dcc8', borderRadius: 5, padding: '1px 7px', fontSize: 12, fontFamily: 'inherit', color: '#2d8a44' }}>Space</kbd> · Just speak.
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#3D6B47', marginBottom: 14 }}>
+                  Press <kbd style={{ background: '#e8f5e8', border: '1px solid #E8E4DA', borderRadius: 5, padding: '1px 7px', fontSize: 12, fontFamily: 'inherit', color: '#2d8a44' }}>Space</kbd> · Just speak.
                 </p>
                 <p style={{ fontSize: 14, color: '#8a7e72', lineHeight: 1.65 }}>
                   When the timer ends, press Space and say what you got done. AI transcribes it, cleans it up, and pulls out your next tasks — automatically.
@@ -281,7 +281,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
             {Array.from({ length: totalSteps }).map((_, i) => (
               <div key={i} onClick={() => goTo(i, i > step ? 'forward' : 'back')} style={{
                 width: i === step ? 22 : 6, height: 6, borderRadius: 99,
-                background: i === step ? '#3a9e52' : i < step ? '#b8dfc0' : '#e8e2d8',
+                background: i === step ? '#3D6B47' : i < step ? '#b8dfc0' : '#E8E4DA',
                 cursor: 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.22,1,0.36,1)',
               }} />
@@ -295,7 +295,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
                 <button onClick={startSession} style={{
                   width: '100%', padding: '14px', borderRadius: 50, border: 'none',
                   fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer',
-                  background: 'linear-gradient(135deg, #2d8a44, #4db864)',
+                  background: '#3D6B47',
                   boxShadow: '0 6px 20px rgba(58,158,82,0.32)',
                   letterSpacing: '0.01em',
                   transition: 'opacity 0.15s',
@@ -304,7 +304,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
                 </button>
                 <button onClick={dismiss} style={{
                   width: '100%', padding: '10px', borderRadius: 50, border: 'none',
-                  fontSize: 13, color: '#b0a898', background: 'transparent', cursor: 'pointer',
+                  fontSize: 13, color: '#8A8678', background: 'transparent', cursor: 'pointer',
                 }}>
                   Go to dashboard
                 </button>
@@ -313,8 +313,8 @@ export default function OnboardingModal({ onDismiss }: Props) {
               <div style={{ display: 'flex', gap: 8 }}>
                 {step > 0 && (
                   <button onClick={back} style={{
-                    padding: '14px 20px', borderRadius: 50, border: '1.5px solid #e8e2d8',
-                    fontSize: 14, fontWeight: 600, color: '#b0a898',
+                    padding: '14px 20px', borderRadius: 50, border: '1.5px solid #E8E4DA',
+                    fontSize: 14, fontWeight: 600, color: '#8A8678',
                     background: 'transparent', cursor: 'pointer',
                   }}>
                     ←
@@ -323,7 +323,7 @@ export default function OnboardingModal({ onDismiss }: Props) {
                 <button onClick={next} style={{
                   flex: 1, padding: '14px', borderRadius: 50, border: 'none',
                   fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer',
-                  background: 'linear-gradient(135deg, #2d8a44, #4db864)',
+                  background: '#3D6B47',
                   boxShadow: '0 6px 20px rgba(58,158,82,0.28)',
                   letterSpacing: '0.01em',
                 }}>

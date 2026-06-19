@@ -49,7 +49,7 @@ export default function ResetPasswordPage() {
       alignItems: 'center',
       justifyContent: 'center',
       background: '#f9fdf6',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
     }}>
       <div style={{ width: '100%', maxWidth: 340, padding: '0 20px' }}>
 
@@ -60,11 +60,11 @@ export default function ResetPasswordPage() {
               <rect x="18" y="58" width="18" height="52" rx="9" fill="#d4ead8"/>
               <rect x="42" y="36" width="18" height="96" rx="9" fill="#8dcc9e"/>
               <rect x="66" y="18" width="18" height="132" rx="9" fill="#1e5c30"/>
-              <rect x="90" y="36" width="18" height="96" rx="9" fill="#3a9e52"/>
+              <rect x="90" y="36" width="18" height="96" rx="9" fill="#3D6B47"/>
               <rect x="114" y="58" width="18" height="52" rx="9" fill="#8dcc9e"/>
             </svg>
-            <span style={{ fontSize: 24, fontWeight: 800, color: '#1a3020', letterSpacing: -0.5 }}>
-              Foc<span style={{ color: '#3a9e52' }}>ul</span>
+            <span style={{ fontSize: 24, fontWeight: 800, color: '#1F3A24', letterSpacing: -0.5 }}>
+              Foc<span style={{ color: '#3D6B47' }}>ul</span>
             </span>
           </div>
         </div>
@@ -78,10 +78,10 @@ export default function ResetPasswordPage() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 20 }}>
             <span style={{
-              width: 7, height: 7, background: '#3a9e52', borderRadius: '50%',
+              width: 7, height: 7, background: '#3D6B47', borderRadius: '50%',
               display: 'inline-block', boxShadow: '0 0 0 3px rgba(58,158,82,0.15)',
             }} />
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3a9e52' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3D6B47' }}>
               Create new password
             </span>
           </div>
@@ -110,10 +110,10 @@ export default function ResetPasswordPage() {
                   style={{
                     width: '100%', border: '1.5px solid #e4f0e4', borderRadius: 12,
                     padding: '10px 14px', fontSize: 14, outline: 'none',
-                    background: '#fafdf8', color: '#1a3020', fontFamily: 'inherit',
+                    background: '#FAF9F4', color: '#1F3A24', fontFamily: 'inherit',
                     boxSizing: 'border-box', transition: 'border-color 0.15s',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#3a9e52'}
+                  onFocus={e => e.target.style.borderColor = '#3D6B47'}
                   onBlur={e => e.target.style.borderColor = '#e4f0e4'}
                 />
               </div>
@@ -134,10 +134,10 @@ export default function ResetPasswordPage() {
                   style={{
                     width: '100%', border: '1.5px solid #e4f0e4', borderRadius: 12,
                     padding: '10px 14px', fontSize: 14, outline: 'none',
-                    background: '#fafdf8', color: '#1a3020', fontFamily: 'inherit',
+                    background: '#FAF9F4', color: '#1F3A24', fontFamily: 'inherit',
                     boxSizing: 'border-box', transition: 'border-color 0.15s',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#3a9e52'}
+                  onFocus={e => e.target.style.borderColor = '#3D6B47'}
                   onBlur={e => e.target.style.borderColor = '#e4f0e4'}
                 />
               </div>
@@ -158,7 +158,7 @@ export default function ResetPasswordPage() {
                   width: '100%', padding: '13px', borderRadius: 50, border: 'none',
                   fontSize: 14, fontWeight: 700, color: '#fff',
                   cursor: loading ? 'default' : 'pointer',
-                  background: 'linear-gradient(135deg, #2d8a44, #4db864)',
+                  background: '#3D6B47',
                   boxShadow: '0 6px 20px rgba(58,158,82,0.32)',
                   opacity: loading ? 0.7 : 1, marginTop: 6, letterSpacing: '0.01em',
                 }}

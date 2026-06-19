@@ -167,33 +167,33 @@ export default function SettingsPage() {
 
   const sectionLabel: React.CSSProperties = {
     fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase',
-    color: '#c0b8a8', marginBottom: 14,
+    color: '#9A957F', marginBottom: 14,
   }
   const card: React.CSSProperties = {
-    background: '#fff', borderRadius: 20, border: '1px solid #ede9e2',
-    boxShadow: '0 2px 16px rgba(0,0,0,0.04)', overflow: 'hidden', marginBottom: 24,
+    background: '#fff', borderRadius: 6, border: '1px solid #E8E4DA',
+    overflow: 'hidden', marginBottom: 24,
   }
   const row: React.CSSProperties = {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '14px 24px', borderBottom: '1px solid #f3f1ee',
+    padding: '14px 24px', borderBottom: '1px solid #F2EFE7',
   }
   const rowLast: React.CSSProperties = { ...row, borderBottom: 'none' }
-  const label: React.CSSProperties = { fontSize: 13, color: '#1a1410', fontWeight: 500 }
-  const value: React.CSSProperties = { fontSize: 13, color: '#a09888' }
+  const label: React.CSSProperties = { fontSize: 13, color: '#1F3A24', fontWeight: 500 }
+  const value: React.CSSProperties = { fontSize: 13, color: '#8A8678' }
 
   return (
     <div style={{
-      minHeight: '100vh', background: '#faf9f7',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+      minHeight: '100vh', background: '#F7F5EF',
+      fontFamily: "'General Sans', -apple-system, BlinkMacSystemFont, sans-serif",
       display: 'flex', flexDirection: 'column',
     }}>
       {/* Nav */}
-      <nav style={{ display: 'flex', alignItems: 'center', padding: '20px 40px', borderBottom: '1px solid #f0ede8' }}>
+      <nav style={{ display: 'flex', alignItems: 'center', padding: '20px 40px', borderBottom: '1px solid #E8E4DA' }}>
         <button onClick={() => router.push('/dashboard')} style={{
-          fontSize: 12, fontWeight: 500, color: '#b0a898', cursor: 'pointer',
+          fontSize: 12, fontWeight: 500, color: '#8A8678', cursor: 'pointer',
           border: 'none', background: 'transparent', fontFamily: 'inherit',
         }}>← Dashboard</button>
-        <span style={{ fontSize: 15, fontWeight: 700, color: '#1a1410', marginLeft: 24 }}>Settings</span>
+        <span style={{ fontSize: 15, fontWeight: 700, color: '#1F3A24', marginLeft: 24 }}>Settings</span>
       </nav>
 
       <div style={{ flex: 1, display: 'flex', justifyContent: 'center', padding: '40px 24px' }}>
@@ -215,19 +215,19 @@ export default function SettingsPage() {
                     onBlur={saveName}
                     autoFocus
                     style={{
-                      fontSize: 13, border: 'none', borderBottom: '1.5px solid #3a9e52',
+                      fontSize: 13, border: 'none', borderBottom: '1.5px solid #3D6B47',
                       outline: 'none', background: 'transparent', fontFamily: 'inherit',
-                      color: '#1a1410', width: 160, padding: '0 0 2px 0', textAlign: 'right',
+                      color: '#1F3A24', width: 160, padding: '0 0 2px 0', textAlign: 'right',
                     }}
                   />
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  {nameSaved && <span style={{ fontSize: 11, color: '#3a9e52' }}>Saved</span>}
+                  {nameSaved && <span style={{ fontSize: 11, color: '#3D6B47' }}>Saved</span>}
                   <span style={value}>{displayName}</span>
                   <button onClick={() => { setNameInput(displayName); setEditingName(true) }} style={{
-                    fontSize: 11, color: '#b0a898', cursor: 'pointer', border: '1px solid #e8e2d8',
-                    borderRadius: 6, padding: '3px 8px', background: 'transparent', fontFamily: 'inherit',
+                    fontSize: 11, color: '#8A8678', cursor: 'pointer', border: '1px solid #E8E4DA',
+                    borderRadius: 4, padding: '3px 8px', background: 'transparent', fontFamily: 'inherit',
                   }}>Edit</button>
                 </div>
               )}
@@ -243,7 +243,7 @@ export default function SettingsPage() {
             <div style={row}>
               <span style={label}>Password</span>
               <button onClick={handleForgotPassword} style={{
-                fontSize: 12, color: '#3a9e52', cursor: 'pointer', border: 'none',
+                fontSize: 12, color: '#3D6B47', cursor: 'pointer', border: 'none',
                 background: 'transparent', fontFamily: 'inherit', fontWeight: 600,
               }}>Send reset email →</button>
             </div>
@@ -252,7 +252,7 @@ export default function SettingsPage() {
             <div style={rowLast}>
               <span style={label}>Session</span>
               <button onClick={signOut} style={{
-                fontSize: 12, color: '#e07070', cursor: 'pointer', border: 'none',
+                fontSize: 12, color: '#b85a3c', cursor: 'pointer', border: 'none',
                 background: 'transparent', fontFamily: 'inherit', fontWeight: 600,
               }}>Sign out</button>
             </div>
@@ -269,10 +269,10 @@ export default function SettingsPage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <span style={label}>Quick voice debrief</span>
                       {shortcutSaved && (
-                        <span style={{ fontSize: 11, color: '#3a9e52', fontWeight: 600 }}>Saved</span>
+                        <span style={{ fontSize: 11, color: '#3D6B47', fontWeight: 600 }}>Saved</span>
                       )}
                     </div>
-                    <p style={{ fontSize: 12, color: '#b0a898', marginTop: 4, lineHeight: 1.45 }}>
+                    <p style={{ fontSize: 12, color: '#8A8678', marginTop: 4, lineHeight: 1.45 }}>
                       Press these keys anywhere on your Mac to open Focul and start a 60-second voice debrief.
                     </p>
                   </div>
@@ -280,8 +280,8 @@ export default function SettingsPage() {
                   {/* Keys row */}
                   {capturingShortcut ? (
                     <div style={{
-                      background: '#f7f5f2', borderRadius: 12,
-                      border: '1.5px dashed #3a9e52', padding: '14px 16px',
+                      background: '#FAF9F4', borderRadius: 6,
+                      border: '1.5px dashed #3D6B47', padding: '14px 16px',
                       display: 'flex', flexDirection: 'column', gap: 10,
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
@@ -289,68 +289,68 @@ export default function SettingsPage() {
                           {capturedKeys.length > 0 ? (
                             capturedKeys.map((k, i) => (
                               <span key={i} style={{
-                                fontSize: 12, fontWeight: 700, color: '#1a1410',
-                                background: '#fff', border: '1px solid #ddd8d0',
-                                borderRadius: 6, padding: '3px 9px', fontFamily: 'monospace',
+                                fontSize: 12, fontWeight: 700, color: '#1F3A24',
+                                background: '#fff', border: '1px solid #E8E4DA',
+                                borderRadius: 4, padding: '3px 9px', fontFamily: 'monospace',
                               }}>{k}</span>
                             ))
                           ) : (
-                            <span style={{ fontSize: 12, color: '#3a9e52', fontWeight: 600 }}>
+                            <span style={{ fontSize: 12, color: '#3D6B47', fontWeight: 600 }}>
                               Listening — press your shortcut…
                             </span>
                           )}
                         </div>
                         <button onClick={() => { setCapturingShortcut(false); setCapturedKeys([]); setShortcutError('') }} style={{
-                          fontSize: 11, color: '#8a7e72', border: '1px solid #e8e2d8',
-                          borderRadius: 6, padding: '4px 10px', background: '#fff',
+                          fontSize: 11, color: '#8A8678', border: '1px solid #E8E4DA',
+                          borderRadius: 4, padding: '4px 10px', background: '#fff',
                           cursor: 'pointer', fontFamily: 'inherit',
                         }}>Cancel</button>
                       </div>
-                      <p style={{ fontSize: 11, color: '#a09888', margin: 0, lineHeight: 1.5 }}>
-                        Hold <b style={{ color: '#1a1410' }}>Cmd</b>, <b style={{ color: '#1a1410' }}>Ctrl</b>, <b style={{ color: '#1a1410' }}>Option</b>, or <b style={{ color: '#1a1410' }}>Shift</b> with another key &mdash; or press a function key (<b style={{ color: '#1a1410' }}>F1&ndash;F19</b>) on its own. Press <b style={{ color: '#1a1410' }}>Esc</b> to cancel.
+                      <p style={{ fontSize: 11, color: '#8A8678', margin: 0, lineHeight: 1.5 }}>
+                        Hold <b style={{ color: '#1F3A24' }}>Cmd</b>, <b style={{ color: '#1F3A24' }}>Ctrl</b>, <b style={{ color: '#1F3A24' }}>Option</b>, or <b style={{ color: '#1F3A24' }}>Shift</b> with another key &mdash; or press a function key (<b style={{ color: '#1F3A24' }}>F1&ndash;F19</b>) on its own. Press <b style={{ color: '#1F3A24' }}>Esc</b> to cancel.
                       </p>
                     </div>
                   ) : (
                     <div style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      gap: 16, background: '#faf9f7', borderRadius: 12,
-                      border: '1px solid #ede9e2', padding: '14px 16px',
+                      gap: 16, background: '#F7F5EF', borderRadius: 6,
+                      border: '1px solid #E8E4DA', padding: '14px 16px',
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                         {formatShortcut(shortcut).map((k, i, arr) => (
                           <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
                             <kbd style={{
                               fontFamily: 'inherit',
-                              fontSize: 13, fontWeight: 600, color: '#1a1410',
-                              background: 'linear-gradient(180deg, #ffffff 0%, #f6f2eb 100%)',
-                              border: '1px solid #d8d2c6',
-                              borderRadius: 7,
+                              fontSize: 13, fontWeight: 600, color: '#1F3A24',
+                              background: '#fff',
+                              border: '1px solid #E8E4DA',
+                              borderRadius: 5,
                               padding: '6px 12px',
                               minWidth: 28, textAlign: 'center',
-                              boxShadow: '0 1px 0 #cfc8b9, 0 2px 4px rgba(13,31,21,0.05)',
+                              boxShadow: 'none',
                               letterSpacing: '-0.01em',
                             }}>{k}</kbd>
                             {i < arr.length - 1 && (
-                              <span style={{ fontSize: 12, color: '#c8c0b0', fontWeight: 600 }}>+</span>
+                              <span style={{ fontSize: 12, color: '#B5B09C', fontWeight: 600 }}>+</span>
                             )}
                           </span>
                         ))}
                       </div>
                       <button onClick={() => { setCapturingShortcut(true); setShortcutError('') }} style={{
-                        fontSize: 12, fontWeight: 600, color: '#1a1410', cursor: 'pointer',
-                        border: '1px solid #1a1410', borderRadius: 8, padding: '7px 14px',
+                        fontSize: 12, fontWeight: 600, color: '#1F3A24', cursor: 'pointer',
+                        border: '1px solid #1F3A24', borderRadius: 5, padding: '7px 14px',
                         background: 'transparent', fontFamily: 'inherit',
                         transition: 'all 0.15s',
                       }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#1a1410'; e.currentTarget.style.color = '#fff' }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#1a1410' }}>
+                      onMouseEnter={e => { e.currentTarget.style.background = '#1F3A24'; e.currentTarget.style.color = '#fff' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#1F3A24' }}>
                         Change
                       </button>
                     </div>
                   )}
 
                   {shortcutError && (
-                    <p style={{ fontSize: 12, color: '#e07070', margin: 0, lineHeight: 1.4 }}>
+                    <p style={{ fontSize: 12, color: '#b85a3c', margin: 0, lineHeight: 1.4 }}>
                       {shortcutError}
                     </p>
                   )}
