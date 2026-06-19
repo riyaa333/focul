@@ -203,7 +203,7 @@ export default function DashboardPage() {
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '16px 20px',
-          background: '#f3f1ee',
+          background: '#F2EFE7',
           borderBottom: '1px solid #e8e4de',
           position: 'sticky', top: 0, zIndex: 10,
         }}>
@@ -220,7 +220,7 @@ export default function DashboardPage() {
             </span>
           </div>
           <button onClick={signOut} style={{
-            fontSize: 12, color: '#c0b8a8', border: 'none',
+            fontSize: 12, color: '#9A957F', border: 'none',
             background: 'transparent', cursor: 'pointer', fontFamily: 'inherit',
           }}>Sign out</button>
         </div>
@@ -230,7 +230,7 @@ export default function DashboardPage() {
 
           {/* Greeting */}
           <div style={{ marginBottom: 8 }}>
-            <p style={{ fontSize: 12, color: '#b0a898', marginBottom: 2 }}>{greeting}</p>
+            <p style={{ fontSize: 12, color: '#8A8678', marginBottom: 2 }}>{greeting}</p>
             {editingName ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input ref={nameInputRef} value={nameInput} onChange={e => setNameInput(e.target.value)}
@@ -245,7 +245,7 @@ export default function DashboardPage() {
                 <p style={{ fontSize: 26, fontWeight: 800, color: '#1F3A24', letterSpacing: -1 }}>{firstName}.</p>
                 {!hasCustomName && (
                   <button onClick={() => { setNameInput(''); setEditingName(true) }}
-                    style={{ fontSize: 11, color: '#c0b8a8', background: 'transparent',
+                    style={{ fontSize: 11, color: '#9A957F', background: 'transparent',
                       border: '1px solid #e8e2d8', borderRadius: 6, padding: '2px 7px', cursor: 'pointer' }}>
                     set name
                   </button>
@@ -253,7 +253,7 @@ export default function DashboardPage() {
               </div>
             )}
             {todayCount > 0 && (
-              <p style={{ fontSize: 12, color: '#b0a898', marginTop: 4 }}>
+              <p style={{ fontSize: 12, color: '#8A8678', marginTop: 4 }}>
                 {todayCount} session{todayCount > 1 ? 's' : ''} · {todayMins} min today
               </p>
             )}
@@ -269,33 +269,33 @@ export default function DashboardPage() {
             <>
               <div style={{ background: '#fff', borderRadius: 8, border: '1px solid #E8E4DA', boxShadow: 'none', overflow: 'hidden' }}>
                 {/* Timer display */}
-                <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid #f3f1ee', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+                <div style={{ padding: '28px 20px 20px', borderBottom: '1px solid #F2EFE7', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
                   <div style={{ fontSize: 72, fontWeight: 900, letterSpacing: -4, lineHeight: 1, color: '#1F3A24' }}>
-                    {timerDisplay}<span style={{ color: '#e8e2d8' }}>{timerSuffix}</span>
+                    {timerDisplay}<span style={{ color: '#7BA177' }}>{timerSuffix}</span>
                   </div>
                   {!showCustom ? (
                     <div style={{ display: 'flex', gap: 6 }}>
                       {[15, 30].map(d => (
                         <button key={d} onClick={() => setSelected(d)} style={{
-                          padding: '7px 16px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-                          cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1F3A24' : '#e8e2d8'}`,
-                          color: selected === d ? '#1F3A24' : '#b0a898', background: 'transparent',
+                          padding: '7px 16px', borderRadius: 6, fontSize: 12, fontWeight: 600,
+                          cursor: 'pointer', border: `1.5px solid ${selected === d ? '#1F3A24' : '#E8E4DA'}`,
+                          color: selected === d ? '#1F3A24' : '#8A8678', background: 'transparent',
                         }}>{d} min</button>
                       ))}
                       <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
-                        padding: '7px 16px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-                        cursor: 'pointer', border: '1.5px solid #e8e2d8', color: '#b0a898', background: 'transparent',
+                        padding: '7px 16px', borderRadius: 6, fontSize: 12, fontWeight: 600,
+                        cursor: 'pointer', border: '1.5px solid #E8E4DA', color: '#8A8678', background: 'transparent',
                       }}>custom</button>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#f7f5f2', borderRadius: 100, padding: '6px 16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#FAF9F4', borderRadius: 6, padding: '6px 16px' }}>
                       <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
                         onChange={e => setCustomMins(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && startSession()}
                         style={{ width: 40, background: 'transparent', outline: 'none', fontSize: 13, fontWeight: 700, color: '#1F3A24', textAlign: 'center', border: 'none' }} />
-                      <span style={{ fontSize: 12, fontWeight: 600, color: '#b0a898' }}>min</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: '#8A8678' }}>min</span>
                       <button onClick={() => { setShowCustom(false); setCustomMins('') }}
-                        style={{ fontSize: 12, color: '#c0b8a8', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
+                        style={{ fontSize: 12, color: '#9A957F', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
                     </div>
                   )}
                 </div>
@@ -303,10 +303,10 @@ export default function DashboardPage() {
                 {/* Mode + Start */}
                 <div style={{ padding: '16px 20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-                    <div style={{ display: 'flex', background: '#f3f1ee', borderRadius: 100, padding: 3 }}>
+                    <div style={{ display: 'flex', background: '#F2EFE7', borderRadius: 7, padding: 3 }}>
                       {(['focus', 'accountability'] as const).map(m => (
                         <button key={m} onClick={() => setMode(m)} style={{
-                          padding: '5px 14px', borderRadius: 100, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: 'none',
+                          padding: '5px 14px', borderRadius: 5, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: 'none',
                           background: mode === m ? '#1F3A24' : 'transparent',
                           color: mode === m ? '#fff' : '#b0a898', transition: 'all 0.18s',
                         }}>{m === 'focus' ? 'Focus' : 'Accountability'}</button>
@@ -325,13 +325,13 @@ export default function DashboardPage() {
 
                 {/* Continuation tasks */}
                 {continuationTasks.length > 0 && (
-                  <div style={{ padding: '12px 20px 16px', borderTop: '1px solid #f3f1ee' }}>
-                    <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#c0b8a8', marginBottom: 8 }}>
+                  <div style={{ padding: '12px 20px 16px', borderTop: '1px solid #F2EFE7' }}>
+                    <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', color: '#9A957F', marginBottom: 8 }}>
                       From {timeAgo(lastSession.created_at)}
                     </p>
                     {continuationTasks.slice(0, 3).map((task, i) => (
-                      <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12.5, color: '#8a7e72', lineHeight: 1.45, marginBottom: 4 }}>
-                        <span style={{ color: '#c8dcc0', flexShrink: 0 }}>·</span>{task}
+                      <div key={i} style={{ display: 'flex', gap: 8, fontSize: 12.5, color: '#8A8678', lineHeight: 1.45, marginBottom: 4 }}>
+                        <span style={{ color: '#C5D9B8', flexShrink: 0 }}>·</span>{task}
                       </div>
                     ))}
                   </div>
@@ -340,13 +340,13 @@ export default function DashboardPage() {
 
               {/* To-do */}
               <div style={{ background: '#fff', borderRadius: 8, border: '1px solid #E8E4DA', boxShadow: 'none', overflow: 'hidden' }}>
-                <div style={{ padding: '16px 20px 12px', borderBottom: '1px solid #f3f1ee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#c0b8a8' }}>To-do</p>
+                <div style={{ padding: '16px 20px 12px', borderBottom: '1px solid #F2EFE7', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#9A957F' }}>To-do</p>
                   {todos.filter(t => t.completed).length > 0 && (
-                    <span style={{ fontSize: 11, color: '#c0b8a8' }}>{todos.filter(t => t.completed).length}/{todos.length} done</span>
+                    <span style={{ fontSize: 11, color: '#9A957F' }}>{todos.filter(t => t.completed).length}/{todos.length} done</span>
                   )}
                 </div>
-                <div style={{ padding: '10px 20px', borderBottom: '1px solid #f3f1ee', display: 'flex', gap: 8 }}>
+                <div style={{ padding: '10px 20px', borderBottom: '1px solid #F2EFE7', display: 'flex', gap: 8 }}>
                   <input value={newTodo} onChange={e => setNewTodo(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && addTodo(newTodo)}
                     placeholder="Add a task..."
@@ -357,7 +357,7 @@ export default function DashboardPage() {
                 </div>
                 <div style={{ padding: '6px 0', maxHeight: 240, overflowY: 'auto' }}>
                   {todos.length === 0 ? (
-                    <p style={{ fontSize: 12, color: '#c0b8a8', padding: '12px 20px', textAlign: 'center' }}>Add tasks or finish a session to get started</p>
+                    <p style={{ fontSize: 12, color: '#9A957F', padding: '12px 20px', textAlign: 'center' }}>Add tasks or finish a session to get started</p>
                   ) : (
                     <>
                       {todos.filter(t => !t.completed).map(todo => (
@@ -366,8 +366,8 @@ export default function DashboardPage() {
                             width: 16, height: 16, borderRadius: 4, flexShrink: 0, marginTop: 1,
                             border: '1.5px solid #d4cfc8', background: 'transparent', cursor: 'pointer',
                           }} />
-                          <span style={{ fontSize: 13, color: '#4a3f35', lineHeight: 1.45, flex: 1 }}>{todo.text}</span>
-                          <button onClick={() => deleteTodo(todo.id)} style={{ fontSize: 16, color: '#d4cfc8', border: 'none', background: 'transparent', cursor: 'pointer' }}>×</button>
+                          <span style={{ fontSize: 13, color: '#1F3A24', lineHeight: 1.45, flex: 1 }}>{todo.text}</span>
+                          <button onClick={() => deleteTodo(todo.id)} style={{ fontSize: 16, color: '#C9C4B4', border: 'none', background: 'transparent', cursor: 'pointer' }}>×</button>
                         </div>
                       ))}
                       {todos.filter(t => t.completed).map(todo => (
@@ -377,8 +377,8 @@ export default function DashboardPage() {
                             border: '1.5px solid #3D6B47', background: '#3D6B47', cursor: 'pointer',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10,
                           }}>✓</button>
-                          <span style={{ fontSize: 13, color: '#a09888', lineHeight: 1.45, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
-                          <button onClick={() => deleteTodo(todo.id)} style={{ fontSize: 16, color: '#d4cfc8', border: 'none', background: 'transparent', cursor: 'pointer' }}>×</button>
+                          <span style={{ fontSize: 13, color: '#8A8678', lineHeight: 1.45, textDecoration: 'line-through', flex: 1 }}>{todo.text}</span>
+                          <button onClick={() => deleteTodo(todo.id)} style={{ fontSize: 16, color: '#C9C4B4', border: 'none', background: 'transparent', cursor: 'pointer' }}>×</button>
                         </div>
                       ))}
                     </>
@@ -393,17 +393,17 @@ export default function DashboardPage() {
             <div>
               <h2 style={{ fontSize: 15, fontWeight: 700, color: '#1F3A24', marginBottom: 14 }}>Session history</h2>
               {sessions.length === 0 ? (
-                <p style={{ fontSize: 13, color: '#b0a898' }}>No sessions yet. Start your first one!</p>
+                <p style={{ fontSize: 13, color: '#8A8678' }}>No sessions yet. Start your first one!</p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {sessions.map(session => (
                     <div key={session.id} style={{ background: '#fff', borderRadius: 8, padding: '12px 16px', border: '1px solid #E8E4DA' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                         <span style={{ fontSize: 13, fontWeight: 600, color: '#1F3A24' }}>{session.duration_minutes} min</span>
-                        <span style={{ fontSize: 11, color: '#c0b8a8' }}>{timeAgo(session.created_at)}</span>
+                        <span style={{ fontSize: 11, color: '#9A957F' }}>{timeAgo(session.created_at)}</span>
                       </div>
                       {session.tasks?.length > 0 && session.tasks.map((t, i) => (
-                        <p key={i} style={{ fontSize: 12, color: '#a09888', lineHeight: 1.4 }}>→ {t}</p>
+                        <p key={i} style={{ fontSize: 12, color: '#8A8678', lineHeight: 1.4 }}>→ {t}</p>
                       ))}
                     </div>
                   ))}
