@@ -59,10 +59,7 @@ function WaitingInner() {
         </div>
 
         <h1 className={s.h1}>
-          You're #
-          <span className={s.num}>{data ? data.position : '-'}</span>
-          <br />
-          on the waitlist.
+          You're<br />on the waitlist.
         </h1>
 
         <p className={s.sub}>
@@ -72,7 +69,7 @@ function WaitingInner() {
         {error && <p className={s.err}>{error}</p>}
 
         <div className={s.refBlock}>
-          <div className={s.refLabel}>Skip 5 spots for every founder you refer</div>
+          <div className={s.refLabel}>Refer a founder, move up the list</div>
           <div className={s.refRow}>
             <input
               className={s.refInput}
@@ -97,7 +94,7 @@ function WaitingInner() {
             <span className={s.tlStep}>1</span>
             <div>
               <strong>You're on the list</strong>
-              <p>Your spot is locked in. The earlier the position, the sooner you get access.</p>
+              <p>Your spot is locked in. We'll open Focul up in waves and let you know when it's your turn.</p>
             </div>
           </li>
           <li>
