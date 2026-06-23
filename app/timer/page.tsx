@@ -285,10 +285,14 @@ function TimerContent() {
   // Title fallback covers Safari/Firefox (no PiP support) so users still see
   // remaining time in the browser tab strip.
   useEffect(() => {
+    // Electron desktop app: mirror the countdown into the macOS menu bar so
+    // it stays visible across app/desktop switches. Safe no-op in the browser.
+    const electron = (window as unknown as { focul?: { setTimerDisplay?: (s: number) => void; clearTimerDisplay?: () => void } }).focul
     if (phase === 'running') {
       const mm = String(Math.floor(secondsLeft / 60)).padStart(2, '0')
       const ss = String(secondsLeft % 60).padStart(2, '0')
       document.title = `${mm}:${ss} · Focul`
+      electron?.setTimerDisplay?.(secondsLeft)
       if (pipWindow && !pipWindow.closed) {
         const el = pipWindow.document.getElementById('pip-timer')
         if (el) {
@@ -297,8 +301,12 @@ function TimerContent() {
       }
     } else {
       document.title = 'Focul'
+      electron?.clearTimerDisplay?.()
     }
-    return () => { document.title = 'Focul' }
+    return () => {
+      document.title = 'Focul'
+      electron?.clearTimerDisplay?.()
+    }
   }, [secondsLeft, phase, pipWindow])
 
   // Close the floating window when the session ends or the user leaves
