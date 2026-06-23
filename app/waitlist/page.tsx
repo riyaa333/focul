@@ -34,13 +34,20 @@ const ROLES = [
   'Other',
 ]
 
+const TASK_APPS = [
+  'Notion',
+  'Todoist',
+  'Apple Reminders',
+  'Other',
+]
+
 function WaitlistInner() {
   const router = useRouter()
   const params = useSearchParams()
   const ref = params.get('ref') ?? ''
 
   const [phase, setPhase] = useState<'intro' | 'hero' | 'form'>('intro')
-  const [step, setStep] = useState<0 | 1 | 2>(0)
+  const [step, setStep] = useState<0 | 1 | 2 | 3>(0)
 
   useEffect(() => {
     if (phase !== 'intro') return
@@ -49,6 +56,7 @@ function WaitlistInner() {
   }, [phase])
   const [email, setEmail] = useState('')
   const [role, setRole] = useState<string | null>(null)
+  const [tasksApp, setTasksApp] = useState<string | null>(null)
   const [problem, setProblem] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -65,12 +73,14 @@ function WaitlistInner() {
       setStep(1)
     } else if (step === 1) {
       setStep(2)
+    } else if (step === 2) {
+      setStep(3)
     }
   }
 
   function back() {
     setError(null)
-    if (step > 0) setStep((step - 1) as 0 | 1)
+    if (step > 0) setStep((step - 1) as 0 | 1 | 2)
   }
 
   async function submit() {
@@ -84,6 +94,7 @@ function WaitlistInner() {
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           role,
+          tasksApp,
           problem: problem.trim(),
           ref,
         }),
@@ -104,7 +115,7 @@ function WaitlistInner() {
   function handleEnter(e: React.KeyboardEvent) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      if (step < 2) next()
+      if (step < 3) next()
       else submit()
     }
   }
@@ -166,9 +177,9 @@ function WaitlistInner() {
 
       <div className={s.card}>
         <div className={s.progress}>
-          <div className={s.bar} style={{ width: `${((step + 1) / 3) * 100}%` }} />
+          <div className={s.bar} style={{ width: `${((step + 1) / 4) * 100}%` }} />
         </div>
-        <div className={s.progressLabel}>Step {step + 1} of 3</div>
+        <div className={s.progressLabel}>Step {step + 1} of 4</div>
 
         {step === 0 && (
           <div className={s.step}>
@@ -210,6 +221,27 @@ function WaitlistInner() {
 
         {step === 2 && (
           <div className={s.step}>
+            <label className={s.qlabel}>What do you use for your to-do list?</label>
+            <p className={s.hint}>We're picking which app to integrate with first. Tell us what you actually use.</p>
+            <div className={s.chips}>
+              {TASK_APPS.map(t => (
+                <button
+                  key={t}
+                  className={tasksApp === t ? `${s.chip} ${s.chipOn}` : s.chip}
+                  onClick={() => {
+                    setTasksApp(t)
+                    setTimeout(() => setStep(3), 200)
+                  }}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className={s.step}>
             <label className={s.qlabel}>Where do you lose focus most?</label>
             <p className={s.hint}>One sentence. Optional, but it helps us build for you.</p>
             <textarea
@@ -232,7 +264,7 @@ function WaitlistInner() {
               ← Back
             </button>
           )}
-          {step < 2 ? (
+          {step < 3 ? (
             <button
               className={`${s.btn} ${s.btnPrimary}`}
               onClick={next}

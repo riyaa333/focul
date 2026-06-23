@@ -6,7 +6,7 @@ export const runtime = 'nodejs'
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export async function POST(req: NextRequest) {
-  let body: { email?: string; role?: string; problem?: string; ref?: string }
+  let body: { email?: string; role?: string; tasksApp?: string; problem?: string; ref?: string }
   try {
     body = await req.json()
   } catch {
@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   const role = (body.role ?? '').slice(0, 60) || null
+  const tasksApp = (body.tasksApp ?? '').slice(0, 60) || null
   const problem = (body.problem ?? '').slice(0, 500) || null
   const referredBy = (body.ref ?? '').slice(0, 16) || null
 
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await sb
     .from('waitlist')
-    .insert({ email, role, problem, referred_by: referredBy })
+    .insert({ email, role, tasks_app: tasksApp, problem, referred_by: referredBy })
     .select('ref_code, position')
     .single()
 
