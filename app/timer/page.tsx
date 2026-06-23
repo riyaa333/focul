@@ -120,8 +120,10 @@ function TimerContent() {
   const [pipSupported, setPipSupported] = useState(false)
   const [pipWindow, setPipWindow] = useState<Window | null>(null)
   const [pipError, setPipError] = useState<string | null>(null)
+  const [isElectron, setIsElectron] = useState(false)
   useEffect(() => {
     setPipSupported(typeof window !== 'undefined' && 'documentPictureInPicture' in window)
+    setIsElectron(typeof window !== 'undefined' && 'focul' in window)
   }, [])
 
   const phaseRef = useRef(phase)
@@ -636,7 +638,7 @@ function TimerContent() {
         {/* Pop-out timer — Chromium-only Document PiP. Floats a small
             always-on-top window so the countdown survives tab and app
             switches. Hidden when unsupported or already open. */}
-        {phase === 'running' && pipSupported && !pipWindow && (
+        {phase === 'running' && pipSupported && !pipWindow && !isElectron && (
           <div className="flex items-center gap-3">
             {pipError && (
               <span
@@ -658,6 +660,11 @@ function TimerContent() {
               </svg>
             </button>
           </div>
+        )}
+        {phase === 'running' && isElectron && (
+          <span className="text-[10px] font-medium tracking-wide" style={{ color: '#5F7D66' }}>
+            Timer in menu bar ↑
+          </span>
         )}
       </nav>
 
