@@ -222,19 +222,35 @@ function TimerContent() {
   useEffect(() => {
     if (phase !== 'running') return
 
-    intervalRef.current = setInterval(() => {
-      setSecondsLeft(s => {
-        if (s <= 1) {
-          clearInterval(intervalRef.current!)
-          playAlarm()
-          setPhase(mode === 'accountability' ? 'accountability' : 'debrief')
-          return 0
-        }
-        return s - 1
-      })
-    }, 1000)
+    // Anchor an absolute deadline so the countdown stays honest. Browsers
+    // throttle setInterval in background tabs (Chrome down to ~1Hz, and
+    // sometimes near-frozen on battery) — a tick-based counter would fall
+    // minutes behind. Reading Date.now() against a fixed endTime, plus a
+    // visibilitychange reconcile, keeps it correct no matter the throttling.
+    const endTime = Date.now() + secondsLeft * 1000
+    let done = false
 
-    return () => clearInterval(intervalRef.current!)
+    const tick = () => {
+      if (done) return
+      const remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000))
+      setSecondsLeft(remaining)
+      if (remaining === 0) {
+        done = true
+        clearInterval(intervalRef.current!)
+        playAlarm()
+        setPhase(mode === 'accountability' ? 'accountability' : 'debrief')
+      }
+    }
+
+    intervalRef.current = setInterval(tick, 250)
+    const onVisibility = () => { if (!document.hidden) tick() }
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      clearInterval(intervalRef.current!)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
   const minutes = Math.floor(secondsLeft / 60)
