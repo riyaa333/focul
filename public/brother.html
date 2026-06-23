@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>hey — focul for you</title>
+  <link rel="icon" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0E1410;
+      --surface: #161D18;
+      --ink: #ECF1EC;
+      --ink-dim: #9AA59C;
+      --sage: #A8C4A0;
+      --sage-deep: #6E8E66;
+      --line: rgba(236, 241, 236, 0.08);
+      --radius: 6px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+    body {
+      font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 400;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+    main {
+      width: 100%;
+      max-width: 520px;
+    }
+    .logo {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 28px;
+      margin-bottom: 36px;
+    }
+    .logo span {
+      width: 5px;
+      border-radius: 1px;
+      background: var(--sage);
+    }
+    .logo span:nth-child(1) { height: 30%; background: #4B6A44; }
+    .logo span:nth-child(2) { height: 55%; background: #6E8E66; }
+    .logo span:nth-child(3) { height: 100%; background: #A8C4A0; }
+    .logo span:nth-child(4) { height: 70%; background: #88AC80; }
+    .logo span:nth-child(5) { height: 40%; background: #5C7E54; }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin: 0 0 16px;
+    }
+    p { margin: 0 0 14px; color: var(--ink); }
+    p.dim { color: var(--ink-dim); font-size: 15px; }
+
+    .cta-row {
+      margin: 28px 0 36px;
+    }
+    .download {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--sage);
+      color: #0E1410;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      padding: 14px 22px;
+      border-radius: var(--radius);
+      transition: background 120ms ease;
+    }
+    .download:hover { background: #B8D2B0; }
+    .download .arrow { font-size: 18px; line-height: 1; }
+    .size {
+      margin-left: 12px;
+      color: var(--ink-dim);
+      font-size: 13px;
+    }
+
+    .install {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+    }
+    .install h2 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-dim);
+      margin: 0 0 14px;
+    }
+    ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+    ol li {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    ol li:last-child { margin-bottom: 0; }
+    code {
+      background: rgba(168, 196, 160, 0.12);
+      color: var(--sage);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+    }
+
+    footer {
+      margin-top: 36px;
+      color: var(--ink-dim);
+      font-size: 14px;
+    }
+    footer .signoff { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="logo" aria-label="Focul">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <h1>hey — here's focul.</h1>
+    <p>the focus timer i've been building. try it, break it, tell me what's weird.</p>
+
+    <div class="cta-row">
+      <a class="download" href="/Focul.dmg" download>
+        <span>Download for Mac</span>
+        <span class="arrow">↓</span>
+      </a>
+    </div>
+
+    <div class="install">
+      <h2>how to install</h2>
+      <ol>
+        <li>Open the <code>.dmg</code> you just downloaded.</li>
+        <li>Drag <strong>Focul</strong> into your <strong>Applications</strong> folder.</li>
+        <li>First launch: right-click Focul in Applications and choose <strong>Open</strong>. macOS will warn you because it's not signed yet — click Open anyway.</li>
+      </ol>
+    </div>
+
+    <footer>
+      <p class="dim">ping me if it breaks. <span class="signoff">— riya</span></p>
+    </footer>
+  </main>
+</body>
+</html>
