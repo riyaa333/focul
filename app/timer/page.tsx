@@ -119,6 +119,7 @@ function TimerContent() {
   // back to the document-title countdown set further down.
   const [pipSupported, setPipSupported] = useState(false)
   const [pipWindow, setPipWindow] = useState<Window | null>(null)
+  const [pipError, setPipError] = useState<string | null>(null)
   useEffect(() => {
     setPipSupported(typeof window !== 'undefined' && 'documentPictureInPicture' in window)
   }, [])
@@ -245,8 +246,12 @@ function TimerContent() {
   // Open a small always-on-top floating timer window. Browsers require
   // a user gesture to grant a PiP window, so this only runs from the click.
   async function openPipTimer() {
+    setPipError(null)
     const dpip = (window as unknown as { documentPictureInPicture?: { requestWindow: (opts: { width: number; height: number }) => Promise<Window> } }).documentPictureInPicture
-    if (!dpip) return
+    if (!dpip) {
+      setPipError('Pop-out unsupported (documentPictureInPicture missing on window).')
+      return
+    }
     try {
       const pip = await dpip.requestWindow({ width: 220, height: 110 })
       const body = pip.document.body
@@ -269,7 +274,11 @@ function TimerContent() {
       body.appendChild(el)
       pip.addEventListener('pagehide', () => setPipWindow(null))
       setPipWindow(pip)
-    } catch { /* user denied or unsupported */ }
+    } catch (err) {
+      const msg = err instanceof Error ? `${err.name}: ${err.message}` : String(err)
+      console.error('[pop-out] requestWindow failed:', err)
+      setPipError(msg || 'requestWindow rejected with no message.')
+    }
   }
 
   // Mirror the countdown into the PiP window and the document title.
@@ -620,16 +629,27 @@ function TimerContent() {
             always-on-top window so the countdown survives tab and app
             switches. Hidden when unsupported or already open. */}
         {phase === 'running' && pipSupported && !pipWindow && (
-          <button onClick={openPipTimer}
-            className="text-xs font-medium transition-opacity hover:opacity-80 tracking-wide inline-flex items-center gap-1.5"
-            style={{ color: '#5F7D66' }}
-            aria-label="Pop out timer into a floating window"
-            title="Pop out timer — stays on top of all apps">
-            Pop out
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M7 17L17 7M9 7h8v8" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-3">
+            {pipError && (
+              <span
+                className="text-[10px] font-medium tracking-wide"
+                style={{ color: '#C97A6E', maxWidth: 360 }}
+                title={pipError}
+              >
+                Pop-out failed: {pipError.length > 60 ? pipError.slice(0, 57) + '…' : pipError}
+              </span>
+            )}
+            <button onClick={openPipTimer}
+              className="text-xs font-medium transition-opacity hover:opacity-80 tracking-wide inline-flex items-center gap-1.5"
+              style={{ color: '#5F7D66' }}
+              aria-label="Pop out timer into a floating window"
+              title="Pop out timer — stays on top of all apps">
+              Pop out
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
+            </button>
+          </div>
         )}
       </nav>
 
