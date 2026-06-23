@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 
 type Phase = 'briefing' | 'input' | 'running' | 'debrief' | 'processing' | 'accountability' | 'done'
 type AccountabilityItem = { text: string; completed: boolean }
+type Todo = { id: string; text: string }
 
 // All quotes verified — source noted inline so any of them can be audited.
 // If you add one, please cite the speech / book / essay it's from. If it can't
@@ -109,6 +110,7 @@ function TimerContent() {
   const [inputRecording, setInputRecording] = useState(false)
   const [inputRecordingSeconds, setInputRecordingSeconds] = useState(0)
   const [inputProcessing, setInputProcessing] = useState(false)
+  const [pickableTodos, setPickableTodos] = useState<Todo[]>([])
 
   const [waveHeights, setWaveHeights] = useState<number[]>(Array(12).fill(0.15))
 
@@ -224,9 +226,21 @@ function TimerContent() {
         // No previous tasks — skip briefing, go straight in
         setPhase('running')
       }
+
+      // For accountability mode, also surface the user's open todos so they
+      // can pick what they're working on instead of re-typing it.
+      if (mode === 'accountability') {
+        const { data: todoRows } = await supabase
+          .from('todos')
+          .select('id, text')
+          .eq('completed', false)
+          .order('created_at', { ascending: false })
+          .limit(20)
+        if (todoRows) setPickableTodos(todoRows)
+      }
     }
     loadBriefing()
-  }, [router])
+  }, [router, mode])
 
   // Open a small always-on-top floating timer window. Browsers require
   // a user gesture to grant a PiP window, so this only runs from the click.
@@ -667,6 +681,36 @@ function TimerContent() {
             </div>
 
             <div className="bg-white border border-[#E8E4DA] rounded-md px-8 py-7">
+
+            {/* Pick from existing todos — surface what's already on your list
+                so accountability mode doesn't make you re-type the work. */}
+            {pickableTodos.length > 0 && (
+              <div className="mb-6">
+                <p className="text-[10px] font-semibold uppercase text-[#8A8678] mb-3" style={{ letterSpacing: '0.14em' }}>
+                  Pick from your list
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {pickableTodos.map(todo => (
+                    <button
+                      key={todo.id}
+                      onClick={() => {
+                        setAccountabilityItems(prev => [...prev, { text: todo.text, completed: false }])
+                        setPickableTodos(prev => prev.filter(t => t.id !== todo.id))
+                      }}
+                      className="text-sm px-3 py-2 rounded-md border border-[#D8E3D2] bg-[#F4F7EF] text-[#1F3A24] hover:bg-[#E8EFDF] transition-colors"
+                      style={{ fontFamily: 'inherit' }}
+                    >
+                      + {todo.text}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-3 mt-5 mb-1">
+                  <div className="flex-1 h-px bg-[#E8E4DA]" />
+                  <span className="text-[10px] font-semibold uppercase text-[#B5B09C]" style={{ letterSpacing: '0.18em' }}>or add new</span>
+                  <div className="flex-1 h-px bg-[#E8E4DA]" />
+                </div>
+              </div>
+            )}
 
             {/* Mode toggle — inline-flex compact, matches the dashboard pattern */}
             <div className="flex justify-center mb-6">
