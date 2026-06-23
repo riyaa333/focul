@@ -122,8 +122,20 @@ function TimerContent() {
   const [pipError, setPipError] = useState<string | null>(null)
   const [isElectron, setIsElectron] = useState(false)
   useEffect(() => {
-    setPipSupported(typeof window !== 'undefined' && 'documentPictureInPicture' in window)
-    setIsElectron(typeof window !== 'undefined' && 'focul' in window)
+    if (typeof window === 'undefined') return
+    setPipSupported('documentPictureInPicture' in window)
+    // Three independent signals so a single missing one doesn't show the broken
+    // pop-out button inside the desktop app. preload-injected `window.focul`
+    // is the canonical signal; userAgent and `process.versions.electron` are
+    // belt-and-suspenders for cases where the preload hasn't attached yet
+    // or the renderer is namespaced differently.
+    const ua = typeof navigator !== 'undefined' ? navigator.userAgent : ''
+    const electronUA = /electron/i.test(ua)
+    const hasFoculBridge = 'focul' in window
+    const hasElectronProcess = !!(window as unknown as { process?: { versions?: { electron?: string } } }).process?.versions?.electron
+    const inElectron = hasFoculBridge || electronUA || hasElectronProcess
+    setIsElectron(inElectron)
+    if (inElectron) setPipError(null)
   }, [])
 
   const phaseRef = useRef(phase)
