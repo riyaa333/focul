@@ -119,6 +119,22 @@
       font-size: 13px;
       font-family: 'SF Mono', ui-monospace, Menlo, monospace;
     }
+    .cmd {
+      margin: 10px 0 8px;
+      background: #0B100D;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      overflow-x: auto;
+    }
+    .cmd code {
+      background: none;
+      padding: 0;
+      color: var(--sage);
+      font-size: 13px;
+      white-space: nowrap;
+      user-select: all;
+    }
 
     footer {
       margin-top: 36px;
@@ -149,7 +165,11 @@
       <ol>
         <li>Open the <code>.dmg</code> you just downloaded.</li>
         <li>Drag <strong>Focul</strong> into your <strong>Applications</strong> folder.</li>
-        <li>First launch: right-click Focul in Applications and choose <strong>Open</strong>. macOS will warn you because it's not signed yet — click Open anyway.</li>
+        <li>Eject the disk image (right-click the Focul drive on your desktop → Eject).</li>
+        <li>Open <strong>Terminal</strong> (Spotlight → "Terminal") and paste this, then hit return:
+          <div class="cmd"><code>xattr -cr /Applications/Focul.app</code></div>
+          This strips the quarantine flag macOS slaps on unsigned downloads. Without it you'll get a fake "is damaged" warning.</li>
+        <li>Open Focul from your Applications folder. Done.</li>
       </ol>
     </div>
 
