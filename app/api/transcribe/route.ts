@@ -252,17 +252,19 @@ Raw Whisper transcript:
     result.tasks = result.tasks.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
     result.wins  = result.wins .filter((w): w is string => typeof w === 'string' && w.trim().length > 0)
 
-    // ─── Step 3: Fable reflection — a warm one-liner the founder sees ────────
-    // Wrapped in its own try so a Fable failure never breaks the debrief.
+    // ─── Step 3: Fable — reflection + session title in one call ─────────────
+    // Fable writes the warm reflection line the founder sees, plus a short
+    // title so history rows stop being a graveyard of "15-min session". Wrapped
+    // in its own try so a Fable failure never breaks the debrief.
     let reflection = ''
+    let title = ''
     try {
       const fable = await anthropic.messages.create({
         model: 'claude-fable-5',
-        max_tokens: 120,
+        max_tokens: 200,
         system:
-          "You are the voice of Focul, a focus timer for founders. Your job is a single warm sentence that reflects on the session the founder just finished. " +
-          "Tone: quiet, dry, human — a friend who respects them. Never saccharine, never generic, never lecture. Never use exclamation marks. " +
-          "You are speaking TO them (\"you shipped…\"), not about them.",
+          "You are the voice of Focul, a focus timer for founders. You write two things about the session the founder just finished: a title and a reflection. " +
+          "Tone: quiet, dry, human — a friend who respects them. Never saccharine, never generic, never lecture. Never use exclamation marks.",
         messages: [
           {
             role: 'user',
@@ -271,24 +273,39 @@ Raw Whisper transcript:
               (result.wins.length ? `What they got done:\n${result.wins.map(w => `- ${w}`).join('\n')}\n\n` : `They didn't call out specific wins.\n\n`) +
               (result.tasks.length ? `What's next:\n${result.tasks.map(t => `- ${t}`).join('\n')}\n\n` : '') +
               `Debrief transcript:\n"${result.transcript || transcript}"\n\n` +
-              `Write ONE sentence (two max, prefer one) reflecting on this session. Examples of the exact tone:\n` +
+              `Give me a JSON object with two fields:\n\n` +
+              `"title": A short session title (2–5 words). Not a sentence, not a full description — a chapter heading. Sentence case, no period.\n` +
+              `Good title examples: "Shipping the LinkedIn wedge", "Untangling the auth bug", "Interview prep sprint", "Fixing the app icon".\n` +
+              `Bad title examples: "Session on July 2", "Productive 15 minutes", "Working on Focul".\n\n` +
+              `"reflection": ONE sentence (two max, prefer one) speaking TO the founder about this session. Examples of the exact voice:\n` +
               `- "Solid session — you shipped the tricky part and the rest is momentum."\n` +
               `- "You bailed the leaks. Now go build."\n` +
               `- "You mapped the terrain. Tomorrow's session is where the miles happen."\n` +
               `- "That was the hardest part. The rest wants to be shipped."\n\n` +
-              `Return ONLY the sentence. No quotes, no attribution, no analysis.`,
+              `Return ONLY valid JSON. No markdown, no explanation:\n` +
+              `{"title": "...", "reflection": "..."}`,
           },
         ],
       })
       const fableContent = fable.content[0]
       if (fableContent.type === 'text') {
-        reflection = fableContent.text.trim().replace(/^["']|["']$/g, '').trim()
+        const cleaned = fableContent.text.replace(/```json?\n?|```/g, '').trim()
+        const match = cleaned.match(/\{[\s\S]*\}/)
+        if (match) {
+          try {
+            const parsed = JSON.parse(match[0]) as { title?: string; reflection?: string }
+            reflection = (parsed.reflection ?? '').trim().replace(/^["']|["']$/g, '').trim()
+            title = (parsed.title ?? '').trim().replace(/^["']|["']$/g, '').replace(/\.$/, '').trim()
+          } catch {
+            // JSON malformed — reflection/title stay empty, debrief still works
+          }
+        }
       }
     } catch (err) {
-      console.warn('Fable reflection failed (non-fatal):', err instanceof Error ? err.message : err)
+      console.warn('Fable narration failed (non-fatal):', err instanceof Error ? err.message : err)
     }
 
-    return NextResponse.json({ ...result, reflection })
+    return NextResponse.json({ ...result, reflection, title })
   } catch (err) {
     console.error('Transcribe error:', err)
     return NextResponse.json(
