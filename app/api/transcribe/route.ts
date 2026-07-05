@@ -252,7 +252,43 @@ Raw Whisper transcript:
     result.tasks = result.tasks.filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
     result.wins  = result.wins .filter((w): w is string => typeof w === 'string' && w.trim().length > 0)
 
-    return NextResponse.json(result)
+    // ─── Step 3: Fable reflection — a warm one-liner the founder sees ────────
+    // Wrapped in its own try so a Fable failure never breaks the debrief.
+    let reflection = ''
+    try {
+      const fable = await anthropic.messages.create({
+        model: 'claude-fable-5',
+        max_tokens: 120,
+        system:
+          "You are the voice of Focul, a focus timer for founders. Your job is a single warm sentence that reflects on the session the founder just finished. " +
+          "Tone: quiet, dry, human — a friend who respects them. Never saccharine, never generic, never lecture. Never use exclamation marks. " +
+          "You are speaking TO them (\"you shipped…\"), not about them.",
+        messages: [
+          {
+            role: 'user',
+            content:
+              `The founder just finished a work session and recorded a voice debrief.\n\n` +
+              (result.wins.length ? `What they got done:\n${result.wins.map(w => `- ${w}`).join('\n')}\n\n` : `They didn't call out specific wins.\n\n`) +
+              (result.tasks.length ? `What's next:\n${result.tasks.map(t => `- ${t}`).join('\n')}\n\n` : '') +
+              `Debrief transcript:\n"${result.transcript || transcript}"\n\n` +
+              `Write ONE sentence (two max, prefer one) reflecting on this session. Examples of the exact tone:\n` +
+              `- "Solid session — you shipped the tricky part and the rest is momentum."\n` +
+              `- "You bailed the leaks. Now go build."\n` +
+              `- "You mapped the terrain. Tomorrow's session is where the miles happen."\n` +
+              `- "That was the hardest part. The rest wants to be shipped."\n\n` +
+              `Return ONLY the sentence. No quotes, no attribution, no analysis.`,
+          },
+        ],
+      })
+      const fableContent = fable.content[0]
+      if (fableContent.type === 'text') {
+        reflection = fableContent.text.trim().replace(/^["']|["']$/g, '').trim()
+      }
+    } catch (err) {
+      console.warn('Fable reflection failed (non-fatal):', err instanceof Error ? err.message : err)
+    }
+
+    return NextResponse.json({ ...result, reflection })
   } catch (err) {
     console.error('Transcribe error:', err)
     return NextResponse.json(
