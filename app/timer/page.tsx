@@ -91,6 +91,9 @@ function TimerContent() {
   // Desktop-app global shortcut lands here with ?quick=1: skip the timer and
   // drop straight into a voice debrief.
   const quickDebrief = searchParams.get('quick') === '1'
+  // Dev-only visual harness: ?mock=1 shows the recording state without auth or
+  // a live mic. Compiled out of production builds.
+  const mockRecording = process.env.NODE_ENV === 'development' && searchParams.get('mock') === '1'
 
   const [phase, setPhase] = useState<Phase>(
     quickDebrief ? 'debrief' : mode === 'accountability' ? 'input' : 'running'
@@ -209,6 +212,12 @@ function TimerContent() {
   // Arrived via the desktop shortcut (?quick=1): start recording immediately.
   // Small delay lets the page settle so the waveform mounts before audio flows.
   useEffect(() => {
+    if (mockRecording) {
+      setPhase('debrief')
+      setRecording(true)
+      setWaveHeights(Array(12).fill(0).map(() => 0.15 + Math.random() * 0.7))
+      return
+    }
     if (!quickDebrief) return
     const t = setTimeout(() => { if (!recordingRef.current) startRecording() }, 400)
     return () => clearTimeout(t)
@@ -244,6 +253,7 @@ function TimerContent() {
 
   useEffect(() => {
     async function loadBriefing() {
+      if (mockRecording) return
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
@@ -1136,74 +1146,91 @@ function TimerContent() {
               </>
             ) : (
               <>
-                {/* Recording status — quiet pill, no harsh card */}
+                {/* Recording — dark-hero bento card, matching the login panel */}
                 <div style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 10,
-                  marginBottom: 44,
+                  background: '#0E140F',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: 6,
+                  padding: '40px 44px 36px',
+                  textAlign: 'center',
                 }}>
-                  <span style={{
-                    width: 8, height: 8, borderRadius: '50%',
-                    background: '#b85a3c',
-                    animation: 'recPulse 1.4s ease-in-out infinite',
-                  }} />
-                  <span style={{
-                    fontFamily: 'ui-monospace, "Fragment Mono", monospace',
-                    fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase',
-                    color: '#5e6f5e', fontVariantNumeric: 'tabular-nums',
+                  {/* Status row */}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    marginBottom: 40,
                   }}>
-                    Recording · {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
-                  </span>
+                    <span style={{
+                      fontFamily: 'ui-monospace, "Fragment Mono", monospace',
+                      fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase',
+                      color: '#8FA695',
+                    }}>
+                      Debrief
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{
+                        width: 7, height: 7, borderRadius: '50%',
+                        background: '#C96442',
+                        animation: 'recPulse 1.4s ease-in-out infinite',
+                      }} />
+                      <span style={{
+                        fontFamily: 'ui-monospace, "Fragment Mono", monospace',
+                        fontSize: 12, letterSpacing: '0.14em', textTransform: 'uppercase',
+                        color: '#DCE9DF', fontVariantNumeric: 'tabular-nums',
+                      }}>
+                        Rec {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
+                      </span>
+                    </span>
+                  </div>
+
+                  {/* Equalizer — logo greens on the dark surface */}
+                  <div style={{
+                    display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5,
+                    height: 72, marginBottom: 40,
+                  }}>
+                    {waveHeights.map((h, i) => (
+                      <span key={i} style={{
+                        display: 'block', width: 5, borderRadius: 2,
+                        background: h > 0.55 ? '#DCE9DF' : h > 0.3 ? '#A9C4AF' : '#5F7D66',
+                        height: `${Math.max(h * 100, 10)}%`,
+                        opacity: 0.65 + h * 0.35,
+                        transition: 'height 0.08s ease-out, background 0.2s',
+                      }} />
+                    ))}
+                  </div>
+
+                  {error && (
+                    <p style={{ fontSize: 13, color: '#D98A6C', marginBottom: 20 }}>{error}</p>
+                  )}
+
+                  {/* Done button — flat, 6px corners */}
+                  <button
+                    onClick={stopRecording}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 8,
+                      width: '100%', justifyContent: 'center',
+                      padding: '13px 28px', borderRadius: 6,
+                      background: '#F7F5EF', color: '#1F3A24',
+                      fontSize: 14, fontWeight: 600, fontFamily: 'inherit',
+                      border: 'none', cursor: 'pointer',
+                      transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#fff' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = '#F7F5EF' }}
+                  >
+                    Done talking
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                  </button>
+
+                  <p style={{ fontSize: 12, color: '#8FA695', marginTop: 16, marginBottom: 0 }}>
+                    or press{' '}
+                    <kbd style={{
+                      fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
+                      background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)',
+                      borderRadius: 4, padding: '2px 8px', color: '#DCE9DF',
+                    }}>Space</kbd>{' '}
+                    to stop
+                  </p>
                 </div>
-
-                {/* Equalizer — calmer green */}
-                <div style={{
-                  display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4,
-                  height: 56, marginBottom: 56,
-                }}>
-                  {waveHeights.map((h, i) => (
-                    <span key={i} style={{
-                      display: 'block', width: 4, borderRadius: 3,
-                      background: '#4a9b5d',
-                      height: `${Math.max(h * 100, 8)}%`,
-                      opacity: 0.5 + h * 0.45,
-                      transition: 'height 0.08s ease-out',
-                    }} />
-                  ))}
-                </div>
-
-                {error && (
-                  <p style={{ fontSize: 13, color: '#b85a3c', marginBottom: 20 }}>{error}</p>
-                )}
-
-                {/* Done button — calmer green */}
-                <button
-                  onClick={stopRecording}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                    padding: '12px 28px', borderRadius: 999,
-                    background: '#2a3a2c', color: '#fff',
-                    fontSize: 14, fontWeight: 500, fontFamily: 'inherit',
-                    border: 'none', cursor: 'pointer',
-                    boxShadow: '0 6px 18px rgba(42,58,44,0.18)',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 22px rgba(42,58,44,0.22)' }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 6px 18px rgba(42,58,44,0.18)' }}
-                >
-                  Done talking
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-                </button>
-
-                <p style={{ fontSize: 12, color: '#a39d8e', marginTop: 18 }}>
-                  or press{' '}
-                  <kbd style={{
-                    fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
-                    background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(94,111,94,0.20)',
-                    borderRadius: 5, padding: '2px 8px', color: '#5e6f5e',
-                    boxShadow: '0 1px 0 rgba(94,111,94,0.10)',
-                  }}>Space</kbd>{' '}
-                  to stop
-                </p>
 
                 <style jsx>{`
                   @keyframes recPulse {
