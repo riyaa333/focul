@@ -398,12 +398,13 @@ export default function SettingsPage() {
                           padding: '6px 12px', minWidth: 28, textAlign: 'center',
                           letterSpacing: '-0.01em',
                         }}>Fn</kbd>
-                        <span style={{ fontSize: 12, color: '#8A8678' }}>on its own also works</span>
+                        <span style={{ fontSize: 12, color: '#8A8678' }}>double-tap also works</span>
                       </div>
                       <p style={{ fontSize: 11, color: '#8A8678', margin: '8px 0 0', lineHeight: 1.5 }}>
-                        Tap Fn anywhere to start a debrief. Works alongside the
-                        shortcut above &mdash; turn it off here if you&rsquo;d rather
-                        keep Fn for macOS.
+                        Double-tap Fn anywhere to start a debrief &mdash; a single
+                        tap won&rsquo;t trigger it by accident. Works alongside the
+                        shortcut above; turn it off here if you&rsquo;d rather keep
+                        Fn for macOS.
                       </p>
                     </div>
                     <button
