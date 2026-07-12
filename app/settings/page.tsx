@@ -9,6 +9,11 @@ type FoculWindow = {
     platform?: string
     getShortcut?: () => Promise<string>
     setShortcut?: (s: string) => Promise<{ success: boolean; error?: string }>
+    getFnMode?: () => Promise<boolean>
+    setFnMode?: (enabled: boolean) => Promise<void>
+    setCaptureMode?: (on: boolean) => void
+    onFnDown?: (cb: () => void) => void
+    offFnDown?: () => void
   }
 }
 
@@ -63,6 +68,7 @@ export default function SettingsPage() {
   const [capturedKeys, setCapturedKeys] = useState<string[]>([])
   const [shortcutError, setShortcutError] = useState('')
   const [shortcutSaved, setShortcutSaved] = useState(false)
+  const [fnMode, setFnMode] = useState(true)
   const [loading, setLoading] = useState(true)
   const nameInputRef = useRef<HTMLInputElement>(null)
   const heldKeys = useRef(new Set<string>())
@@ -81,6 +87,7 @@ export default function SettingsPage() {
     if (w.focul) {
       setIsElectron(true)
       w.focul.getShortcut?.().then(s => { if (s) setShortcut(s) })
+      w.focul.getFnMode?.().then(v => setFnMode(v !== false))
     }
   }, [router])
 
@@ -160,7 +167,28 @@ export default function SettingsPage() {
 
     window.addEventListener('keydown', onDown)
     window.addEventListener('keyup', onUp)
-    return () => { window.removeEventListener('keydown', onDown); window.removeEventListener('keyup', onUp) }
+
+    // Fn can't arrive as a keyboard event — macOS handles it below the browser.
+    // The desktop app's native helper forwards Fn presses while capture mode is
+    // on, so a tap of Fn here picks it as the trigger (by enabling Fn mode).
+    const w = window as unknown as FoculWindow
+    w.focul?.setCaptureMode?.(true)
+    w.focul?.onFnDown?.(() => {
+      w.focul?.setFnMode?.(true)
+      setFnMode(true)
+      setCapturingShortcut(false)
+      setCapturedKeys([])
+      setShortcutError('')
+      setShortcutSaved(true)
+      setTimeout(() => setShortcutSaved(false), 2000)
+    })
+
+    return () => {
+      window.removeEventListener('keydown', onDown)
+      window.removeEventListener('keyup', onUp)
+      w.focul?.setCaptureMode?.(false)
+      w.focul?.offFnDown?.()
+    }
   }, [capturingShortcut])
 
   if (loading) return null
@@ -307,7 +335,7 @@ export default function SettingsPage() {
                         }}>Cancel</button>
                       </div>
                       <p style={{ fontSize: 11, color: '#8A8678', margin: 0, lineHeight: 1.5 }}>
-                        Hold <b style={{ color: '#1F3A24' }}>Cmd</b>, <b style={{ color: '#1F3A24' }}>Ctrl</b>, <b style={{ color: '#1F3A24' }}>Option</b>, or <b style={{ color: '#1F3A24' }}>Shift</b> with another key &mdash; or press a function key (<b style={{ color: '#1F3A24' }}>F1&ndash;F19</b>) on its own. Press <b style={{ color: '#1F3A24' }}>Esc</b> to cancel.
+                        Hold <b style={{ color: '#1F3A24' }}>Cmd</b>, <b style={{ color: '#1F3A24' }}>Ctrl</b>, <b style={{ color: '#1F3A24' }}>Option</b>, or <b style={{ color: '#1F3A24' }}>Shift</b> with another key &mdash; or tap <b style={{ color: '#1F3A24' }}>Fn</b> or a function key (<b style={{ color: '#1F3A24' }}>F1&ndash;F19</b>) on its own. Press <b style={{ color: '#1F3A24' }}>Esc</b> to cancel.
                       </p>
                     </div>
                   ) : (
@@ -354,6 +382,52 @@ export default function SettingsPage() {
                       {shortcutError}
                     </p>
                   )}
+
+                  {/* Fn key — native listener, separate from the recorder above
+                      because macOS never exposes Fn to apps as a shortcut key */}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    gap: 16, background: '#F7F5EF', borderRadius: 6,
+                    border: '1px solid #E8E4DA', padding: '14px 16px',
+                  }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <kbd style={{
+                          fontFamily: 'inherit', fontSize: 13, fontWeight: 600, color: '#1F3A24',
+                          background: '#fff', border: '1px solid #E8E4DA', borderRadius: 5,
+                          padding: '6px 12px', minWidth: 28, textAlign: 'center',
+                          letterSpacing: '-0.01em',
+                        }}>Fn</kbd>
+                        <span style={{ fontSize: 12, color: '#8A8678' }}>on its own also works</span>
+                      </div>
+                      <p style={{ fontSize: 11, color: '#8A8678', margin: '8px 0 0', lineHeight: 1.5 }}>
+                        Tap Fn anywhere to start a debrief. Works alongside the
+                        shortcut above &mdash; turn it off here if you&rsquo;d rather
+                        keep Fn for macOS.
+                      </p>
+                    </div>
+                    <button
+                      role="switch"
+                      aria-checked={fnMode}
+                      onClick={() => {
+                        const next = !fnMode
+                        setFnMode(next)
+                        ;(window as unknown as FoculWindow).focul?.setFnMode?.(next)
+                      }}
+                      style={{
+                        width: 40, height: 24, borderRadius: 12, border: 'none',
+                        cursor: 'pointer', padding: 2, flexShrink: 0,
+                        background: fnMode ? '#3D6B47' : '#D8D4C8',
+                        transition: 'background 0.15s',
+                      }}>
+                      <span style={{
+                        display: 'block', width: 20, height: 20, borderRadius: '50%',
+                        background: '#fff',
+                        transform: fnMode ? 'translateX(16px)' : 'translateX(0)',
+                        transition: 'transform 0.15s',
+                      }} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </>

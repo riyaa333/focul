@@ -88,8 +88,13 @@ function TimerContent() {
     : durationMinutes * 60
   const mode = (searchParams.get('mode') || 'focus') as 'focus' | 'accountability'
   const variant = (searchParams.get('v') || '').toLowerCase() as '' | 'a' | 'b' | 'c'
+  // Desktop-app global shortcut lands here with ?quick=1: skip the timer and
+  // drop straight into a voice debrief.
+  const quickDebrief = searchParams.get('quick') === '1'
 
-  const [phase, setPhase] = useState<Phase>(mode === 'accountability' ? 'input' : 'running')
+  const [phase, setPhase] = useState<Phase>(
+    quickDebrief ? 'debrief' : mode === 'accountability' ? 'input' : 'running'
+  )
   const [secondsLeft, setSecondsLeft] = useState(totalSeconds)
   const [tasks, setTasks] = useState<string[]>([])
   const [wins, setWins]   = useState<string[]>([])
@@ -187,12 +192,26 @@ function TimerContent() {
     const focul = (window as unknown as { focul?: { onStartRecording: (cb: () => void) => void; offStartRecording: () => void } }).focul
     if (!focul?.onStartRecording) return
     focul.onStartRecording(() => {
-      if (phaseRef.current === 'debrief') {
+      const p = phaseRef.current
+      if (p === 'debrief') {
         if (!recordingRef.current) startRecording()
         else stopRecording()
+      } else if (p === 'briefing' || p === 'done') {
+        // Shortcut pressed outside a session: jump straight into a debrief.
+        // (Deliberately inert during 'running' — don't kill an active timer.)
+        setPhase('debrief')
+        startRecording()
       }
     })
     return () => focul.offStartRecording?.()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Arrived via the desktop shortcut (?quick=1): start recording immediately.
+  // Small delay lets the page settle so the waveform mounts before audio flows.
+  useEffect(() => {
+    if (!quickDebrief) return
+    const t = setTimeout(() => { if (!recordingRef.current) startRecording() }, 400)
+    return () => clearTimeout(t)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Keyboard shortcut: Space to start/stop recording ─────────────────────
