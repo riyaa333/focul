@@ -257,6 +257,10 @@ function TimerContent() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
+      // Quick debrief (?quick=1) starts in the debrief phase — the briefing/
+      // running-phase bootstrapping below must not clobber it.
+      if (quickDebrief) return
+
       const { data } = await supabase
         .from('sessions')
         .select('tasks')
