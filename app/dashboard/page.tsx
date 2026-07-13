@@ -713,130 +713,117 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* ── Bento grid: dark timer hero left, coach/stats/tasks right ── */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1.45fr 1fr', gap: 14, alignItems: 'start' }}>
+            {/* ── Bento stack: hero strip on top, coach/stats/tasks row below ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-            {/* ── Hero timer card (dark deep-forest) ── */}
-            {/* Sticky + natural height: stretching to match a long right column
-                leaves a huge empty dark void above the timer */}
+            {/* ── Hero strip (dark deep-forest, wide band) ── */}
             <div style={{
               background: '#13291B',
               borderRadius: 6,
               border: '1px solid #13291B',
-              padding: '72px 48px 64px',
-              textAlign: 'center',
-              display: 'flex', flexDirection: 'column', justifyContent: 'center',
-              position: 'sticky', top: 92,
+              padding: '28px 36px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              gap: 28, flexWrap: 'wrap',
             }}>
-              <p style={{
-                fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase',
-                color: '#7BA177', marginBottom: 22,
-              }}>
-                Ready when you are
-              </p>
-
-              <div style={{
-                fontSize: 128, fontWeight: 700, letterSpacing: '-0.05em', lineHeight: 1,
-                color: '#F7F5EF', fontVariantNumeric: 'tabular-nums', marginBottom: 18,
-              }}>
-                {timerDisplay}<span style={{ color: '#7BA177' }}>{timerSuffix}</span>
-              </div>
-
-              {/* Soundwave divider */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3, height: 22, marginBottom: 18 }}>
-                {[7, 13, 22, 13, 7].map((h, i) => (
-                  <span key={i} style={{
-                    width: 4, height: h, borderRadius: 99,
-                    background: i === 2 ? '#7BA177' : i === 1 || i === 3 ? '#3D6B47' : '#27402e',
-                  }} />
-                ))}
-              </div>
-
-              <p style={{ fontSize: 14, color: '#5F7D66', marginBottom: 32 }}>
-                Bell rings, then 60s voice debrief
-              </p>
-
-              {/* Duration pills */}
-              {!showCustom ? (
+              {/* Timer + controls cluster */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
                 <div style={{
-                  display: 'inline-flex', background: '#0E1F14', padding: 3, borderRadius: 7,
-                  marginBottom: 32, alignSelf: 'center',
+                  fontSize: 76, fontWeight: 700, letterSpacing: '-0.05em', lineHeight: 1,
+                  color: '#F7F5EF', fontVariantNumeric: 'tabular-nums',
                 }}>
-                  {[15, 30].map(d => (
-                    <button key={d} onClick={() => setSelected(d)} style={{
-                      padding: '9px 22px', borderRadius: 5, fontSize: 14, fontWeight: 500,
-                      cursor: 'pointer', border: 'none', fontFamily: 'inherit',
-                      background: selected === d && !showCustom ? '#3D6B47' : 'transparent',
-                      color: selected === d && !showCustom ? '#F7F5EF' : '#7BA177',
-                      transition: 'all 0.15s',
-                    }}>
-                      {d} min
-                    </button>
-                  ))}
-                  <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
-                    padding: '9px 22px', borderRadius: 5, fontSize: 14, fontWeight: 500,
-                    cursor: 'pointer', border: 'none', fontFamily: 'inherit',
-                    background: 'transparent', color: '#7BA177',
+                  {timerDisplay}<span style={{ color: '#7BA177' }}>{timerSuffix}</span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-start' }}>
+                  <p style={{
+                    fontSize: 11, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase',
+                    color: '#7BA177', margin: 0,
                   }}>
-                    Custom
-                  </button>
-                </div>
-              ) : (
-                <div style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: '#0E1F14', borderRadius: 7, padding: '8px 18px',
-                  marginBottom: 32, alignSelf: 'center',
-                }}>
-                  <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
-                    onChange={e => setCustomMins(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && startSession()}
-                    style={{
-                      width: 48, background: 'transparent', outline: 'none', fontSize: 14,
-                      fontWeight: 600, color: '#F7F5EF', textAlign: 'center', border: 'none', fontFamily: 'inherit',
-                    }} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: '#7BA177' }}>min</span>
-                  <button onClick={() => { setShowCustom(false); setCustomMins('') }}
-                    style={{ fontSize: 13, color: '#5F7D66', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
-                </div>
-              )}
+                    Ready when you are
+                  </p>
 
-              {/* Mode toggle (compact, sits above start button) */}
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
-                <div style={{ display: 'flex', background: '#0E1F14', borderRadius: 7, padding: 3 }}>
-                  {(['focus', 'accountability'] as const).map(m => (
-                    <button key={m} onClick={() => setMode(m)} style={{
-                      padding: '6px 18px', borderRadius: 5, fontSize: 11, fontWeight: 600,
-                      cursor: 'pointer', border: 'none', fontFamily: 'inherit',
-                      outline: 'none',
-                      background: mode === m ? '#3D6B47' : 'transparent',
-                      color: mode === m ? '#F7F5EF' : '#7BA177',
-                      transition: 'all 0.18s',
-                    }}
-                      onFocus={e => { e.currentTarget.style.boxShadow = 'inset 0 0 0 1.5px #7BA177' }}
-                      onBlur={e => { e.currentTarget.style.boxShadow = 'none' }}>
-                      {m === 'focus' ? 'Focus' : 'Accountability'}
-                    </button>
-                  ))}
+                  {/* Duration pills */}
+                  {!showCustom ? (
+                    <div style={{ display: 'inline-flex', background: '#0E1F14', padding: 3, borderRadius: 7 }}>
+                      {[15, 30].map(d => (
+                        <button key={d} onClick={() => setSelected(d)} style={{
+                          padding: '7px 18px', borderRadius: 5, fontSize: 13, fontWeight: 500,
+                          cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                          background: selected === d && !showCustom ? '#3D6B47' : 'transparent',
+                          color: selected === d && !showCustom ? '#F7F5EF' : '#7BA177',
+                          transition: 'all 0.15s',
+                        }}>
+                          {d} min
+                        </button>
+                      ))}
+                      <button onClick={() => { setShowCustom(true); setTimeout(() => inputRef.current?.focus(), 50) }} style={{
+                        padding: '7px 18px', borderRadius: 5, fontSize: 13, fontWeight: 500,
+                        cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                        background: 'transparent', color: '#7BA177',
+                      }}>
+                        Custom
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 8,
+                      background: '#0E1F14', borderRadius: 7, padding: '6px 16px',
+                    }}>
+                      <input ref={inputRef} type="number" min={1} placeholder="20" value={customMins}
+                        onChange={e => setCustomMins(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && startSession()}
+                        style={{
+                          width: 48, background: 'transparent', outline: 'none', fontSize: 14,
+                          fontWeight: 600, color: '#F7F5EF', textAlign: 'center', border: 'none', fontFamily: 'inherit',
+                        }} />
+                      <span style={{ fontSize: 13, fontWeight: 500, color: '#7BA177' }}>min</span>
+                      <button onClick={() => { setShowCustom(false); setCustomMins('') }}
+                        style={{ fontSize: 13, color: '#5F7D66', cursor: 'pointer', border: 'none', background: 'transparent', marginLeft: 4 }}>✕</button>
+                    </div>
+                  )}
+
+                  {/* Mode toggle */}
+                  <div style={{ display: 'flex', background: '#0E1F14', borderRadius: 7, padding: 3 }}>
+                    {(['focus', 'accountability'] as const).map(m => (
+                      <button key={m} onClick={() => setMode(m)} style={{
+                        padding: '5px 14px', borderRadius: 5, fontSize: 11, fontWeight: 600,
+                        cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                        outline: 'none',
+                        background: mode === m ? '#3D6B47' : 'transparent',
+                        color: mode === m ? '#F7F5EF' : '#7BA177',
+                        transition: 'all 0.18s',
+                      }}
+                        onFocus={e => { e.currentTarget.style.boxShadow = 'inset 0 0 0 1.5px #7BA177' }}
+                        onBlur={e => { e.currentTarget.style.boxShadow = 'none' }}>
+                        {m === 'focus' ? 'Focus' : 'Accountability'}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Start button */}
-              <button onClick={startSession} style={{
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                padding: '16px 36px', borderRadius: 6, alignSelf: 'center',
-                fontSize: 16, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit',
-                color: '#13291B',
-                background: '#F7F5EF',
-                transition: 'all 0.2s',
-                letterSpacing: '0.01em',
-              }}>
-                Start {activeDuration}-min session
-                <span style={{ fontSize: 14 }}>→</span>
-              </button>
+              {/* Start CTA cluster */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10 }}>
+                <button onClick={startSession} style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                  padding: '14px 30px', borderRadius: 6,
+                  fontSize: 15, fontWeight: 600, cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+                  color: '#13291B',
+                  background: '#F7F5EF',
+                  transition: 'all 0.2s',
+                  letterSpacing: '0.01em',
+                }}>
+                  Start {activeDuration}-min session
+                  <span style={{ fontSize: 14 }}>→</span>
+                </button>
+                <p style={{ fontSize: 12, color: '#5F7D66', margin: 0 }}>
+                  Bell rings, then 60s voice debrief
+                </p>
+              </div>
             </div>
 
-            {/* ── Right column: coach + stats + tasks ── */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0 }}>
+            {/* ── Bento row: coach + stats + tasks, three equal cards ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 14, alignItems: 'start' }}>
 
             {/* Focus Coach (desktop) */}
             <FocusCoach onStart={startCoachSession} />
@@ -1080,8 +1067,8 @@ export default function DashboardPage() {
                 )}
               </div>
             </section>
-            </div>{/* end right column */}
-            </div>{/* end bento grid */}
+            </div>{/* end bento row */}
+            </div>{/* end bento stack */}
           </div>
         )}
 
