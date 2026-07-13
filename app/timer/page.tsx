@@ -1146,78 +1146,116 @@ function TimerContent() {
               </>
             ) : (
               <>
-                {/* Recording — full-bleed dark mode. The page itself goes deep
-                    forest (see root background); no card, just the moment. */}
-                <div style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 10,
-                  marginBottom: 56,
-                }}>
-                  <span style={{
-                    width: 7, height: 7, borderRadius: '50%',
-                    background: '#C96442',
-                    animation: 'recPulse 1.4s ease-in-out infinite',
-                  }} />
-                  <span style={{
-                    fontFamily: 'ui-monospace, "Fragment Mono", monospace',
-                    fontSize: 12, letterSpacing: '0.18em', textTransform: 'uppercase',
-                    color: '#8FA695', fontVariantNumeric: 'tabular-nums',
+                {/* Recording — aurora edge (Apple-Intelligence style, Focul
+                    greens) + Wispr-style floating recorder bar. The page goes
+                    full-bleed deep forest via the root background. */}
+                <div aria-hidden style={{
+                  position: 'fixed', inset: 10, pointerEvents: 'none', zIndex: 0,
+                  borderRadius: 24, padding: 26,
+                  background: 'conic-gradient(from 0deg, #3D8A52, #A9E0B4, #EAF6EC, #57B36E, #DCE9DF, #2F5E3C, #8FD69E, #3D8A52)',
+                  WebkitMask: 'linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)',
+                  maskComposite: 'exclude', WebkitMaskComposite: 'xor',
+                  filter: 'blur(22px)',
+                  animation: 'auroraHue 7s linear infinite, auroraBreathe 3.2s ease-in-out infinite',
+                }} />
+                <div aria-hidden style={{
+                  position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0.55,
+                  background: 'radial-gradient(120% 60% at 50% -8%, rgba(143,214,158,0.28), transparent 55%), radial-gradient(120% 60% at 50% 108%, rgba(87,179,110,0.24), transparent 55%), radial-gradient(60% 120% at -8% 50%, rgba(169,224,180,0.2), transparent 55%), radial-gradient(60% 120% at 108% 50%, rgba(169,224,180,0.2), transparent 55%)',
+                  animation: 'auroraBreathe 3.2s ease-in-out infinite',
+                }} />
+
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <p style={{
+                    fontSize: 'clamp(26px, 3.2vw, 36px)', fontWeight: 600, color: '#F7F5EF',
+                    letterSpacing: '-0.025em', margin: 0,
+                    animation: 'fadeUp 0.7s ease both',
                   }}>
-                    Recording · {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
-                  </span>
+                    What did you get done?
+                  </p>
+                  <p style={{ fontSize: 14, color: '#8FA695', marginTop: 12, marginBottom: 56, animation: 'fadeUp 0.7s 0.12s ease both' }}>
+                    Speak freely — Focul is listening.
+                  </p>
+
+                  {error && (
+                    <p style={{ fontSize: 13, color: '#D98A6C', marginBottom: 20 }}>{error}</p>
+                  )}
+
+                  {/* Floating recorder bar */}
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 22,
+                    background: 'rgba(14,31,20,0.82)', backdropFilter: 'blur(18px)',
+                    border: '1px solid rgba(220,233,223,0.14)', borderRadius: 8,
+                    padding: '14px 16px 14px 22px',
+                    boxShadow: '0 18px 50px rgba(0,0,0,0.45)',
+                    animation: 'fadeUp 0.7s 0.2s ease both',
+                  }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{
+                        width: 7, height: 7, borderRadius: '50%', background: '#C96442',
+                        animation: 'recPulse 1.4s ease-in-out infinite',
+                      }} />
+                      <span style={{
+                        fontFamily: 'ui-monospace, "Fragment Mono", monospace',
+                        fontSize: 12, letterSpacing: '0.14em', color: '#DCE9DF',
+                        fontVariantNumeric: 'tabular-nums',
+                      }}>
+                        {String(Math.floor(recordingSeconds / 60)).padStart(2, '0')}:{String(recordingSeconds % 60).padStart(2, '0')}
+                      </span>
+                    </span>
+
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4, height: 34, width: 150, justifyContent: 'center' }}>
+                      {waveHeights.map((h, i) => (
+                        <span key={i} style={{
+                          display: 'block', width: 4, borderRadius: 2,
+                          background: h > 0.55 ? '#DCE9DF' : h > 0.3 ? '#A9C4AF' : '#5F7D66',
+                          height: `${Math.max(h * 100, 12)}%`,
+                          transition: 'height 0.09s ease-out',
+                        }} />
+                      ))}
+                    </span>
+
+                    <button
+                      onClick={stopRecording}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 8,
+                        padding: '10px 22px', borderRadius: 6, border: 'none',
+                        background: '#F7F5EF', color: '#1F3A24', fontSize: 13, fontWeight: 600,
+                        fontFamily: 'inherit', cursor: 'pointer', transition: 'background 0.15s',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#fff' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = '#F7F5EF' }}
+                    >
+                      Done talking →
+                    </button>
+                  </div>
+
+                  <p style={{ fontSize: 12, color: '#8FA695', marginTop: 22 }}>
+                    or press{' '}
+                    <kbd style={{
+                      fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
+                      background: 'rgba(247,245,239,0.08)', border: '1px solid rgba(247,245,239,0.16)',
+                      borderRadius: 4, padding: '2px 8px', color: '#DCE9DF',
+                    }}>Space</kbd>{' '}
+                    to stop
+                  </p>
                 </div>
-
-                {/* Equalizer — hero of the screen, logo greens on deep forest */}
-                <div style={{
-                  display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 7,
-                  height: 120, marginBottom: 64,
-                }}>
-                  {waveHeights.map((h, i) => (
-                    <span key={i} style={{
-                      display: 'block', width: 6, borderRadius: 3,
-                      background: h > 0.55 ? '#DCE9DF' : h > 0.3 ? '#A9C4AF' : '#5F7D66',
-                      height: `${Math.max(h * 100, 8)}%`,
-                      opacity: 0.7 + h * 0.3,
-                      transition: 'height 0.08s ease-out, background 0.2s',
-                    }} />
-                  ))}
-                </div>
-
-                {error && (
-                  <p style={{ fontSize: 13, color: '#D98A6C', marginBottom: 20 }}>{error}</p>
-                )}
-
-                {/* Done button — flat cream on dark, 6px corners */}
-                <button
-                  onClick={stopRecording}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                    padding: '13px 36px', borderRadius: 6,
-                    background: '#F7F5EF', color: '#1F3A24',
-                    fontSize: 14, fontWeight: 600, fontFamily: 'inherit',
-                    border: 'none', cursor: 'pointer',
-                    transition: 'background 0.15s',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = '#fff' }}
-                  onMouseLeave={e => { e.currentTarget.style.background = '#F7F5EF' }}
-                >
-                  Done talking
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-                </button>
-
-                <p style={{ fontSize: 12, color: '#8FA695', marginTop: 18 }}>
-                  or press{' '}
-                  <kbd style={{
-                    fontFamily: 'inherit', fontWeight: 600, fontSize: 11,
-                    background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.14)',
-                    borderRadius: 4, padding: '2px 8px', color: '#DCE9DF',
-                  }}>Space</kbd>{' '}
-                  to stop
-                </p>
 
                 <style jsx>{`
                   @keyframes recPulse {
                     0%, 100% { opacity: 1;    transform: scale(1); }
                     50%      { opacity: 0.45; transform: scale(0.85); }
+                  }
+                  @keyframes auroraHue {
+                    from { filter: blur(22px) hue-rotate(0deg); }
+                    to   { filter: blur(22px) hue-rotate(40deg); }
+                  }
+                  @keyframes auroraBreathe {
+                    0%, 100% { opacity: 0.75; }
+                    50%      { opacity: 1; }
+                  }
+                  @keyframes fadeUp {
+                    from { opacity: 0; transform: translateY(14px); }
+                    to   { opacity: 1; transform: translateY(0); }
                   }
                 `}</style>
               </>
