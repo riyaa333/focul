@@ -856,7 +856,7 @@
 
     <div id="waitlist">
       <a class="cta-btn" href="/waitlist">Join the waitlist →</a>
-      <p class="form-note">Join <strong id="wl-count-1">—</strong> founders on the waitlist · No card needed · Mac only</p>
+      <p class="form-note">No card needed · Mac only</p>
     </div>
   </div>
 </section>
@@ -1227,7 +1227,7 @@
   <h2>Do 10 sessions.<br/><em>See what changes.</em></h2>
   <p>After 10 sessions you will know what you did each day. After 30 you will not want to stop.</p>
   <a class="cta-btn" href="/waitlist">Get early access →</a>
-  <p class="form-note" style="margin-top:16px;">Join <strong id="wl-count-2">—</strong> founders on the waitlist · 14-day free trial · No card needed</p>
+  <p class="form-note" style="margin-top:16px;">14-day free trial · No card needed</p>
 </section>
 
 <hr class="divider" />
@@ -1282,19 +1282,6 @@
 </footer>
 
 <script>
-// ── Live waitlist count ──
-fetch('/api/waitlist/count')
-  .then(r => r.json())
-  .then(d => {
-    const n = (d && typeof d.count === 'number') ? d.count : 0;
-    // Show a friendly minimum so the social proof never reads "0"
-    const display = n < 47 ? 47 + n : n;
-    document.querySelectorAll('#wl-count-1, #wl-count-2').forEach(el => { el.textContent = display; });
-  })
-  .catch(() => {
-    document.querySelectorAll('#wl-count-1, #wl-count-2').forEach(el => { el.textContent = '47'; });
-  });
-
 // ── Hero timer ring countdown ──
 (function() {
   const timeEl  = document.getElementById('hero-time');

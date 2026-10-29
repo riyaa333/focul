@@ -465,7 +465,6 @@
       Join now
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
-    <p class="hero-proof">Join <strong id="wl-count">47</strong> others on the waitlist.</p>
   </div>
 </section>
 
@@ -684,13 +683,6 @@ function toggleFaq(btn) {
   document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
   if (!wasOpen) item.classList.add('open');
 }
-
-// Live waitlist count
-fetch('/api/waitlist/count').then(r => r.json()).then(d => {
-  const n = (d && typeof d.count === 'number') ? d.count : 0;
-  const el = document.getElementById('wl-count');
-  if (el) el.textContent = n < 47 ? 47 + n : n;
-}).catch(() => {});
 
 // Scroll reveal
 (function() {

@@ -66,7 +66,7 @@
 <section class="section light hero" data-nav="light" id="hero">
   <div class="wrap">
     <div class="hero-text">
-      <span class="eyebrow" data-reveal><span class="dot"></span>Early access · <strong id="wl-count">47</strong> founders in</span>
+      <span class="eyebrow" data-reveal><span class="dot"></span>Early access</span>
       <h1 class="hero-h" data-reveal data-delay="1">One timer,<br /><span class="muted">every focused minute.</span></h1>
       <p class="lead" data-reveal data-delay="2">Focul brings every focus session into one quiet loop. When the bell rings, you speak, and AI extracts your tasks, blockers, and next actions automatically.</p>
       <div class="hero-cta" data-reveal data-delay="3">
@@ -74,9 +74,6 @@
           <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <a class="btn btn-ghost" href="#how">See how it works</a>
-      </div>
-      <div class="hero-proof" data-reveal data-delay="3">
-        Join <strong id="wl-count-2" class="wl-num">47</strong> others on the waitlist.
       </div>
     </div>
 
@@ -308,7 +305,7 @@
 <section class="section light cta" data-nav="light">
   <div class="wrap">
     <div class="cta-card" data-reveal>
-      <h2 class="cta-join">Join <strong id="wl-count-3" class="wl-num">47</strong> others on the waitlist.</h2>
+      <h2 class="cta-join">Join the waitlist.</h2>
       <div style="display:flex;justify-content:center;margin-top:28px">
         <a class="btn btn-accent" href="/waitlist">Join now
           <svg viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -333,30 +330,5 @@
 </footer>
 
 <script src="/landing-app.js"></script>
-<script>
-// Live waitlist count
-(async function() {
-  var els = [document.getElementById('wl-count'), document.getElementById('wl-count-2'), document.getElementById('wl-count-3')].filter(Boolean);
-  if (!els.length) return;
-  var target = 47;
-  try {
-    var r = await fetch('/api/waitlist/count');
-    var d = await r.json();
-    var n = (d && typeof d.count === 'number') ? d.count : 0;
-    target = n < 47 ? 47 + n : n;
-  } catch(e) {}
-  var start = performance.now();
-  var dur = 1400;
-  function step(now) {
-    var t = Math.min(1, (now - start) / dur);
-    var eased = 1 - Math.pow(1 - t, 3);
-    var v = Math.round(target * eased);
-    els.forEach(function(el) { el.textContent = v; });
-    if (t < 1) requestAnimationFrame(step);
-    else els.forEach(function(el) { el.textContent = target; });
-  }
-  requestAnimationFrame(step);
-})();
-</script>
 </body>
 </html>
